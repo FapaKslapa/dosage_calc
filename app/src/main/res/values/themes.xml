@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!--
+        Tema base per l'Activity. Compose gestisce tutto il design internamente,
+        quindi questo tema è minimale: serve solo a evitare un crash all'avvio.
+        Il colore di sfondo è impostato per evitare il flash bianco su sfondo scuro.
+    -->
+    <style name="Theme.DosageCalc" parent="android:Theme.Material.Light.NoActionBar">
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:navigationBarColor">@android:color/transparent</item>
+    </style>
+</resources>

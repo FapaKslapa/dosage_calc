@@ -1,0 +1,44 @@
+[
+  {
+    "id": "ivermectina_scabbia",
+    "name": "Ivermectina",
+    "indication": "Scabbia",
+    "formulaType": "per_kg",
+    "unitDose": 200.0,
+    "unit": "µg",
+    "minWeightKg": 15.0,
+    "maxWeightKg": 150.0,
+    "minAgeYears": 5,
+    "maxSingleDoseMcg": 400000.0,
+    "alert": "Usare peso in kg. Controindicato sotto i 15 kg o sotto i 5 anni. Somministrare a stomaco vuoto 1 ora prima del pasto.",
+    "source": "WHO Model Formulary 2023 - Ivermectin 200 µg/kg per os"
+  },
+  {
+    "id": "metronidazolo_rosacea",
+    "name": "Metronidazolo",
+    "indication": "Rosacea (uso topico)",
+    "formulaType": "fixed",
+    "unitDose": 1.0,
+    "unit": "applicazione",
+    "minWeightKg": null,
+    "maxWeightKg": null,
+    "minAgeYears": 18,
+    "maxSingleDoseMcg": null,
+    "alert": "Applicazione topica 0.75% - 1%. Solo per adulti. Evitare il contatto con gli occhi.",
+    "source": "AIFA - Scheda Tecnica Metronidazolo crema 0.75%"
+  },
+  {
+    "id": "doxiciclina_acne",
+    "name": "Doxiciclina",
+    "indication": "Acne vulgaris",
+    "formulaType": "fixed",
+    "unitDose": 100.0,
+    "unit": "mg",
+    "minWeightKg": 40.0,
+    "maxWeightKg": null,
+    "minAgeYears": 12,
+    "maxSingleDoseMcg": 100000.0,
+    "alert": "100 mg/die per os. Controindicata in gravidanza e sotto i 12 anni. Assumere con abbondante acqua per evitare esofagiti.",
+    "source": "RCP EMA - Doxiciclina 100 mg compresse"
+  }
+]
