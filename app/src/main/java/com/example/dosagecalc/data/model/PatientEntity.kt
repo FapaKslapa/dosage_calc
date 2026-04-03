@@ -13,5 +13,7 @@ data class PatientEntity(
     val weightKg: Float,
     val heightCm: Float?,
     val ageYears: Int,
-    val notes: String?
+    val notes: String?,
+    val hasRenalImpairment: Boolean = false,
+    val hasHepaticImpairment: Boolean = false
 )

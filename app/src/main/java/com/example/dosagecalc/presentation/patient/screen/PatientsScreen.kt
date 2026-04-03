@@ -4,6 +4,8 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -15,16 +17,21 @@ import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Search
+import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FilterChip
+import androidx.compose.material3.FilterChipDefaults
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -222,12 +229,14 @@ fun PatientsScreen(
             var weight by remember { mutableStateOf("") }
             var height by remember { mutableStateOf("") }
             var age by remember { mutableStateOf("") }
+            var renalImpair by remember { mutableStateOf(false) }
+            var hepaticImpair by remember { mutableStateOf(false) }
 
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(horizontal = 24.dp)
-                    .padding(bottom = 32.dp, top = 8.dp)
+                    .padding(top = 8.dp)
             ) {
                 Text(
                     text = "Nuova Cartella",
@@ -242,86 +251,136 @@ fun PatientsScreen(
                 )
                 Spacer(modifier = Modifier.height(24.dp))
 
-                OutlinedTextField(
-                    value = name,
-                    onValueChange = { name = it },
-                    label = { Text("Nome") },
-                    singleLine = true,
-                    modifier = Modifier.fillMaxWidth(),
-                    shape = RoundedCornerShape(16.dp)
-                )
-                Spacer(modifier = Modifier.height(12.dp))
-                OutlinedTextField(
-                    value = surname,
-                    onValueChange = { surname = it },
-                    label = { Text("Cognome") },
-                    singleLine = true,
-                    modifier = Modifier.fillMaxWidth(),
-                    shape = RoundedCornerShape(16.dp)
-                )
-                Spacer(modifier = Modifier.height(12.dp))
+                Column(
+                    modifier = Modifier
+                        .weight(1f, fill = false)
+                        .verticalScroll(rememberScrollState())
+                ) {
+                    OutlinedTextField(
+                        value = name,
+                        onValueChange = { name = it },
+                        label = { Text("Nome") },
+                        singleLine = true,
+                        modifier = Modifier.fillMaxWidth(),
+                        shape = RoundedCornerShape(16.dp)
+                    )
+                    Spacer(modifier = Modifier.height(12.dp))
+                    OutlinedTextField(
+                        value = surname,
+                        onValueChange = { surname = it },
+                        label = { Text("Cognome") },
+                        singleLine = true,
+                        modifier = Modifier.fillMaxWidth(),
+                        shape = RoundedCornerShape(16.dp)
+                    )
+                    Spacer(modifier = Modifier.height(12.dp))
 
-                val weightVal = weight.toFloatOrNull() ?: 0f
-                PatientInputField(
-                    label = "Peso",
-                    value = weight,
-                    onValueChange = { weight = it },
-                    sliderValue = weightVal,
-                    onSliderChange = { weight = String.format(Locale.US, "%.1f", it) },
-                    sliderRange = 1f..150f,
-                    suffix = "kg",
-                    activeColor = MaterialTheme.colorScheme.primary,
-                    inactiveColor = MaterialTheme.colorScheme.primaryContainer,
-                    errorMessage = null,
-                    hintMessage = null
-                )
+                    val weightVal = weight.toFloatOrNull() ?: 0f
+                    PatientInputField(
+                        label = "Peso",
+                        value = weight,
+                        onValueChange = { weight = it },
+                        sliderValue = weightVal,
+                        onSliderChange = { weight = String.format(Locale.US, "%.1f", it) },
+                        sliderRange = 1f..150f,
+                        suffix = "kg",
+                        activeColor = MaterialTheme.colorScheme.primary,
+                        inactiveColor = MaterialTheme.colorScheme.primaryContainer,
+                        errorMessage = null,
+                        hintMessage = null
+                    )
 
-                Spacer(modifier = Modifier.height(12.dp))
+                    Spacer(modifier = Modifier.height(12.dp))
 
-                val heightVal = height.toFloatOrNull() ?: 0f
-                PatientInputField(
-                    label = "Altezza (opz)",
-                    value = height,
-                    onValueChange = { height = it },
-                    sliderValue = heightVal,
-                    onSliderChange = { height = it.toInt().toString() },
-                    sliderRange = 10f..250f,
-                    suffix = "cm",
-                    activeColor = MaterialTheme.colorScheme.secondary,
-                    inactiveColor = MaterialTheme.colorScheme.secondaryContainer,
-                    errorMessage = null,
-                    hintMessage = null
-                )
+                    val heightVal = height.toFloatOrNull() ?: 0f
+                    PatientInputField(
+                        label = "Altezza (opz)",
+                        value = height,
+                        onValueChange = { height = it },
+                        sliderValue = heightVal,
+                        onSliderChange = { height = it.toInt().toString() },
+                        sliderRange = 10f..250f,
+                        suffix = "cm",
+                        activeColor = MaterialTheme.colorScheme.secondary,
+                        inactiveColor = MaterialTheme.colorScheme.secondaryContainer,
+                        errorMessage = null,
+                        hintMessage = null
+                    )
 
-                Spacer(modifier = Modifier.height(12.dp))
+                    Spacer(modifier = Modifier.height(12.dp))
 
-                val ageVal = age.toFloatOrNull() ?: 0f
-                PatientInputField(
-                    label = "Età",
-                    value = age,
-                    onValueChange = { age = it },
-                    sliderValue = ageVal,
-                    onSliderChange = { age = it.toInt().toString() },
-                    sliderRange = 0f..120f,
-                    suffix = "anni",
-                    keyboardType = KeyboardType.Number,
-                    imeAction = ImeAction.Done,
-                    activeColor = MaterialTheme.colorScheme.tertiary,
-                    inactiveColor = MaterialTheme.colorScheme.tertiaryContainer,
-                    errorMessage = null,
-                    hintMessage = null
-                )
+                    val ageVal = age.toFloatOrNull() ?: 0f
+                    PatientInputField(
+                        label = "Età",
+                        value = age,
+                        onValueChange = { age = it },
+                        sliderValue = ageVal,
+                        onSliderChange = { age = it.toInt().toString() },
+                        sliderRange = 0f..120f,
+                        suffix = "anni",
+                        keyboardType = KeyboardType.Number,
+                        imeAction = ImeAction.Done,
+                        activeColor = MaterialTheme.colorScheme.tertiary,
+                        inactiveColor = MaterialTheme.colorScheme.tertiaryContainer,
+                        errorMessage = null,
+                        hintMessage = null
+                    )
 
-                Spacer(modifier = Modifier.height(32.dp))
+                    Spacer(modifier = Modifier.height(24.dp))
+                    Text("Patologie Concomitanti", style = MaterialTheme.typography.titleMedium)
+                    Spacer(modifier = Modifier.height(8.dp))
+
+                    @OptIn(ExperimentalLayoutApi::class)
+                    FlowRow(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.spacedBy(8.dp),
+                        verticalArrangement = Arrangement.spacedBy(4.dp)
+                    ) {
+                        FilterChip(
+                            selected = renalImpair,
+                            onClick = { renalImpair = !renalImpair },
+                            label = { Text("Insufficienza Renale") },
+                            leadingIcon = if (renalImpair) {
+                                { Icon(Icons.Filled.Warning, contentDescription = null, modifier = Modifier.size(16.dp)) }
+                            } else null,
+                            colors = FilterChipDefaults.filterChipColors(
+                                selectedContainerColor = MaterialTheme.colorScheme.errorContainer,
+                                selectedLabelColor = MaterialTheme.colorScheme.onErrorContainer,
+                                selectedLeadingIconColor = MaterialTheme.colorScheme.onErrorContainer
+                            )
+                        )
+
+                        FilterChip(
+                            selected = hepaticImpair,
+                            onClick = { hepaticImpair = !hepaticImpair },
+                            label = { Text("Insufficienza Epatica") },
+                            leadingIcon = if (hepaticImpair) {
+                                { Icon(Icons.Filled.Warning, contentDescription = null, modifier = Modifier.size(16.dp)) }
+                            } else null,
+                            colors = FilterChipDefaults.filterChipColors(
+                                selectedContainerColor = MaterialTheme.colorScheme.errorContainer,
+                                selectedLabelColor = MaterialTheme.colorScheme.onErrorContainer,
+                                selectedLeadingIconColor = MaterialTheme.colorScheme.onErrorContainer
+                            )
+                        )
+                    }
+
+                    Spacer(modifier = Modifier.height(24.dp))
+                }
                 
+                // Sticky Button
                 Button(
                     onClick = {
                         if (name.isNotBlank() && surname.isNotBlank() && weight.isNotBlank()) {
-                            viewModel.savePatient(name, surname, weight, height.ifBlank { null }, age)
+                            viewModel.savePatient(name, surname, weight, height.ifBlank { null }, age, renalImpair, hepaticImpair)
                             showAddSheet = false
                         }
                     },
-                    modifier = Modifier.fillMaxWidth().height(56.dp),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 16.dp)
+                        .navigationBarsPadding()
+                        .height(56.dp),
                     shape = RoundedCornerShape(50)
                 ) {
                     Text("Salva Paziente", style = MaterialTheme.typography.titleMedium)

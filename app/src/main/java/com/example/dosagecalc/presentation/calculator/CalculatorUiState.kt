@@ -28,7 +28,10 @@ data class CalculatorUiState(
 
     val dosageResult: DosageResult? = null,
 
-    val isCalculating: Boolean = false
+    val isCalculating: Boolean = false,
+
+    val hasRenalImpairment: Boolean = false,
+    val hasHepaticImpairment: Boolean = false
 ) {
     
     val canCalculate: Boolean

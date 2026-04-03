@@ -6,5 +6,9 @@ data class PatientData(
 
     val heightCm: Double?,
 
-    val ageYears: Int?
+    val ageYears: Int?,
+
+    val hasRenalImpairment: Boolean = false,
+
+    val hasHepaticImpairment: Boolean = false
 )

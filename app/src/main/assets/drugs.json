@@ -53,6 +53,26 @@
     "minAgeYears": 12,
     "maxSingleDoseMcg": 100000.0,
     "alert": "100 mg/die per os. Controindicata in gravidanza e sotto i 12 anni. Assumere con abbondante acqua per evitare esofagiti.",
-    "source": "RCP EMA - Doxiciclina 100 mg compresse"
+    "source": "RCP EMA - Doxiciclina 100 mg compresse",
+    "hepaticDoseMultiplier": 0.5,
+    "hepaticAlert": "Usare con prudenza e dimezzare la dose in caso di grave insufficienza epatica."
+  },
+  {
+    "id": "ceftriaxone_ev",
+    "name": "Ceftriaxone",
+    "indication": "Meningite batterica (EV)",
+    "formulaType": "per_kg",
+    "unitDose": 100.0,
+    "unit": "mg",
+    "minWeightKg": null,
+    "maxWeightKg": null,
+    "minAgeYears": null,
+    "maxSingleDoseMcg": 4000000.0,
+    "alert": "Somministrazione endovenosa lenta (30 min).",
+    "source": "Linee guida antimicrobiche 2024",
+    "renalDoseMultiplier": 0.5,
+    "renalAlert": "Dose massima 2g/die se GFR < 10 ml/min. Applicato limite del 50%.",
+    "hepaticDoseMultiplier": 0.75,
+    "hepaticAlert": "Ridurre dose se insufficienza epatica contemporanea a renale."
   }
 ]

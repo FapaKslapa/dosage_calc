@@ -2,10 +2,9 @@ package com.example.dosagecalc.data.model
 
 import com.example.dosagecalc.domain.model.Drug
 import com.example.dosagecalc.domain.model.FormulaType
+import kotlinx.serialization.InternalSerializationApi
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.InternalSerializationApi
-import kotlin.OptIn
 
 @OptIn(InternalSerializationApi::class)
 @Serializable
@@ -47,7 +46,20 @@ data class DrugDto(
     val alert: String,
 
     @SerialName("source")
-    val source: String
+    val source: String,
+
+    @SerialName("renalDoseMultiplier")
+    val renalDoseMultiplier: Double? = null,
+
+    @SerialName("hepaticDoseMultiplier")
+    val hepaticDoseMultiplier: Double? = null,
+
+    @SerialName("renalAlert")
+    val renalAlert: String? = null,
+
+    @SerialName("hepaticAlert")
+    val hepaticAlert: String? = null
+
 ) {
 
     fun toDomain(): Drug = Drug(
@@ -72,6 +84,10 @@ data class DrugDto(
         minAgeYears     = minAgeYears,
         maxSingleDoseMcg = maxSingleDoseMcg,
         alert           = alert,
-        source          = source
+        source          = source,
+        renalDoseMultiplier = renalDoseMultiplier,
+        hepaticDoseMultiplier = hepaticDoseMultiplier,
+        renalAlert      = renalAlert,
+        hepaticAlert    = hepaticAlert
     )
 }

@@ -48,7 +48,15 @@ class PatientsViewModel @Inject constructor(
         _searchQuery.value = query
     }
 
-    fun savePatient(name: String, surname: String, weightKg: String, heightCm: String?, ageYears: String) {
+    fun savePatient(
+        name: String,
+        surname: String,
+        weightKg: String,
+        heightCm: String?,
+        ageYears: String,
+        hasRenalImpairment: Boolean = false,
+        hasHepaticImpairment: Boolean = false
+    ) {
         val weight = weightKg.toFloatOrNull() ?: return
         val height = heightCm?.toFloatOrNull()
         val age = ageYears.toIntOrNull() ?: 0
@@ -60,7 +68,9 @@ class PatientsViewModel @Inject constructor(
             birthDate = LocalDateTime.now(), 
             weightKg = weight,
             heightCm = height,
-            ageYears = age
+            ageYears = age,
+            hasRenalImpairment = hasRenalImpairment,
+            hasHepaticImpairment = hasHepaticImpairment
         )
 
         viewModelScope.launch {

@@ -1,8 +1,11 @@
 package com.example.dosagecalc.presentation.calculator.screen
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -15,6 +18,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -23,6 +27,8 @@ import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.ExposedDropdownMenuDefaults
+import androidx.compose.material3.FilterChip
+import androidx.compose.material3.FilterChipDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -236,6 +242,50 @@ fun PatientInputScreen(
                             errorMessage = uiState.ageError,
                             hintMessage = uiState.selectedDrug?.minAgeYears?.let { "Età minima richiesta: $it anni" }
                         )
+
+                        Spacer(modifier = Modifier.height(24.dp))
+                        Text(
+                            text  = "Patologie Concomitanti",
+                            style = MaterialTheme.typography.titleMedium,
+                            color = MaterialTheme.colorScheme.onSurface
+                        )
+                        Spacer(modifier = Modifier.height(12.dp))
+
+                        @OptIn(ExperimentalLayoutApi::class)
+                        FlowRow(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.spacedBy(8.dp),
+                            verticalArrangement = Arrangement.spacedBy(4.dp)
+                        ) {
+                            FilterChip(
+                                selected = uiState.hasRenalImpairment,
+                                onClick = { viewModel.onRenalImpairmentChanged(!uiState.hasRenalImpairment) },
+                                label = { Text("Insufficienza Renale") },
+                                leadingIcon = if (uiState.hasRenalImpairment) {
+                                    { Icon(Icons.Filled.Warning, contentDescription = null, modifier = Modifier.size(16.dp)) }
+                                } else null,
+                                colors = FilterChipDefaults.filterChipColors(
+                                    selectedContainerColor = MaterialTheme.colorScheme.errorContainer,
+                                    selectedLabelColor = MaterialTheme.colorScheme.onErrorContainer,
+                                    selectedLeadingIconColor = MaterialTheme.colorScheme.onErrorContainer
+                                )
+                            )
+
+                            FilterChip(
+                                selected = uiState.hasHepaticImpairment,
+                                onClick = { viewModel.onHepaticImpairmentChanged(!uiState.hasHepaticImpairment) },
+                                label = { Text("Insufficienza Epatica") },
+                                leadingIcon = if (uiState.hasHepaticImpairment) {
+                                    { Icon(Icons.Filled.Warning, contentDescription = null, modifier = Modifier.size(16.dp)) }
+                                } else null,
+                                colors = FilterChipDefaults.filterChipColors(
+                                    selectedContainerColor = MaterialTheme.colorScheme.errorContainer,
+                                    selectedLabelColor = MaterialTheme.colorScheme.onErrorContainer,
+                                    selectedLeadingIconColor = MaterialTheme.colorScheme.onErrorContainer
+                                )
+                            )
+                        }
+                        
                     }
                 }
             }

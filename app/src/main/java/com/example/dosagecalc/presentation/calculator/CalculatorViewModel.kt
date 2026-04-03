@@ -90,6 +90,8 @@ class CalculatorViewModel @Inject constructor(
                 weightInput = patient.weightKg.toString(),
                 heightInput = patient.heightCm?.toString() ?: "",
                 ageInput = patient.ageYears.toString(),
+                hasRenalImpairment = patient.hasRenalImpairment,
+                hasHepaticImpairment = patient.hasHepaticImpairment,
                 weightError = null,
                 heightError = null,
                 ageError = null,
@@ -122,6 +124,14 @@ class CalculatorViewModel @Inject constructor(
         _uiState.update { it.copy(ageInput = value, ageError = error, dosageResult = null) }
     }
 
+    fun onRenalImpairmentChanged(checked: Boolean) {
+        _uiState.update { it.copy(hasRenalImpairment = checked, dosageResult = null) }
+    }
+
+    fun onHepaticImpairmentChanged(checked: Boolean) {
+        _uiState.update { it.copy(hasHepaticImpairment = checked, dosageResult = null) }
+    }
+
     fun calculateDosage() {
         val state = _uiState.value
         val drug = state.selectedDrug ?: return  
@@ -133,7 +143,9 @@ class CalculatorViewModel @Inject constructor(
                 val patientData = PatientData(
                     weightKg  = state.weightInput.toDoubleOrNull(),
                     heightCm  = state.heightInput.toDoubleOrNull(),
-                    ageYears  = state.ageInput.toIntOrNull()
+                    ageYears  = state.ageInput.toIntOrNull(),
+                    hasRenalImpairment = state.hasRenalImpairment,
+                    hasHepaticImpairment = state.hasHepaticImpairment
                 )
                 calculateDosageUseCase(drug, patientData)
             }
@@ -168,13 +180,15 @@ class CalculatorViewModel @Inject constructor(
         _uiState.update { it.copy(
             selectedDrug  = null,
             selectedPatient = null,
-            weightInput   = "",
+             weightInput   = "",
             heightInput   = "",
             ageInput      = "",
             weightError   = null,
             heightError   = null,
             ageError      = null,
-            dosageResult  = null
+            dosageResult  = null,
+            hasRenalImpairment = false,
+            hasHepaticImpairment = false
         )}
     }
 

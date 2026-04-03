@@ -52,7 +52,9 @@ class PatientRepositoryImpl(
             weightKg = weightKg,
             heightCm = heightCm,
             ageYears = ageYears,
-            notes = notes
+            notes = notes,
+            hasRenalImpairment = hasRenalImpairment,
+            hasHepaticImpairment = hasHepaticImpairment
         )
     }
 
@@ -65,7 +67,9 @@ class PatientRepositoryImpl(
             weightKg = weightKg,
             heightCm = heightCm,
             ageYears = ageYears,
-            notes = notes
+            notes = notes,
+            hasRenalImpairment = hasRenalImpairment,
+            hasHepaticImpairment = hasHepaticImpairment
         )
     }
 }

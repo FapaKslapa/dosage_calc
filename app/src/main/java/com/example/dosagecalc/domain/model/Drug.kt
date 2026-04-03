@@ -26,7 +26,15 @@ data class Drug(
 
     val alert: String,
 
-    val source: String
+    val source: String,
+
+    val renalDoseMultiplier: Double? = null,
+
+    val hepaticDoseMultiplier: Double? = null,
+
+    val renalAlert: String? = null,
+
+    val hepaticAlert: String? = null
 )
 
 enum class FormulaType {
