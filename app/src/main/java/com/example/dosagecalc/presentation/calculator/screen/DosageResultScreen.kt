@@ -81,8 +81,9 @@ fun DosageResultScreen(
                     if (result is DosageResult.Success) {
 
                         val context = LocalContext.current
-                        if (uiState.selectedPatient != null) {
-                            Row(modifier = Modifier.fillMaxWidth().padding(bottom = 16.dp)) {
+                        
+                        Row(modifier = Modifier.fillMaxWidth().padding(bottom = 16.dp)) {
+                            if (uiState.selectedPatient != null) {
                                 OutlinedButton(
                                     onClick = {
                                         Toast.makeText(context, "Il calendario in-app sarà disponibile a breve!", Toast.LENGTH_SHORT).show()
@@ -92,25 +93,24 @@ fun DosageResultScreen(
                                 ) {
                                     Icon(Icons.Default.DateRange, contentDescription = "Calendario")
                                     Spacer(modifier = Modifier.width(8.dp))
-                                    Text("Calendario")
+                                    Text("Agenda")
                                 }
-                                Spacer(modifier = Modifier.width(8.dp))
+                            }
+                            
+                            if (canExportPdf) {
+                                if (uiState.selectedPatient != null) {
+                                    Spacer(modifier = Modifier.width(12.dp))
+                                }
                                 OutlinedButton(
                                     onClick = {
-                                        val sendIntent: Intent = Intent().apply {
-                                            action = Intent.ACTION_SEND
-                                            putExtra(Intent.EXTRA_TEXT, "Prescrizione:\nFarmaco: ${uiState.selectedDrug?.name}\nPaziente: ${uiState.selectedPatient?.name} ${uiState.selectedPatient?.surname}\nDose: ${result.totalDose} ${result.unit}\nIndicazione: ${uiState.selectedDrug?.indication}")
-                                            type = "text/plain"
-                                        }
-                                        val shareIntent = Intent.createChooser(sendIntent, "Condividi prescrizione")
-                                        context.startActivity(shareIntent)
+                                         PdfManager.generateAndSharePdf(context, uiState.selectedDrug!!, uiState.selectedPatient, result)
                                     },
                                     modifier = Modifier.weight(1f),
                                     shape = RoundedCornerShape(12.dp)
                                 ) {
-                                    Icon(Icons.Default.Share, contentDescription = "Condividi")
+                                    Icon(Icons.Filled.Share, contentDescription = "PDF")
                                     Spacer(modifier = Modifier.width(8.dp))
-                                    Text("Condividi")
+                                    Text("Esporta PDF")
                                 }
                             }
                         }
@@ -133,27 +133,23 @@ fun DosageResultScreen(
             ) {
                 Button(
                     onClick  = onNewCalculation,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(56.dp),
-                    shape    = RoundedCornerShape(16.dp)
+                    shape    = RoundedCornerShape(50),
+                    modifier = Modifier.fillMaxWidth().height(56.dp)
                 ) {
-                    Text("Nuovo Calcolo", style = MaterialTheme.typography.titleMedium)
+                    Text(
+                        text  = "Nuovo Calcolo",
+                        style = MaterialTheme.typography.titleMedium
+                    )
                 }
 
-                if (canExportPdf && uiState.selectedDrug != null && result is DosageResult.Success) {
-                    Spacer(modifier = Modifier.height(12.dp))
+                if (result is DosageResult.ValidationError) {
+                    Spacer(modifier = Modifier.height(8.dp))
                     FilledTonalButton(
-                        onClick  = {
-                             PdfManager.generateAndSharePdf(context, uiState.selectedDrug!!, uiState.selectedPatient, result)
-                        },
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(56.dp),
-                        shape    = RoundedCornerShape(16.dp)
+                        onClick  = viewModel::resetCalculation,
+                        shape    = RoundedCornerShape(50),
+                        modifier = Modifier.fillMaxWidth().height(48.dp)
                     ) {
-                        Icon(Icons.Filled.Share, contentDescription = "Condividi", modifier = Modifier.padding(end = 8.dp))
-                        Text("Esporta Referto PDF", style = MaterialTheme.typography.titleMedium)
+                        Text("Correggi i Dati")
                     }
                 }
             }

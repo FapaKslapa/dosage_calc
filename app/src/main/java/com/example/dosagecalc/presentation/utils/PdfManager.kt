@@ -32,12 +32,12 @@ object PdfManager {
         val paint = Paint().apply {
             color = Color.BLACK
             textSize = 14f
-            typeface = Typeface.create(Typeface.SANS_SERIF, Typeface.NORMAL)
+            typeface = Typeface.create(Typeface.SERIF, Typeface.NORMAL)
             isAntiAlias = true
         }
 
         val boldPaint = Paint(paint).apply {
-            typeface = Typeface.create(Typeface.SANS_SERIF, Typeface.BOLD)
+            typeface = Typeface.create(Typeface.SERIF, Typeface.BOLD)
         }
 
         val titlePaint = Paint(boldPaint).apply {
@@ -151,4 +151,3 @@ object PdfManager {
         }
     }
 }
-
