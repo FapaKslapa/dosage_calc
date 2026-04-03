@@ -88,7 +88,6 @@ fun AddDataScreen(
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .verticalScroll(rememberScrollState())
         ) {
             GradientScreenHeader(
                 colors = listOf(
@@ -135,8 +134,11 @@ fun AddDataScreen(
 
             Column(
                 modifier = Modifier
+                    .weight(1f)
                     .fillMaxWidth()
-                    .padding(horizontal = 20.dp, vertical = 24.dp),
+                    .verticalScroll(rememberScrollState())
+                    .padding(horizontal = 20.dp, vertical = 24.dp)
+                    .padding(bottom = 100.dp),
                 verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
                 Text(
@@ -235,29 +237,36 @@ fun AddDataScreen(
                 )
 
                 Spacer(modifier = Modifier.height(24.dp))
+            }
+        }
 
-                Button(
-                    onClick = {
-                        viewModel.saveCustomDrug(
-                            id = drugId,
-                            name = name,
-                            indication = indication,
-                            formula = selectedFormula,
-                            dose = dose,
-                            unit = unit,
-                            maxDose = maxDose,
-                            alert = alert,
-                            onSuccess = onNavigateBack
-                        )
-                    },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(56.dp),
-                    shape = RoundedCornerShape(28.dp)
-                ) {
-                    Text("Salva", style = MaterialTheme.typography.titleMedium)
-                }
-                Spacer(modifier = Modifier.height(32.dp))
+        Box(
+            modifier = Modifier
+                .align(Alignment.BottomCenter)
+                .fillMaxWidth()
+                .background(MaterialTheme.colorScheme.background.copy(alpha = 0.9f))
+                .padding(16.dp)
+        ) {
+            Button(
+                onClick = {
+                    viewModel.saveCustomDrug(
+                        id = drugId,
+                        name = name,
+                        indication = indication,
+                        formula = selectedFormula,
+                        dose = dose,
+                        unit = unit,
+                        maxDose = maxDose,
+                        alert = alert,
+                        onSuccess = onNavigateBack
+                    )
+                },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(56.dp),
+                shape = RoundedCornerShape(28.dp)
+            ) {
+                Text("Salva", style = MaterialTheme.typography.titleMedium)
             }
         }
     }

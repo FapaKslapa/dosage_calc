@@ -3,22 +3,22 @@ package com.example.dosagecalc.presentation.navigation
 import androidx.compose.runtime.Composable
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-import androidx.navigation.NavType
 import com.example.dosagecalc.presentation.calculator.CalculatorViewModel
+import com.example.dosagecalc.presentation.calculator.RemindersViewModel
+import com.example.dosagecalc.presentation.calculator.screen.AddDataScreen
 import com.example.dosagecalc.presentation.calculator.screen.DosageResultScreen
 import com.example.dosagecalc.presentation.calculator.screen.DrugSelectionScreen
 import com.example.dosagecalc.presentation.calculator.screen.PatientInputScreen
+import com.example.dosagecalc.presentation.calculator.screen.RemindersScreen
 import com.example.dosagecalc.presentation.history.HistoryViewModel
 import com.example.dosagecalc.presentation.history.screen.HistoryScreen
 import com.example.dosagecalc.presentation.patient.PatientsViewModel
 import com.example.dosagecalc.presentation.patient.screen.PatientsScreen
-import com.example.dosagecalc.presentation.calculator.RemindersViewModel
-import com.example.dosagecalc.presentation.calculator.screen.RemindersScreen
-import com.example.dosagecalc.presentation.calculator.screen.AddDataScreen
 
 sealed class AppRoute(val route: String) {
     object DrugSelection  : AppRoute("drug_selection")

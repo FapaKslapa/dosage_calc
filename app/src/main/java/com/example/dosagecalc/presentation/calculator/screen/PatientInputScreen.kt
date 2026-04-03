@@ -75,7 +75,6 @@ fun PatientInputScreen(
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .verticalScroll(rememberScrollState())
         ) {
             GradientScreenHeader(
                 colors = listOf(
@@ -121,6 +120,8 @@ fun PatientInputScreen(
 
             Column(
                 modifier = Modifier
+                    .weight(1f)
+                    .verticalScroll(rememberScrollState())
                     .padding(horizontal = 20.dp)
                     .padding(bottom = 100.dp)
             ) {

@@ -3,10 +3,10 @@ package com.example.dosagecalc.data.di
 import android.content.Context
 import androidx.room.Room
 import com.example.dosagecalc.data.AppDatabase
+import com.example.dosagecalc.data.datasource.CustomDrugDao
 import com.example.dosagecalc.data.datasource.HistoryDao
 import com.example.dosagecalc.data.datasource.PatientDao
 import com.example.dosagecalc.data.datasource.ReminderDao
-import com.example.dosagecalc.data.datasource.CustomDrugDao
 import com.example.dosagecalc.data.repository.DrugRepositoryImpl
 import com.example.dosagecalc.data.repository.HistoryRepositoryImpl
 import com.example.dosagecalc.data.repository.PatientRepositoryImpl
