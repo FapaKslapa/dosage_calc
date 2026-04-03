@@ -36,17 +36,15 @@ class ReminderWorker @AssistedInject constructor(
     private fun showNotification(title: String, message: String) {
         val channelId = "dosage_reminders_channel"
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val channel = NotificationChannel(
-                channelId,
-                "Promemoria Farmaci",
-                NotificationManager.IMPORTANCE_HIGH
-            ).apply {
-                description = "Notifiche per ricordare la somministrazione dei farmaci"
-            }
-            val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-            notificationManager.createNotificationChannel(channel)
+        val channel = NotificationChannel(
+            channelId,
+            "Promemoria Farmaci",
+            NotificationManager.IMPORTANCE_HIGH
+        ).apply {
+            description = "Notifiche per ricordare la somministrazione dei farmaci"
         }
+        val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        notificationManager.createNotificationChannel(channel)
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU &&
             ContextCompat.checkSelfPermission(context, android.Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {

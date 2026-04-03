@@ -33,13 +33,11 @@ class HistoryViewModel @Inject constructor(
     private val _uiState = MutableStateFlow(HistoryUiState())
     val uiState: StateFlow<HistoryUiState> = _uiState.asStateFlow()
 
-    @OptIn(kotlinx.coroutines.ExperimentalCoroutinesApi::class)
     val historyPaged: Flow<PagingData<HistoryRecord>> = _searchQuery
         .flatMapLatest { query -> manageHistoryUseCase.getAllHistoryPaged(query) }
         .cachedIn(viewModelScope)
 
     init {
-        
         _uiState.update { it.copy(isLoading = false) }
     }
 

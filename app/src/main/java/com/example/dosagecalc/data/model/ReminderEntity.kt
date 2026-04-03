@@ -1,4 +1,5 @@
 package com.example.dosagecalc.data.model
+
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.example.dosagecalc.domain.model.Reminder
@@ -15,23 +16,25 @@ data class ReminderEntity(
     val durationDays: Int,
     val timestamp: Long
 )
+
 fun ReminderEntity.toDomain() = Reminder(
-    id = id,
-    drugName = drugName,
-    interval = ReminderInterval.valueOf(interval),
+    id           = id,
+    drugName     = drugName,
+    interval     = ReminderInterval.valueOf(interval),
     daySelection = daySelection,
-    hour = hour,
-    minute = minute,
+    hour         = hour,
+    minute       = minute,
     durationDays = durationDays,
-    timestamp = timestamp
+    timestamp    = timestamp
 )
+
 fun Reminder.toEntity() = ReminderEntity(
-    id = id,
-    drugName = drugName,
-    interval = interval.name,
+    id           = id,
+    drugName     = drugName,
+    interval     = interval.name,
     daySelection = daySelection,
-    hour = hour,
-    minute = minute,
+    hour         = hour,
+    minute       = minute,
     durationDays = durationDays,
-    timestamp = timestamp
+    timestamp    = timestamp
 )

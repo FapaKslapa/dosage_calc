@@ -43,7 +43,9 @@ abstract class DataModule {
                 context,
                 AppDatabase::class.java,
                 "dosagecalc_database"
-            ).fallbackToDestructiveMigration().build()
+            // Versions 1-5 were pre-release installs; destructive wipe is acceptable.
+            // Any future schema bump (v7+) must provide a proper Migration object.
+            ).fallbackToDestructiveMigrationFrom(1, 2, 3, 4, 5).build()
         }
 
         @Provides

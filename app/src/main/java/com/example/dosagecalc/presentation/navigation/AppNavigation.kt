@@ -72,10 +72,7 @@ fun AppNavigation(
             PatientsScreen(
                 viewModel = patientsViewModel,
                 onNavigateBack = { navController.popBackStack() },
-                onNavigateToHistory = { patientId ->
-                    
-                    navController.navigate(AppRoute.GlobalHistory.route)
-                }
+                onNavigateToHistory = { navController.navigate(AppRoute.GlobalHistory.route) }
             )
         }
 

@@ -34,13 +34,11 @@ class PatientsViewModel @Inject constructor(
     private val _uiState = MutableStateFlow(PatientsUiState())
     val uiState: StateFlow<PatientsUiState> = _uiState.asStateFlow()
 
-    @OptIn(kotlinx.coroutines.ExperimentalCoroutinesApi::class)
     val patientsPaged: Flow<PagingData<Patient>> = _searchQuery
         .flatMapLatest { query -> managePatientsUseCase.getPatientsPaged(query) }
         .cachedIn(viewModelScope)
 
     init {
-        
         _uiState.update { it.copy(isLoading = false) }
     }
 

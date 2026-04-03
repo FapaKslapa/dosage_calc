@@ -47,7 +47,6 @@ object PdfManager {
         var y = 50f
         val x = 50f
 
-        // Intestazione
         canvas.drawText("REFERTO DOSAGGIO - DosageCalc", x, y, titlePaint)
         y += 40f
 
@@ -55,7 +54,6 @@ object PdfManager {
         canvas.drawText("Data: ${LocalDateTime.now().format(formatter)}", x, y, paint)
         y += 40f
 
-        // Dati Paziente
         canvas.drawText("PAZIENTE:", x, y, boldPaint)
         y += 20f
         if (patient != null) {
@@ -74,7 +72,6 @@ object PdfManager {
             y += 30f
         }
 
-        // Dati Farmaco
         canvas.drawText("FARMACO:", x, y, boldPaint)
         y += 20f
         canvas.drawText("Nome: ${drug.name}", x + 20f, y, paint)
@@ -82,7 +79,6 @@ object PdfManager {
         canvas.drawText("Indicazione: ${drug.indication}", x + 20f, y, paint)
         y += 30f
 
-        // Risultato Calcolo
         canvas.drawText("DOSAGGIO CALCOLATO:", x, y, boldPaint)
         y += 20f
 
@@ -122,7 +118,6 @@ object PdfManager {
             y += 20f
         }
 
-        // Footer disclaimer
         paint.textSize = 10f
         y = 750f
         canvas.drawText("DISCLAIMER: Strumento a uso esclusivamente didattico. Verificare sempre il dosaggio su fonti ufficiali (RCP).", x, y, paint)
@@ -134,7 +129,6 @@ object PdfManager {
             document.writeTo(FileOutputStream(file))
             document.close()
 
-            // Prepara l'Intent per la condivisionione
             val uri = FileProvider.getUriForFile(context, "${context.packageName}.fileprovider", file)
             val intent = android.content.Intent(android.content.Intent.ACTION_SEND).apply {
                 type = "application/pdf"

@@ -36,7 +36,6 @@ class CalculatorViewModel @Inject constructor(
     val uiState: StateFlow<CalculatorUiState> = _uiState.asStateFlow()
 
     init {
-        
         loadDrugs()
         loadPatients()
     }
@@ -131,8 +130,6 @@ class CalculatorViewModel @Inject constructor(
     fun deleteCustomDrug(id: String) {
         viewModelScope.launch {
             drugRepository.deleteCustomDrug(id)
-            // Need to reload drugs if not reacting via flow automatically.
-            // Wait, getDrugs() returns a flow! So it updates automatically.
         }
     }
 

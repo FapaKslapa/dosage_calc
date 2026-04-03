@@ -1,6 +1,7 @@
 package com.example.dosagecalc.domain.usecase
 
 import javax.inject.Inject
+import kotlin.math.roundToLong
 import kotlin.math.sqrt
 
 class CalculateBsaUseCase @Inject constructor() {
@@ -12,8 +13,9 @@ class CalculateBsaUseCase @Inject constructor() {
         require(weightKg <= 500) { "Peso non fisiologico: $weightKg kg" }
         require(heightCm <= 300) { "Altezza non fisiologica: $heightCm cm" }
 
+        // Mosteller formula: BSA = sqrt((height * weight) / 3600)
         val bsa = sqrt((heightCm * weightKg) / 3600.0)
 
-        return Math.round(bsa * 10_000.0) / 10_000.0
+        return (bsa * 10_000.0).roundToLong() / 10_000.0
     }
 }

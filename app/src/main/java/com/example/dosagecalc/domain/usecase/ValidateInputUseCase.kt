@@ -24,9 +24,7 @@ class ValidateInputUseCase @Inject constructor() {
                     errors.add("L'altezza è obbligatoria per il calcolo del BSA.")
                 }
             }
-            FormulaType.FIXED -> {
-
-            }
+            FormulaType.FIXED -> Unit
         }
 
         patientData.weightKg?.let { w ->
@@ -89,8 +87,6 @@ class ValidateInputUseCase @Inject constructor() {
 }
 
 sealed class ValidationResult {
-    
-    object Valid : ValidationResult()
-
+    data object Valid : ValidationResult()
     data class Invalid(val errors: List<String>) : ValidationResult()
 }

@@ -14,7 +14,7 @@ import com.example.dosagecalc.data.model.ReminderEntity
 @Database(
     entities = [PatientEntity::class, HistoryEntity::class, ReminderEntity::class, CustomDrugEntity::class],
     version = 6,
-    exportSchema = false
+    exportSchema = true
 )
 abstract class AppDatabase : RoomDatabase() {
     abstract fun patientDao(): PatientDao
