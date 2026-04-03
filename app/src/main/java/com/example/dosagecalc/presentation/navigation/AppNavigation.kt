@@ -10,34 +10,24 @@ import com.example.dosagecalc.presentation.calculator.CalculatorViewModel
 import com.example.dosagecalc.presentation.calculator.screen.DosageResultScreen
 import com.example.dosagecalc.presentation.calculator.screen.DrugSelectionScreen
 import com.example.dosagecalc.presentation.calculator.screen.PatientInputScreen
+import com.example.dosagecalc.presentation.history.HistoryViewModel
+import com.example.dosagecalc.presentation.history.screen.HistoryScreen
+import com.example.dosagecalc.presentation.patient.PatientsViewModel
+import com.example.dosagecalc.presentation.patient.screen.PatientsScreen
 
-/**
- * Rotte di navigazione dell'app.
- *
- * Usiamo un oggetto sealed per avere rotte type-safe: il compilatore
- * segnala immediatamente se una rotta viene rimossa o rinominata.
- */
 sealed class AppRoute(val route: String) {
     object DrugSelection  : AppRoute("drug_selection")
     object PatientInput   : AppRoute("patient_input")
     object DosageResult   : AppRoute("dosage_result")
+    object PatientsList   : AppRoute("patients_list")
+    object GlobalHistory  : AppRoute("global_history")
 }
 
-/**
- * NavHost principale dell'app.
- *
- * Il [CalculatorViewModel] viene creato UNA SOLA VOLTA a questo livello
- * e condiviso tra tutte e 3 le schermate: questo garantisce che lo stato
- * (farmaco selezionato, input paziente, risultato) sopravviva alla
- * navigazione tra schermate senza perdersi.
- *
- * Pattern: "hoisted ViewModel" passato a tutti i composable figli.
- */
 @Composable
 fun AppNavigation(
     navController: NavHostController = rememberNavController()
 ) {
-    // Il ViewModel vive per tutta la durata del NavHost (ciclo di vita Activity)
+    
     val viewModel: CalculatorViewModel = hiltViewModel()
 
     NavHost(
@@ -50,7 +40,33 @@ fun AppNavigation(
                 viewModel   = viewModel,
                 onNavigateToInput = {
                     navController.navigate(AppRoute.PatientInput.route)
+                },
+                onNavigateToPatients = {
+                    navController.navigate(AppRoute.PatientsList.route)
+                },
+                onNavigateToHistory = {
+                    navController.navigate(AppRoute.GlobalHistory.route)
                 }
+            )
+        }
+
+        composable(route = AppRoute.PatientsList.route) {
+            val patientsViewModel: PatientsViewModel = hiltViewModel()
+            PatientsScreen(
+                viewModel = patientsViewModel,
+                onNavigateBack = { navController.popBackStack() },
+                onNavigateToHistory = { patientId ->
+                    
+                    navController.navigate(AppRoute.GlobalHistory.route)
+                }
+            )
+        }
+
+        composable(route = AppRoute.GlobalHistory.route) {
+            val historyViewModel: HistoryViewModel = hiltViewModel()
+            HistoryScreen(
+                viewModel = historyViewModel,
+                onNavigateBack = { navController.popBackStack() }
             )
         }
 
@@ -68,7 +84,7 @@ fun AppNavigation(
             DosageResultScreen(
                 viewModel      = viewModel,
                 onNewCalculation = {
-                    // Torna alla selezione e pulisce lo stack intermedio
+                    
                     navController.popBackStack(
                         route         = AppRoute.DrugSelection.route,
                         inclusive     = false

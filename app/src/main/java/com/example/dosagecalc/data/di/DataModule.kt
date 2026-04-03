@@ -1,39 +1,67 @@
 package com.example.dosagecalc.data.di
 
+import android.content.Context
+import androidx.room.Room
+import com.example.dosagecalc.data.AppDatabase
+import com.example.dosagecalc.data.datasource.HistoryDao
+import com.example.dosagecalc.data.datasource.PatientDao
 import com.example.dosagecalc.data.repository.DrugRepositoryImpl
+import com.example.dosagecalc.data.repository.HistoryRepositoryImpl
+import com.example.dosagecalc.data.repository.PatientRepositoryImpl
 import com.example.dosagecalc.domain.repository.DrugRepository
+import com.example.dosagecalc.domain.repository.HistoryRepository
+import com.example.dosagecalc.domain.repository.PatientRepository
 import dagger.Binds
 import dagger.Module
+import dagger.Provides
 import dagger.hilt.InstallIn
+import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
 
-/**
- * Modulo Hilt per il layer Data.
- *
- * Collega le interfacce del Domain (astrazioni) alle implementazioni concrete
- * del layer Data. Hilt usa questo modulo per sapere quale classe concreta
- * iniettare quando qualcuno richiede un [DrugRepository].
- *
- * @Binds è preferito a @Provides quando si tratta solo di legare un'interfaccia
- * a un'implementazione: genera meno codice e non richiede una funzione con corpo.
- *
- * InstallIn(SingletonComponent::class) → l'istanza vive per tutto il ciclo
- * di vita dell'Application (scoped singleton). Corretto per un repository
- * che legge dati in memoria.
- */
 @Module
 @InstallIn(SingletonComponent::class)
 abstract class DataModule {
 
-    /**
-     * Dice a Hilt: "quando qualcuno chiede un [DrugRepository], inietta un [DrugRepositoryImpl]".
-     * [DrugRepositoryImpl] è già @Singleton grazie alla sua annotazione,
-     * quindi Hilt creerà una sola istanza.
-     */
     @Binds
     @Singleton
     abstract fun bindDrugRepository(
         impl: DrugRepositoryImpl
     ): DrugRepository
+
+    @Module
+    @InstallIn(SingletonComponent::class)
+    object RoomModule {
+        @Provides
+        @Singleton
+        fun provideAppDatabase(@ApplicationContext context: Context): AppDatabase {
+            return Room.databaseBuilder(
+                context,
+                AppDatabase::class.java,
+                "dosagecalc_database"
+            ).fallbackToDestructiveMigration().build()
+        }
+
+        @Provides
+        fun providePatientDao(database: AppDatabase): PatientDao {
+            return database.patientDao()
+        }
+
+        @Provides
+        fun provideHistoryDao(database: AppDatabase): HistoryDao {
+            return database.historyDao()
+        }
+
+        @Provides
+        @Singleton
+        fun providePatientRepository(patientDao: PatientDao): PatientRepository {
+            return PatientRepositoryImpl(patientDao)
+        }
+
+        @Provides
+        @Singleton
+        fun provideHistoryRepository(historyDao: HistoryDao): HistoryRepository {
+            return HistoryRepositoryImpl(historyDao)
+        }
+    }
 }

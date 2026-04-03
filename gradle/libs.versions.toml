@@ -1,5 +1,5 @@
 [versions]
-agp                     = "8.4.2"
+agp                     = "8.13.2"
 kotlin                  = "2.0.0"
 ksp                     = "2.0.0-1.0.21"
 coreKtx                 = "1.13.1"
@@ -11,6 +11,8 @@ navigationCompose       = "2.7.7"
 lifecycleRuntimeCompose = "2.8.2"
 kotlinxSerialization    = "1.7.0"
 coroutines              = "1.8.1"
+room                    = "2.6.1"
+paging                  = "3.3.0"
 # Testing
 junit5                  = "5.10.2"
 mockk                   = "1.13.11"
@@ -40,6 +42,16 @@ lifecycle-runtime-compose       = { group = "androidx.lifecycle",  name = "lifec
 
 # KotlinX Serialization - parsing del JSON locale dei farmaci
 kotlinx-serialization-json      = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version.ref = "kotlinxSerialization" }
+
+# Room Database
+room-runtime                    = { group = "androidx.room", name = "room-runtime", version.ref = "room" }
+room-compiler                   = { group = "androidx.room", name = "room-compiler", version.ref = "room" }
+room-ktx                        = { group = "androidx.room", name = "room-ktx", version.ref = "room" }
+room-paging                     = { group = "androidx.room", name = "room-paging", version.ref = "room" }
+
+# Paging 3
+androidx-paging-runtime         = { group = "androidx.paging", name = "paging-runtime", version.ref = "paging" }
+androidx-paging-compose         = { group = "androidx.paging", name = "paging-compose", version.ref = "paging" }
 
 # Kotlin Coroutines
 kotlinx-coroutines-android      = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-android", version.ref = "coroutines" }

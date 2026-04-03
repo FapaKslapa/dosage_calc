@@ -14,7 +14,7 @@ plugins {
 
 android {
     namespace = "com.example.dosagecalc"
-    compileSdk = 35
+    compileSdk = 36
 
     defaultConfig {
         applicationId = "com.example.dosagecalc"
@@ -96,6 +96,16 @@ dependencies {
 
     // --- Serializzazione JSON (per leggere assets/drugs.json) ---
     implementation(libs.kotlinx.serialization.json)
+
+    // Room
+    implementation(libs.room.runtime)
+    implementation(libs.room.ktx)
+    ksp(libs.room.compiler)
+    implementation(libs.room.paging)
+    
+    // Paging
+    implementation(libs.androidx.paging.runtime)
+    implementation(libs.androidx.paging.compose)
 
     // --- Coroutine (per operazioni asincrone: lettura file, calcoli su IO dispatcher) ---
     implementation(libs.kotlinx.coroutines.android)

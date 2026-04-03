@@ -4,9 +4,13 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.dosagecalc.domain.model.DosageResult
 import com.example.dosagecalc.domain.model.Drug
+import com.example.dosagecalc.domain.model.HistoryRecord
+import com.example.dosagecalc.domain.model.Patient
 import com.example.dosagecalc.domain.model.PatientData
 import com.example.dosagecalc.domain.repository.DrugRepository
 import com.example.dosagecalc.domain.usecase.CalculateDosageUseCase
+import com.example.dosagecalc.domain.usecase.ManageHistoryUseCase
+import com.example.dosagecalc.domain.usecase.ManagePatientsUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -16,50 +20,40 @@ import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.time.LocalDateTime
 import javax.inject.Inject
 
-/**
- * ViewModel per il flusso calcolatore (Selezione → Input → Risultato).
- *
- * Responsabilità:
- * - Caricare la lista farmaci dal repository all'avvio
- * - Gestire lo stato dell'UI in modo reattivo tramite [StateFlow]
- * - Orchestrare il calcolo della dose tramite [CalculateDosageUseCase]
- * - Validare i campi di input in tempo reale (mentre l'utente digita)
- *
- * La UI NON chiama mai direttamente i Use Case: passa tutto attraverso
- * questo ViewModel. Questo garantisce che la logica non stia nella UI.
- *
- * @HiltViewModel permette a Hilt di iniettare le dipendenze e a
- * Navigation Compose di gestire il ciclo di vita correttamente.
- */
 @HiltViewModel
 class CalculatorViewModel @Inject constructor(
     private val drugRepository: DrugRepository,
-    private val calculateDosageUseCase: CalculateDosageUseCase
+    private val calculateDosageUseCase: CalculateDosageUseCase,
+    private val managePatientsUseCase: ManagePatientsUseCase,
+    private val manageHistoryUseCase: ManageHistoryUseCase
 ) : ViewModel() {
 
-    // Stato interno mutabile: privato, modificato solo dal ViewModel
     private val _uiState = MutableStateFlow(CalculatorUiState())
 
-    // Stato esposto alla UI: read-only, la UI non può modificarlo direttamente
     val uiState: StateFlow<CalculatorUiState> = _uiState.asStateFlow()
 
     init {
-        // Carica i farmaci subito alla creazione del ViewModel
+        
         loadDrugs()
+        loadPatients()
     }
 
-    // -------------------------------------------------------------------------
-    // Caricamento dati
-    // -------------------------------------------------------------------------
+    private fun loadPatients() {
+        viewModelScope.launch {
+            managePatientsUseCase.getPatients().collect { list ->
+                _uiState.update { it.copy(savedPatients = list) }
+            }
+        }
+    }
 
     private fun loadDrugs() {
         viewModelScope.launch {
             drugRepository.getDrugs()
                 .catch { error ->
-                    // Se il JSON è corrotto o mancante, mostriamo un errore
-                    // invece di lasciare l'app in uno stato di loading infinito
+
                     _uiState.update { it.copy(
                         isLoadingDrugs = false,
                         loadError = "Impossibile caricare il catalogo farmaci: ${error.message}"
@@ -75,44 +69,47 @@ class CalculatorViewModel @Inject constructor(
         }
     }
 
-    // -------------------------------------------------------------------------
-    // Azioni utente - Schermata 1: Selezione farmaco
-    // -------------------------------------------------------------------------
-
-    /**
-     * Chiamato quando l'utente seleziona un farmaco dal dropdown.
-     * Resetta il risultato precedente per evitare di mostrare un calcolo
-     * relativo a un farmaco diverso da quello appena selezionato.
-     */
     fun onDrugSelected(drug: Drug) {
         _uiState.update { it.copy(
             selectedDrug  = drug,
-            dosageResult  = null,   // reset risultato precedente
+            selectedPatient = null, 
+            dosageResult  = null,   
             weightError   = null,
             heightError   = null,
             ageError      = null
         )}
     }
 
-    // -------------------------------------------------------------------------
-    // Azioni utente - Schermata 2: Input paziente
-    // -------------------------------------------------------------------------
+    fun onPatientSelected(patient: Patient?) {
+        if (patient == null) {
+            _uiState.update { it.copy(selectedPatient = null) }
+        } else {
+            
+            _uiState.update { it.copy(
+                selectedPatient = patient,
+                weightInput = patient.weightKg.toString(),
+                heightInput = patient.heightCm?.toString() ?: "",
+                ageInput = patient.ageYears.toString(),
+                weightError = null,
+                heightError = null,
+                ageError = null,
+                dosageResult = null
+            ) }
+        }
+    }
 
-    /** Aggiorna il testo del peso e valida il formato in tempo reale */
     fun onWeightChanged(value: String) {
         val error = validateNumericField(value, min = 1.0, max = 500.0, fieldName = "peso")
         _uiState.update { it.copy(weightInput = value, weightError = error, dosageResult = null) }
     }
 
-    /** Aggiorna il testo dell'altezza e valida in tempo reale */
     fun onHeightChanged(value: String) {
         val error = validateNumericField(value, min = 30.0, max = 280.0, fieldName = "altezza")
         _uiState.update { it.copy(heightInput = value, heightError = error, dosageResult = null) }
     }
 
-    /** Aggiorna il testo dell'età e valida in tempo reale */
     fun onAgeChanged(value: String) {
-        // L'età è un intero: validazione separata
+        
         val error = if (value.isBlank()) null else {
             val age = value.toIntOrNull()
             when {
@@ -125,21 +122,9 @@ class CalculatorViewModel @Inject constructor(
         _uiState.update { it.copy(ageInput = value, ageError = error, dosageResult = null) }
     }
 
-    // -------------------------------------------------------------------------
-    // Azione principale: Calcolo dose
-    // -------------------------------------------------------------------------
-
-    /**
-     * Esegue il calcolo della dose con i dati attuali dello stato.
-     *
-     * Il calcolo avviene su [Dispatchers.Default] per non bloccare il main thread,
-     * poi il risultato viene emesso sullo stato (sempre sul main thread tramite update).
-     * Per calcoli semplici come questo è un over-engineering, ma è la best practice
-     * corretta per operazioni potenzialmente intensive.
-     */
     fun calculateDosage() {
         val state = _uiState.value
-        val drug = state.selectedDrug ?: return  // guard: non dovrebbe succedere
+        val drug = state.selectedDrug ?: return  
 
         viewModelScope.launch {
             _uiState.update { it.copy(isCalculating = true, dosageResult = null) }
@@ -153,6 +138,23 @@ class CalculatorViewModel @Inject constructor(
                 calculateDosageUseCase(drug, patientData)
             }
 
+            if (result is DosageResult.Success) {
+                val record = HistoryRecord(
+                    id = "",
+                    patientId = state.selectedPatient?.id,
+                    drugId = drug.id,
+                    drugName = drug.name,
+                    date = LocalDateTime.now(),
+                    weightKg = state.weightInput.toFloatOrNull() ?: 0f,
+                    heightCm = state.heightInput.toFloatOrNull(),
+                    ageYears = state.ageInput.toIntOrNull() ?: 0,
+                    calculatedDose = result.totalDose,
+                    doseUnit = result.unit,
+                    notes = null
+                )
+                manageHistoryUseCase.saveHistoryRecord(record)
+            }
+
             _uiState.update { it.copy(
                 isCalculating = false,
                 dosageResult  = result
@@ -160,10 +162,10 @@ class CalculatorViewModel @Inject constructor(
         }
     }
 
-    /** Resetta completamente il flusso per iniziare un nuovo calcolo */
     fun resetCalculation() {
         _uiState.update { it.copy(
             selectedDrug  = null,
+            selectedPatient = null,
             weightInput   = "",
             heightInput   = "",
             ageInput      = "",
@@ -174,16 +176,8 @@ class CalculatorViewModel @Inject constructor(
         )}
     }
 
-    // -------------------------------------------------------------------------
-    // Utility privata
-    // -------------------------------------------------------------------------
-
-    /**
-     * Valida che un campo di testo contenga un numero Double nel range atteso.
-     * @return messaggio di errore, o null se il campo è valido (o vuoto)
-     */
     private fun validateNumericField(value: String, min: Double, max: Double, fieldName: String): String? {
-        if (value.isBlank()) return null  // campo vuoto = non ancora compilato, non è un errore
+        if (value.isBlank()) return null  
 
         val number = value.toDoubleOrNull()
         return when {

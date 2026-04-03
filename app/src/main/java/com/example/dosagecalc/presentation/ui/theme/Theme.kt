@@ -1,7 +1,6 @@
 package com.example.dosagecalc.presentation.ui.theme
 
 import android.os.Build
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.dynamicDarkColorScheme
@@ -11,7 +10,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 
-// Light scheme: navy palette + warm cream — consistent across all devices
 private val LightColorScheme = lightColorScheme(
     primary              = Purple40,
     onPrimary            = Color.White,
@@ -23,7 +21,6 @@ private val LightColorScheme = lightColorScheme(
     secondaryContainer   = Teal90,
     onSecondaryContainer = Teal30,
 
-    // Warm amber: used for accents and badges
     tertiary             = Amber40,
     onTertiary           = Color.White,
     tertiaryContainer    = Amber90,
@@ -34,7 +31,6 @@ private val LightColorScheme = lightColorScheme(
     errorContainer       = Error90,
     onErrorContainer     = Color(0xFF410002),
 
-    // Cream background: avoids the cold "clinical" pure white
     background           = WarmWhite,
     onBackground         = DarkInk,
     surface              = Color.White,
@@ -73,15 +69,9 @@ private val DarkColorScheme = darkColorScheme(
     onSurfaceVariant     = WarmGray,
 )
 
-/**
- * Main app theme.
- *
- * Dynamic color DISABLED by default: the custom medical palette
- * must be consistent across all devices, regardless of wallpaper.
- */
 @Composable
 fun DosageCalcTheme(
-    darkTheme: Boolean = true, // isSystemInDarkTheme(), Force Dark Mode as requested
+    darkTheme: Boolean = true, 
     dynamicColor: Boolean = false,
     content: @Composable () -> Unit
 ) {

@@ -1,4 +1,4 @@
-package com.example.dosagecalc.presentation.calculator.screen
+package com.example.dosagecalc.presentation.calculator.components
 
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -69,4 +69,3 @@ fun PatientInputField(
         Text(hintMessage, color = MaterialTheme.colorScheme.onSurfaceVariant, style = MaterialTheme.typography.bodySmall)
     }
 }
-

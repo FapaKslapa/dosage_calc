@@ -8,16 +8,10 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.navigationBarsPadding
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.statusBarsPadding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
@@ -25,21 +19,24 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExposedDropdownMenuBox
+import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.Slider
-import androidx.compose.material3.SliderDefaults
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
@@ -47,7 +44,11 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.dosagecalc.domain.model.FormulaType
 import com.example.dosagecalc.presentation.calculator.CalculatorViewModel
+import com.example.dosagecalc.presentation.calculator.components.PatientInputField
+import com.example.dosagecalc.presentation.ui.components.GradientBottomBar
+import com.example.dosagecalc.presentation.ui.components.GradientScreenHeader
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PatientInputScreen(
     viewModel: CalculatorViewModel,
@@ -70,29 +71,12 @@ fun PatientInputScreen(
                 .fillMaxSize()
                 .verticalScroll(rememberScrollState())
         ) {
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .clip(RoundedCornerShape(bottomStart = 40.dp, bottomEnd = 40.dp))
-                    .background(
-                        Brush.verticalGradient(
-                            colors = listOf(
-                                MaterialTheme.colorScheme.primary,
-                                MaterialTheme.colorScheme.primaryContainer
-                            )
-                        )
-                    )
-                    .statusBarsPadding()
-                    .padding(bottom = 28.dp)
-            ) {
-                Box(
-                    modifier = Modifier
-                        .size(140.dp)
-                        .align(Alignment.TopEnd)
-                        .offset(x = 36.dp, y = (-20).dp)
-                        .background(Color.White.copy(alpha = 0.07f), CircleShape)
+            GradientScreenHeader(
+                colors = listOf(
+                    MaterialTheme.colorScheme.primary,
+                    MaterialTheme.colorScheme.primaryContainer
                 )
-
+            ) {
                 Column {
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
@@ -135,6 +119,49 @@ fun PatientInputScreen(
                     .padding(bottom = 100.dp)
             ) {
                 Spacer(modifier = Modifier.height(20.dp))
+
+                if (uiState.savedPatients.isNotEmpty()) {
+                    var expanded by remember { mutableStateOf(false) }
+
+                    ExposedDropdownMenuBox(
+                        expanded = expanded,
+                        onExpandedChange = { expanded = it },
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        OutlinedTextField(
+                            value = uiState.selectedPatient?.let { "${it.name} ${it.surname}" } ?: "Calcolo Anonimo",
+                            onValueChange = {},
+                            readOnly = true,
+                            label = { Text("Seleziona Paziente (Opzionale)") },
+                            trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
+                            colors = OutlinedTextFieldDefaults.colors(),
+                            modifier = Modifier.menuAnchor().fillMaxWidth(),
+                            shape = RoundedCornerShape(16.dp)
+                        )
+                        ExposedDropdownMenu(
+                            expanded = expanded,
+                            onDismissRequest = { expanded = false }
+                        ) {
+                            DropdownMenuItem(
+                                text = { Text("Calcolo Anonimo (Nuovo)", style = MaterialTheme.typography.bodyLarge) },
+                                onClick = {
+                                    viewModel.onPatientSelected(null)
+                                    expanded = false
+                                }
+                            )
+                            uiState.savedPatients.forEach { patient ->
+                                DropdownMenuItem(
+                                    text = { Text("${patient.name} ${patient.surname}", style = MaterialTheme.typography.bodyLarge) },
+                                    onClick = {
+                                        viewModel.onPatientSelected(patient)
+                                        expanded = false
+                                    }
+                                )
+                            }
+                        }
+                    }
+                    Spacer(modifier = Modifier.height(16.dp))
+                }
 
                 Card(
                     modifier  = Modifier.fillMaxWidth(),
@@ -214,20 +241,8 @@ fun PatientInputScreen(
             }
         }
 
-        Box(
-            modifier = Modifier
-                .align(Alignment.BottomCenter)
-                .fillMaxWidth()
-                .background(
-                    brush = Brush.verticalGradient(
-                        colors = listOf(
-                            MaterialTheme.colorScheme.background.copy(alpha = 0f),
-                            MaterialTheme.colorScheme.background
-                        )
-                    )
-                )
-                .navigationBarsPadding()
-                .padding(horizontal = 20.dp, vertical = 16.dp)
+        GradientBottomBar(
+            modifier = Modifier.align(Alignment.BottomCenter)
         ) {
             Button(
                 onClick  = viewModel::calculateDosage,
