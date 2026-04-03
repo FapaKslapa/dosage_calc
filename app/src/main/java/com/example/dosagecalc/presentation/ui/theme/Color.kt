@@ -2,28 +2,33 @@ package com.example.dosagecalc.presentation.ui.theme
 
 import androidx.compose.ui.graphics.Color
 
-// Palette primaria: blu-teal medicale, evoca professionalità e fiducia
-val Blue10  = Color(0xFF001F3F)
-val Blue20  = Color(0xFF003865)
-val Blue40  = Color(0xFF006494)
-val Blue80  = Color(0xFF92CEFF)
-val Blue90  = Color(0xFFCCE5FF)
+// Primary palette: vibrant and creative purple
+val Purple20 = Color(0xFF2D1B63)
+val Purple40 = Color(0xFF6760F6)  // Requested primary
+val Purple80 = Color(0xFFCFBCFE)  // Requested light
+val Purple90 = Color(0xFFE8DEFF)
 
-// Accento secondario: teal per elementi interattivi
-val Teal40  = Color(0xFF00707A)
-val Teal80  = Color(0xFF53D8E5)
-val Teal90  = Color(0xFFB2EBF2)
+// Teal — secondary interactive elements
+val Teal30  = Color(0xFF0E6B64)
+val Teal40  = Color(0xFF148F84)
+val Teal80  = Color(0xFF78D5CE)
+val Teal90  = Color(0xFFB8EAE7)
 
-// Alert/warning: arancio per avvisi clinici (mai rosso puro in contesto medico)
-val Warning40 = Color(0xFFB45309)
-val Warning80 = Color(0xFFFBBF24)
-val Warning90 = Color(0xFFFEF3C7)
+// Warm amber — accent for serif titles
+val Amber40 = Color(0xFF9B6C1A)
+val Amber80 = Color(0xFFD9A84C)
+val Amber90 = Color(0xFFF5E6C8)
 
-// Error: per errori di validazione
+// Error — critical clinical validation and warnings
 val Error40 = Color(0xFFBA1A1A)
 val Error90 = Color(0xFFFFDAD6)
 
-// Neutri
-val Neutral10 = Color(0xFF1A1C1E)
-val Neutral90 = Color(0xFFE2E2E5)
-val Neutral99 = Color(0xFFFCFCFF)
+// Warm surfaces — cream background instead of cold hospital white
+val WarmWhite = Color(0xFFFAF7F2)
+val WarmGray  = Color(0xFFEFE9E1)
+val DarkBackground = Color(0xFF121212)
+val DarkSurface = Color(0xFF1E1E1E)
+val DarkSurfaceVariant = Color(0xFF2D2D2D)
+val DarkInk   = Color(0xFF1C1B1F)
+val MediumInk = Color(0xFF49454F)
+val LightInk  = Color(0xFF6B6560)

@@ -8,69 +8,87 @@ import androidx.compose.material3.dynamicDarkColorScheme
 import androidx.compose.material3.dynamicLightColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 
-// Schema colori chiaro (default)
+// Light scheme: navy palette + warm cream — consistent across all devices
 private val LightColorScheme = lightColorScheme(
-    primary          = Blue40,
-    onPrimary        = Neutral99,
-    primaryContainer = Blue90,
-    onPrimaryContainer = Blue10,
+    primary              = Purple40,
+    onPrimary            = Color.White,
+    primaryContainer     = Purple90,
+    onPrimaryContainer   = Purple20,
 
-    secondary        = Teal40,
-    onSecondary      = Neutral99,
-    secondaryContainer = Teal90,
-    onSecondaryContainer = Blue10,
+    secondary            = Teal40,
+    onSecondary          = Color.White,
+    secondaryContainer   = Teal90,
+    onSecondaryContainer = Teal30,
 
-    error            = Error40,
-    errorContainer   = Error90,
+    // Warm amber: used for accents and badges
+    tertiary             = Amber40,
+    onTertiary           = Color.White,
+    tertiaryContainer    = Amber90,
+    onTertiaryContainer  = Color(0xFF3B2800),
 
-    background       = Neutral99,
-    onBackground     = Neutral10,
-    surface          = Neutral99,
-    onSurface        = Neutral10,
-    surfaceVariant   = Neutral90,
+    error                = Error40,
+    onError              = Color.White,
+    errorContainer       = Error90,
+    onErrorContainer     = Color(0xFF410002),
+
+    // Cream background: avoids the cold "clinical" pure white
+    background           = WarmWhite,
+    onBackground         = DarkInk,
+    surface              = Color.White,
+    onSurface            = DarkInk,
+    surfaceVariant       = WarmGray,
+    onSurfaceVariant     = MediumInk,
+    outline              = Color(0xFFB8B0A6),
 )
 
-// Schema colori scuro
 private val DarkColorScheme = darkColorScheme(
-    primary          = Blue80,
-    onPrimary        = Blue20,
-    primaryContainer = Blue10,
-    onPrimaryContainer = Blue90,
+    primary              = Purple80,
+    onPrimary            = Purple20,
+    primaryContainer     = Purple40,
+    onPrimaryContainer   = Purple90,
 
-    secondary        = Teal80,
-    onSecondary      = Blue10,
-    secondaryContainer = Teal40,
+    secondary            = Teal80,
+    onSecondary          = Teal30,
+    secondaryContainer   = Teal40,
     onSecondaryContainer = Teal90,
 
-    error            = Error90,
-    errorContainer   = Error40,
+    tertiary             = Amber80,
+    onTertiary           = Color(0xFF3B2800),
+    tertiaryContainer    = Amber40,
+    onTertiaryContainer  = Amber90,
 
-    background       = Neutral10,
-    onBackground     = Neutral90,
-    surface          = Neutral10,
-    onSurface        = Neutral90,
+    error                = Error90,
+    onError              = Color(0xFF690005),
+    errorContainer       = Error40,
+    onErrorContainer     = Error90,
+
+    background           = DarkBackground,
+    onBackground         = WarmWhite,
+    surface              = DarkSurface,
+    onSurface            = WarmWhite,
+    surfaceVariant       = DarkSurfaceVariant,
+    onSurfaceVariant     = WarmGray,
 )
 
 /**
- * Tema principale dell'app.
+ * Main app theme.
  *
- * Supporta Dynamic Color (Android 12+) per adattarsi al wallpaper dell'utente,
- * con fallback al tema medicale blu-teal su versioni precedenti.
+ * Dynamic color DISABLED by default: the custom medical palette
+ * must be consistent across all devices, regardless of wallpaper.
  */
 @Composable
 fun DosageCalcTheme(
-    darkTheme: Boolean = isSystemInDarkTheme(),
-    // Dynamic color disponibile solo su Android 12+
-    dynamicColor: Boolean = true,
+    darkTheme: Boolean = true, // isSystemInDarkTheme(), Force Dark Mode as requested
+    dynamicColor: Boolean = false,
     content: @Composable () -> Unit
 ) {
     val colorScheme = when {
         dynamicColor && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S -> {
             val context = LocalContext.current
-            if (darkTheme) dynamicDarkColorScheme(context)
-            else dynamicLightColorScheme(context)
+            if (darkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
         }
         darkTheme -> DarkColorScheme
         else      -> LightColorScheme
