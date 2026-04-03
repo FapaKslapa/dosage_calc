@@ -107,6 +107,11 @@ dependencies {
     implementation(libs.androidx.paging.runtime)
     implementation(libs.androidx.paging.compose)
 
+    // --- WorkManager & Hilt Work ---
+    implementation(libs.androidx.work.runtime.ktx)
+    implementation(libs.androidx.hilt.work)
+    ksp(libs.androidx.hilt.compiler)
+
     // --- Coroutine (per operazioni asincrone: lettura file, calcoli su IO dispatcher) ---
     implementation(libs.kotlinx.coroutines.android)
 

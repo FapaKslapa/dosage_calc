@@ -5,12 +5,15 @@ import androidx.room.Room
 import com.example.dosagecalc.data.AppDatabase
 import com.example.dosagecalc.data.datasource.HistoryDao
 import com.example.dosagecalc.data.datasource.PatientDao
+import com.example.dosagecalc.data.datasource.ReminderDao
 import com.example.dosagecalc.data.repository.DrugRepositoryImpl
 import com.example.dosagecalc.data.repository.HistoryRepositoryImpl
 import com.example.dosagecalc.data.repository.PatientRepositoryImpl
+import com.example.dosagecalc.data.repository.ReminderRepositoryImpl
 import com.example.dosagecalc.domain.repository.DrugRepository
 import com.example.dosagecalc.domain.repository.HistoryRepository
 import com.example.dosagecalc.domain.repository.PatientRepository
+import com.example.dosagecalc.domain.repository.ReminderRepository
 import dagger.Binds
 import dagger.Module
 import dagger.Provides
@@ -62,6 +65,17 @@ abstract class DataModule {
         @Singleton
         fun provideHistoryRepository(historyDao: HistoryDao): HistoryRepository {
             return HistoryRepositoryImpl(historyDao)
+        }
+
+        @Provides
+        fun provideReminderDao(database: AppDatabase): ReminderDao {
+            return database.reminderDao()
+        }
+
+        @Provides
+        @Singleton
+        fun provideReminderRepository(reminderDao: ReminderDao): ReminderRepository {
+            return ReminderRepositoryImpl(reminderDao)
         }
     }
 }

@@ -1,6 +1,10 @@
 package com.example.dosagecalc.presentation.calculator.screen
 
+import android.Manifest
+import android.os.Build
 import android.widget.Toast
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -17,14 +21,19 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.Share
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -36,9 +45,11 @@ import com.example.dosagecalc.presentation.calculator.components.AlertCard
 import com.example.dosagecalc.presentation.calculator.components.DetailsCard
 import com.example.dosagecalc.presentation.calculator.components.DisclaimerCard
 import com.example.dosagecalc.presentation.calculator.components.ErrorHeader
+import com.example.dosagecalc.presentation.calculator.components.RemindersSheet
 import com.example.dosagecalc.presentation.calculator.components.SuccessHeader
 import com.example.dosagecalc.presentation.ui.components.GradientBottomBar
 import com.example.dosagecalc.presentation.utils.PdfManager
+import com.example.dosagecalc.presentation.utils.ReminderManager
 
 @Composable
 fun DosageResultScreen(
@@ -50,6 +61,18 @@ fun DosageResultScreen(
 
     val context = LocalContext.current
     val canExportPdf = result is DosageResult.Success && uiState.selectedDrug != null
+
+    var showReminderSheet by remember { mutableStateOf(false) }
+
+    val permissionLauncher = rememberLauncherForActivityResult(
+        ActivityResultContracts.RequestPermission()
+    ) { isGranted ->
+        if (isGranted) {
+            showReminderSheet = true
+        } else {
+            Toast.makeText(context, "Permesso notifiche negato", Toast.LENGTH_SHORT).show()
+        }
+    }
 
     Column(modifier = Modifier.fillMaxSize()) {
         Box(
@@ -84,14 +107,18 @@ fun DosageResultScreen(
                             if (uiState.selectedPatient != null) {
                                 OutlinedButton(
                                     onClick = {
-                                        Toast.makeText(context, "Il calendario in-app sarà disponibile a breve!", Toast.LENGTH_SHORT).show()
+                                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                                            permissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
+                                        } else {
+                                            showReminderSheet = true
+                                        }
                                     },
                                     modifier = Modifier.weight(1f),
                                     shape = RoundedCornerShape(12.dp)
                                 ) {
-                                    Icon(Icons.Default.DateRange, contentDescription = "Calendario")
+                                    Icon(Icons.Default.DateRange, contentDescription = "Promemoria")
                                     Spacer(modifier = Modifier.width(8.dp))
-                                    Text("Agenda")
+                                    Text("Promemoria")
                                 }
                             }
                             
@@ -124,6 +151,14 @@ fun DosageResultScreen(
 
                     DisclaimerCard()
                 }
+            }
+
+            if (showReminderSheet) {
+                RemindersSheet(
+                    context = context,
+                    drugName = uiState.selectedDrug?.name,
+                    onDismissRequest = { showReminderSheet = false }
+                )
             }
 
             GradientBottomBar(
