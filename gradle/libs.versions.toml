@@ -1,5 +1,3 @@
-# Version Catalog - unica fonte di verità per tutte le dipendenze del progetto.
-# Aggiornare le versioni qui si propaga automaticamente a tutti i moduli.
 [versions]
 agp                     = "8.4.2"
 kotlin                  = "2.0.0"
