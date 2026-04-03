@@ -126,62 +126,7 @@ fun DrugSelectionScreen(
             }
 
             // ── Shortcuts Cards (Patients, Calendar) ──────────────────────────
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 20.dp)
-                    .offset(y = (-30).dp)
-            ) {
-                Card(
-                    modifier = Modifier
-                        .weight(1f)
-                        .height(110.dp),
-                    shape = RoundedCornerShape(topStart = 8.dp, topEnd = 32.dp, bottomEnd = 8.dp, bottomStart = 32.dp),
-                    colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.secondaryContainer),
-                    elevation = CardDefaults.cardElevation(defaultElevation = 8.dp)
-                ) {
-                    Column(
-                        modifier = Modifier.fillMaxSize().padding(16.dp),
-                        horizontalAlignment = Alignment.Start
-                    ) {
-                        Box(
-                            modifier = Modifier
-                                .background(MaterialTheme.colorScheme.secondary, CircleShape)
-                                .padding(8.dp)
-                        ) {
-                            Icon(Icons.Filled.Person, contentDescription = "Pazienti", tint = MaterialTheme.colorScheme.onSecondary, modifier = Modifier.size(20.dp))
-                        }
-                        Spacer(modifier = Modifier.weight(1f))
-                        Text("Pazienti", style = MaterialTheme.typography.titleMedium, color = MaterialTheme.colorScheme.onSecondaryContainer)
-                        Text("Cronologia", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSecondaryContainer.copy(alpha=0.7f))
-                    }
-                }
-                Spacer(modifier = Modifier.width(16.dp))
-                Card(
-                    modifier = Modifier
-                        .weight(1f)
-                        .height(110.dp),
-                    shape = RoundedCornerShape(topStart = 32.dp, topEnd = 8.dp, bottomEnd = 32.dp, bottomStart = 8.dp),
-                    colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.tertiaryContainer),
-                    elevation = CardDefaults.cardElevation(defaultElevation = 8.dp)
-                ) {
-                    Column(
-                        modifier = Modifier.fillMaxSize().padding(16.dp),
-                        horizontalAlignment = Alignment.Start
-                    ) {
-                        Box(
-                            modifier = Modifier
-                                .background(MaterialTheme.colorScheme.tertiary, CircleShape)
-                                .padding(8.dp)
-                        ) {
-                            Icon(Icons.Filled.DateRange, contentDescription = "Calendario", tint = MaterialTheme.colorScheme.onTertiary, modifier = Modifier.size(20.dp))
-                        }
-                        Spacer(modifier = Modifier.weight(1f))
-                        Text("Calendario", style = MaterialTheme.typography.titleMedium, color = MaterialTheme.colorScheme.onTertiaryContainer)
-                        Text("Prossime Dosi", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onTertiaryContainer.copy(alpha=0.7f))
-                    }
-                }
-            }
+            DashboardShortcuts()
 
             // ── Drug Selection Cards (New Calculation) ──────────────────────────
             Column(
@@ -276,6 +221,69 @@ fun DrugSelectionScreen(
                     text  = "Avanti: Dati Paziente",
                     style = MaterialTheme.typography.titleMedium
                 )
+            }
+        }
+    }
+}
+
+/**
+ * Patient and Calendar shortcut cards.
+ */
+@Composable
+private fun DashboardShortcuts() {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 20.dp)
+            .offset(y = (-30).dp)
+    ) {
+        Card(
+            modifier = Modifier
+                .weight(1f)
+                .height(110.dp),
+            shape = RoundedCornerShape(topStart = 8.dp, topEnd = 32.dp, bottomEnd = 8.dp, bottomStart = 32.dp),
+            colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.secondaryContainer),
+            elevation = CardDefaults.cardElevation(defaultElevation = 8.dp)
+        ) {
+            Column(
+                modifier = Modifier.fillMaxSize().padding(16.dp),
+                horizontalAlignment = Alignment.Start
+            ) {
+                Box(
+                    modifier = Modifier
+                        .background(MaterialTheme.colorScheme.secondary, CircleShape)
+                        .padding(8.dp)
+                ) {
+                    Icon(Icons.Filled.Person, contentDescription = "Pazienti", tint = MaterialTheme.colorScheme.onSecondary, modifier = Modifier.size(20.dp))
+                }
+                Spacer(modifier = Modifier.weight(1f))
+                Text("Pazienti", style = MaterialTheme.typography.titleMedium, color = MaterialTheme.colorScheme.onSecondaryContainer)
+                Text("Cronologia", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSecondaryContainer.copy(alpha=0.7f))
+            }
+        }
+        Spacer(modifier = Modifier.width(16.dp))
+        Card(
+            modifier = Modifier
+                .weight(1f)
+                .height(110.dp),
+            shape = RoundedCornerShape(topStart = 32.dp, topEnd = 8.dp, bottomEnd = 32.dp, bottomStart = 8.dp),
+            colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.tertiaryContainer),
+            elevation = CardDefaults.cardElevation(defaultElevation = 8.dp)
+        ) {
+            Column(
+                modifier = Modifier.fillMaxSize().padding(16.dp),
+                horizontalAlignment = Alignment.Start
+            ) {
+                Box(
+                    modifier = Modifier
+                        .background(MaterialTheme.colorScheme.tertiary, CircleShape)
+                        .padding(8.dp)
+                ) {
+                    Icon(Icons.Filled.DateRange, contentDescription = "Calendario", tint = MaterialTheme.colorScheme.onTertiary, modifier = Modifier.size(20.dp))
+                }
+                Spacer(modifier = Modifier.weight(1f))
+                Text("Calendario", style = MaterialTheme.typography.titleMedium, color = MaterialTheme.colorScheme.onTertiaryContainer)
+                Text("Prossime Dosi", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onTertiaryContainer.copy(alpha=0.7f))
             }
         }
     }
