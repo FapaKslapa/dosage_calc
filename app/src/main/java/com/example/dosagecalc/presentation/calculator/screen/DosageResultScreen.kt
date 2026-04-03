@@ -21,14 +21,12 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.Share
-import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -49,7 +47,6 @@ import com.example.dosagecalc.presentation.calculator.components.RemindersSheet
 import com.example.dosagecalc.presentation.calculator.components.SuccessHeader
 import com.example.dosagecalc.presentation.ui.components.GradientBottomBar
 import com.example.dosagecalc.presentation.utils.PdfManager
-import com.example.dosagecalc.presentation.utils.ReminderManager
 
 @Composable
 fun DosageResultScreen(
@@ -164,25 +161,27 @@ fun DosageResultScreen(
             GradientBottomBar(
                 modifier = Modifier.align(Alignment.BottomCenter)
             ) {
-                Button(
-                    onClick  = onNewCalculation,
-                    shape    = RoundedCornerShape(50),
-                    modifier = Modifier.fillMaxWidth().height(56.dp)
-                ) {
-                    Text(
-                        text  = "Nuovo Calcolo",
-                        style = MaterialTheme.typography.titleMedium
-                    )
-                }
-
-                if (result is DosageResult.ValidationError) {
-                    Spacer(modifier = Modifier.height(8.dp))
-                    FilledTonalButton(
-                        onClick  = viewModel::resetCalculation,
+                Column(modifier = Modifier.fillMaxWidth()) {
+                    Button(
+                        onClick  = onNewCalculation,
                         shape    = RoundedCornerShape(50),
-                        modifier = Modifier.fillMaxWidth().height(48.dp)
+                        modifier = Modifier.fillMaxWidth().height(56.dp)
                     ) {
-                        Text("Correggi i Dati")
+                        Text(
+                            text  = "Nuovo Calcolo",
+                            style = MaterialTheme.typography.titleMedium
+                        )
+                    }
+
+                    if (result is DosageResult.ValidationError) {
+                        Spacer(modifier = Modifier.height(8.dp))
+                        FilledTonalButton(
+                            onClick  = viewModel::resetCalculation,
+                            shape    = RoundedCornerShape(50),
+                            modifier = Modifier.fillMaxWidth().height(48.dp)
+                        ) {
+                            Text("Correggi i Dati")
+                        }
                     }
                 }
             }

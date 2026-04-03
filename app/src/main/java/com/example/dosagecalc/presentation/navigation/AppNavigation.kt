@@ -14,6 +14,8 @@ import com.example.dosagecalc.presentation.history.HistoryViewModel
 import com.example.dosagecalc.presentation.history.screen.HistoryScreen
 import com.example.dosagecalc.presentation.patient.PatientsViewModel
 import com.example.dosagecalc.presentation.patient.screen.PatientsScreen
+import com.example.dosagecalc.presentation.calculator.RemindersViewModel
+import com.example.dosagecalc.presentation.calculator.screen.RemindersScreen
 
 sealed class AppRoute(val route: String) {
     object DrugSelection  : AppRoute("drug_selection")
@@ -21,6 +23,7 @@ sealed class AppRoute(val route: String) {
     object DosageResult   : AppRoute("dosage_result")
     object PatientsList   : AppRoute("patients_list")
     object GlobalHistory  : AppRoute("global_history")
+    object Reminders      : AppRoute("reminders")
 }
 
 @Composable
@@ -46,6 +49,9 @@ fun AppNavigation(
                 },
                 onNavigateToHistory = {
                     navController.navigate(AppRoute.GlobalHistory.route)
+                },
+                onNavigateToReminders = {
+                    navController.navigate(AppRoute.Reminders.route)
                 }
             )
         }
@@ -66,6 +72,14 @@ fun AppNavigation(
             val historyViewModel: HistoryViewModel = hiltViewModel()
             HistoryScreen(
                 viewModel = historyViewModel,
+                onNavigateBack = { navController.popBackStack() }
+            )
+        }
+
+        composable(route = AppRoute.Reminders.route) {
+            val remindersViewModel: RemindersViewModel = hiltViewModel()
+            RemindersScreen(
+                viewModel = remindersViewModel,
                 onNavigateBack = { navController.popBackStack() }
             )
         }

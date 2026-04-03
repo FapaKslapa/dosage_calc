@@ -11,9 +11,9 @@ class ValidateInputUseCase @Inject constructor() {
         val errors = mutableListOf<String>()
 
         when (drug.formulaType) {
-            FormulaType.PER_KG -> {
+            FormulaType.PER_KG, FormulaType.BY_RANGE -> {
                 if (patientData.weightKg == null) {
-                    errors.add("Il peso è obbligatorio per questo farmaco (formula per kg).")
+                    errors.add("Il peso è obbligatorio per questo farmaco.")
                 }
             }
             FormulaType.PER_M2 -> {
@@ -24,7 +24,7 @@ class ValidateInputUseCase @Inject constructor() {
                     errors.add("L'altezza è obbligatoria per il calcolo del BSA.")
                 }
             }
-            FormulaType.FIXED, FormulaType.BY_RANGE -> {
+            FormulaType.FIXED -> {
 
             }
         }

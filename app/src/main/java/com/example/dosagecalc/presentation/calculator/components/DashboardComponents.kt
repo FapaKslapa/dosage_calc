@@ -13,9 +13,12 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.List
 import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.rounded.Info
@@ -36,17 +39,19 @@ import com.example.dosagecalc.domain.model.Drug
 @Composable
 fun DashboardShortcuts(
     onNavigateToPatients: () -> Unit,
-    onNavigateToHistory: () -> Unit
+    onNavigateToHistory: () -> Unit,
+    onNavigateToReminders: () -> Unit = {}
 ) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
+            .horizontalScroll(rememberScrollState())
             .padding(horizontal = 20.dp)
             .offset(y = (-30).dp)
     ) {
         Card(
             modifier = Modifier
-                .weight(1f)
+                .width(140.dp)
                 .height(110.dp),
             onClick = onNavigateToPatients,
             shape = RoundedCornerShape(topStart = 8.dp, topEnd = 32.dp, bottomEnd = 8.dp, bottomStart = 32.dp),
@@ -66,16 +71,16 @@ fun DashboardShortcuts(
                 }
                 Spacer(modifier = Modifier.weight(1f))
                 Text("Pazienti", style = MaterialTheme.typography.titleMedium, color = MaterialTheme.colorScheme.onSecondaryContainer)
-                Text("Cronologia", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSecondaryContainer.copy(alpha=0.7f))
+                Text("Anagrafica", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSecondaryContainer.copy(alpha=0.7f))
             }
         }
         Spacer(modifier = Modifier.width(16.dp))
         Card(
             modifier = Modifier
-                .weight(1f)
+                .width(140.dp)
                 .height(110.dp),
             onClick = onNavigateToHistory,
-            shape = RoundedCornerShape(topStart = 32.dp, topEnd = 8.dp, bottomEnd = 32.dp, bottomStart = 8.dp),
+            shape = RoundedCornerShape(16.dp),
             colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.tertiaryContainer),
             elevation = CardDefaults.cardElevation(defaultElevation = 8.dp)
         ) {
@@ -88,13 +93,40 @@ fun DashboardShortcuts(
                         .background(MaterialTheme.colorScheme.tertiary, CircleShape)
                         .padding(8.dp)
                 ) {
-                    Icon(Icons.Filled.DateRange, contentDescription = "Calendario", tint = MaterialTheme.colorScheme.onTertiary, modifier = Modifier.size(20.dp))
+                    Icon(Icons.AutoMirrored.Filled.List, contentDescription = "Storico", tint = MaterialTheme.colorScheme.onTertiary, modifier = Modifier.size(20.dp))
                 }
                 Spacer(modifier = Modifier.weight(1f))
-                Text("Calendario", style = MaterialTheme.typography.titleMedium, color = MaterialTheme.colorScheme.onTertiaryContainer)
-                Text("Prossime Dosi", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onTertiaryContainer.copy(alpha=0.7f))
+                Text("Storico", style = MaterialTheme.typography.titleMedium, color = MaterialTheme.colorScheme.onTertiaryContainer)
+                Text("Calcoli Passati", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onTertiaryContainer.copy(alpha=0.7f))
             }
         }
+        Spacer(modifier = Modifier.width(16.dp))
+        Card(
+            modifier = Modifier
+                .width(140.dp)
+                .height(110.dp),
+            onClick = onNavigateToReminders,
+            shape = RoundedCornerShape(topStart = 32.dp, topEnd = 8.dp, bottomEnd = 32.dp, bottomStart = 8.dp),
+            colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primaryContainer),
+            elevation = CardDefaults.cardElevation(defaultElevation = 8.dp)
+        ) {
+            Column(
+                modifier = Modifier.fillMaxSize().padding(16.dp),
+                horizontalAlignment = Alignment.Start
+            ) {
+                Box(
+                    modifier = Modifier
+                        .background(MaterialTheme.colorScheme.primary, CircleShape)
+                        .padding(8.dp)
+                ) {
+                    Icon(Icons.Filled.DateRange, contentDescription = "Calendario", tint = MaterialTheme.colorScheme.onPrimary, modifier = Modifier.size(20.dp))
+                }
+                Spacer(modifier = Modifier.weight(1f))
+                Text("Calendario", style = MaterialTheme.typography.titleMedium, color = MaterialTheme.colorScheme.onPrimaryContainer)
+                Text("Promemoria Attivi", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha=0.7f))
+            }
+        }
+        Spacer(modifier = Modifier.width(4.dp))
     }
 }
 

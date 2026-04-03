@@ -1,8 +1,9 @@
 package com.example.dosagecalc.data.model
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.example.dosagecalc.domain.model.ReminderInterval
 import com.example.dosagecalc.domain.model.Reminder
+import com.example.dosagecalc.domain.model.ReminderInterval
+
 @Entity(tableName = "reminders")
 data class ReminderEntity(
     @PrimaryKey val id: String,

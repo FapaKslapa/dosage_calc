@@ -42,7 +42,8 @@ fun DrugSelectionScreen(
     viewModel: CalculatorViewModel,
     onNavigateToInput: () -> Unit,
     onNavigateToPatients: () -> Unit,
-    onNavigateToHistory: () -> Unit
+    onNavigateToHistory: () -> Unit,
+    onNavigateToReminders: () -> Unit
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
