@@ -10,6 +10,8 @@ data class CalculatorUiState(
 
     val availableDrugs: List<Drug> = emptyList(),
 
+    val searchQuery: String = "",
+
     val loadError: String? = null,
 
     val savedPatients: List<Patient> = emptyList(),

@@ -1,6 +1,7 @@
 package com.example.dosagecalc.presentation.calculator.components
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -20,7 +21,10 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.List
 import androidx.compose.material.icons.filled.DateRange
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material.icons.rounded.Add
 import androidx.compose.material.icons.rounded.Info
 import androidx.compose.material.icons.rounded.Warning
 import androidx.compose.material3.Card
@@ -40,7 +44,8 @@ import com.example.dosagecalc.domain.model.Drug
 fun DashboardShortcuts(
     onNavigateToPatients: () -> Unit,
     onNavigateToHistory: () -> Unit,
-    onNavigateToReminders: () -> Unit = {}
+    onNavigateToReminders: () -> Unit = {},
+    onNavigateToAddData: () -> Unit = {}
 ) {
     Row(
         modifier = Modifier
@@ -106,7 +111,7 @@ fun DashboardShortcuts(
                 .width(140.dp)
                 .height(110.dp),
             onClick = onNavigateToReminders,
-            shape = RoundedCornerShape(topStart = 32.dp, topEnd = 8.dp, bottomEnd = 32.dp, bottomStart = 8.dp),
+            shape = RoundedCornerShape(16.dp),
             colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primaryContainer),
             elevation = CardDefaults.cardElevation(defaultElevation = 8.dp)
         ) {
@@ -126,6 +131,32 @@ fun DashboardShortcuts(
                 Text("Promemoria Attivi", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha=0.7f))
             }
         }
+        Spacer(modifier = Modifier.width(16.dp))
+        Card(
+            modifier = Modifier
+                .width(140.dp)
+                .height(110.dp),
+            onClick = onNavigateToAddData,
+            shape = RoundedCornerShape(topStart = 32.dp, topEnd = 8.dp, bottomEnd = 32.dp, bottomStart = 8.dp),
+            colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.errorContainer),
+            elevation = CardDefaults.cardElevation(defaultElevation = 8.dp)
+        ) {
+            Column(
+                modifier = Modifier.fillMaxSize().padding(16.dp),
+                horizontalAlignment = Alignment.Start
+            ) {
+                Box(
+                    modifier = Modifier
+                        .background(MaterialTheme.colorScheme.error, CircleShape)
+                        .padding(8.dp)
+                ) {
+                    Icon(Icons.Rounded.Add, contentDescription = "Nuovo", tint = MaterialTheme.colorScheme.onError, modifier = Modifier.size(20.dp))
+                }
+                Spacer(modifier = Modifier.weight(1f))
+                Text("Nuovo", style = MaterialTheme.typography.titleMedium, color = MaterialTheme.colorScheme.onErrorContainer)
+                Text("Aggiungi Farmaco", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onErrorContainer.copy(alpha=0.7f))
+            }
+        }
         Spacer(modifier = Modifier.width(4.dp))
     }
 }
@@ -134,19 +165,19 @@ fun DashboardShortcuts(
 fun DrugSelectionCard(
     drug: Drug,
     isSelected: Boolean,
-    onClick: () -> Unit
+    onClick: () -> Unit,
+    onDeleteClick: (() -> Unit)? = null,
+    onEditClick: (() -> Unit)? = null
 ) {
     val borderColor = if (isSelected) MaterialTheme.colorScheme.primary else Color.Transparent
-    val backgroundColor = if (isSelected) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.surfaceVariant
 
     Card(
-        onClick = onClick,
         modifier = Modifier
-            .width(220.dp)
+            .width(260.dp)
             .wrapContentHeight()
-            .padding(vertical = 8.dp),
+            .clickable { onClick() },
         shape = RoundedCornerShape(20.dp),
-        colors = CardDefaults.cardColors(containerColor = backgroundColor),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant),
         elevation = CardDefaults.cardElevation(defaultElevation = if (isSelected) 8.dp else 2.dp),
         border = androidx.compose.foundation.BorderStroke(2.dp, borderColor)
     ) {
@@ -165,7 +196,7 @@ fun DrugSelectionCard(
                     )
                 }
                 Spacer(modifier = Modifier.width(12.dp))
-                Column {
+                Column(modifier = Modifier.weight(1f)) {
                     Text(
                         text = drug.name,
                         style = MaterialTheme.typography.titleMedium,
@@ -178,6 +209,34 @@ fun DrugSelectionCard(
                         style = MaterialTheme.typography.labelSmall,
                         color = if (isSelected) MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.8f) else MaterialTheme.colorScheme.onSurfaceVariant,
                     )
+                }
+                
+                if (onEditClick != null) {
+                    androidx.compose.material3.IconButton(
+                        onClick = onEditClick,
+                        modifier = Modifier.size(32.dp)
+                    ) {
+                        Icon(
+                            Icons.Default.Edit,
+                            contentDescription = "Modifica",
+                            tint = MaterialTheme.colorScheme.primary,
+                            modifier = Modifier.size(20.dp)
+                        )
+                    }
+                }
+
+                if (onDeleteClick != null) {
+                    androidx.compose.material3.IconButton(
+                        onClick = onDeleteClick,
+                        modifier = Modifier.size(32.dp)
+                    ) {
+                        Icon(
+                            Icons.Default.Delete,
+                            contentDescription = "Elimina",
+                            tint = MaterialTheme.colorScheme.error,
+                            modifier = Modifier.size(20.dp)
+                        )
+                    }
                 }
             }
             Spacer(modifier = Modifier.height(16.dp))

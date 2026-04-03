@@ -6,6 +6,8 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
+import androidx.navigation.NavType
 import com.example.dosagecalc.presentation.calculator.CalculatorViewModel
 import com.example.dosagecalc.presentation.calculator.screen.DosageResultScreen
 import com.example.dosagecalc.presentation.calculator.screen.DrugSelectionScreen
@@ -16,6 +18,7 @@ import com.example.dosagecalc.presentation.patient.PatientsViewModel
 import com.example.dosagecalc.presentation.patient.screen.PatientsScreen
 import com.example.dosagecalc.presentation.calculator.RemindersViewModel
 import com.example.dosagecalc.presentation.calculator.screen.RemindersScreen
+import com.example.dosagecalc.presentation.calculator.screen.AddDataScreen
 
 sealed class AppRoute(val route: String) {
     object DrugSelection  : AppRoute("drug_selection")
@@ -24,6 +27,7 @@ sealed class AppRoute(val route: String) {
     object PatientsList   : AppRoute("patients_list")
     object GlobalHistory  : AppRoute("global_history")
     object Reminders      : AppRoute("reminders")
+    object AddData        : AppRoute("add_data")
 }
 
 @Composable
@@ -52,6 +56,13 @@ fun AppNavigation(
                 },
                 onNavigateToReminders = {
                     navController.navigate(AppRoute.Reminders.route)
+                },
+                onNavigateToAddData = { drugId ->
+                    if (drugId != null) {
+                        navController.navigate(AppRoute.AddData.route + "?drugId=$drugId")
+                    } else {
+                        navController.navigate(AppRoute.AddData.route)
+                    }
                 }
             )
         }
@@ -80,6 +91,17 @@ fun AppNavigation(
             val remindersViewModel: RemindersViewModel = hiltViewModel()
             RemindersScreen(
                 viewModel = remindersViewModel,
+                onNavigateBack = { navController.popBackStack() }
+            )
+        }
+
+        composable(
+            route = AppRoute.AddData.route + "?drugId={drugId}",
+            arguments = listOf(navArgument("drugId") { type = NavType.StringType; nullable = true })
+        ) { backStackEntry ->
+            val drugId = backStackEntry.arguments?.getString("drugId")
+            AddDataScreen(
+                drugId = drugId,
                 onNavigateBack = { navController.popBackStack() }
             )
         }

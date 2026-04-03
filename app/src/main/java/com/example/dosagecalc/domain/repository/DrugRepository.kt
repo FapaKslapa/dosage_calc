@@ -8,4 +8,8 @@ interface DrugRepository {
     fun getDrugs(): Flow<List<Drug>>
 
     suspend fun getDrugById(id: String): Drug?
+
+    suspend fun addCustomDrug(drug: Drug)
+
+    suspend fun deleteCustomDrug(id: String)
 }

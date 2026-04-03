@@ -69,6 +69,10 @@ class CalculatorViewModel @Inject constructor(
         }
     }
 
+    fun onSearchQueryChanged(query: String) {
+        _uiState.update { it.copy(searchQuery = query) }
+    }
+
     fun onDrugSelected(drug: Drug) {
         _uiState.update { it.copy(
             selectedDrug  = drug,
@@ -122,6 +126,14 @@ class CalculatorViewModel @Inject constructor(
             }
         }
         _uiState.update { it.copy(ageInput = value, ageError = error, dosageResult = null) }
+    }
+
+    fun deleteCustomDrug(id: String) {
+        viewModelScope.launch {
+            drugRepository.deleteCustomDrug(id)
+            // Need to reload drugs if not reacting via flow automatically.
+            // Wait, getDrugs() returns a flow! So it updates automatically.
+        }
     }
 
     fun onRenalImpairmentChanged(checked: Boolean) {

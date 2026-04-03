@@ -17,18 +17,27 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Icon
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Search
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.dosagecalc.presentation.calculator.CalculatorViewModel
 import com.example.dosagecalc.presentation.calculator.components.DashboardShortcuts
@@ -43,9 +52,11 @@ fun DrugSelectionScreen(
     onNavigateToInput: () -> Unit,
     onNavigateToPatients: () -> Unit,
     onNavigateToHistory: () -> Unit,
-    onNavigateToReminders: () -> Unit
+    onNavigateToReminders: () -> Unit,
+    onNavigateToAddData: (String?) -> Unit
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    var drugToDelete by remember { mutableStateOf<com.example.dosagecalc.domain.model.Drug?>(null) }
 
     Box(
         modifier = Modifier
@@ -93,7 +104,9 @@ fun DrugSelectionScreen(
 
             DashboardShortcuts(
                 onNavigateToPatients = onNavigateToPatients,
-                onNavigateToHistory = onNavigateToHistory
+                onNavigateToHistory = onNavigateToHistory,
+                onNavigateToReminders = onNavigateToReminders,
+                onNavigateToAddData = { onNavigateToAddData(null) }
             )
 
             Column(
@@ -106,6 +119,19 @@ fun DrugSelectionScreen(
                     style = MaterialTheme.typography.titleLarge.copy(fontFamily = androidx.compose.ui.text.font.FontFamily.Serif),
                     color = MaterialTheme.colorScheme.onBackground,
                     modifier = Modifier.padding(horizontal = 20.dp)
+                )
+                Spacer(modifier = Modifier.height(8.dp))
+
+                OutlinedTextField(
+                    value = uiState.searchQuery,
+                    onValueChange = { viewModel.onSearchQueryChanged(it) },
+                    placeholder = { Text("Cerca farmaco...") },
+                    leadingIcon = { Icon(Icons.Default.Search, contentDescription = "Cerca") },
+                    shape = RoundedCornerShape(12.dp),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 20.dp),
+                    singleLine = true
                 )
                 Spacer(modifier = Modifier.height(16.dp))
 
@@ -129,15 +155,26 @@ fun DrugSelectionScreen(
                         )
                     }
                     else -> {
+                        val filteredDrugs = uiState.availableDrugs.filter {
+                            it.name.contains(uiState.searchQuery, ignoreCase = true) ||
+                            it.indication.contains(uiState.searchQuery, ignoreCase = true)
+                        }
+
                         LazyRow(
                             modifier = Modifier.fillMaxWidth()
                         ) {
                             item { Spacer(modifier = Modifier.width(20.dp)) }
-                            items(uiState.availableDrugs) { drug ->
+                            items(filteredDrugs) { drug ->
                                 DrugSelectionCard(
                                     drug = drug,
                                     isSelected = uiState.selectedDrug == drug,
-                                    onClick = { viewModel.onDrugSelected(drug) }
+                                    onClick = { viewModel.onDrugSelected(drug) },
+                                    onDeleteClick = if (drug.id.startsWith("custom_")) {
+                                        { drugToDelete = drug }
+                                    } else null,
+                                    onEditClick = if (drug.id.startsWith("custom_")) {
+                                        { onNavigateToAddData(drug.id) }
+                                    } else null
                                 )
                                 Spacer(modifier = Modifier.width(16.dp))
                             }
@@ -153,6 +190,30 @@ fun DrugSelectionScreen(
                     }
                 }
             }
+        }
+
+        if (drugToDelete != null) {
+            AlertDialog(
+                onDismissRequest = { drugToDelete = null },
+                title = { Text("Eliminare ${drugToDelete?.name}?") },
+                text = { Text("Sei sicuro di voler eliminare definitivamente questo farmaco personalizzato?") },
+                confirmButton = {
+                    TextButton(onClick = {
+                        val id = drugToDelete?.id
+                        if (id != null) {
+                            viewModel.deleteCustomDrug(id)
+                        }
+                        drugToDelete = null
+                    }) {
+                        Text("Elimina", color = MaterialTheme.colorScheme.error)
+                    }
+                },
+                dismissButton = {
+                    TextButton(onClick = { drugToDelete = null }) {
+                        Text("Annulla")
+                    }
+                }
+            )
         }
 
         GradientBottomBar(
