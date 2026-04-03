@@ -30,7 +30,9 @@ data class HistoryEntity(
     val heightCm: Float?,
     val ageYears: Int,
     val calculatedDose: Double,
+    val calculatedDoseMax: Double? = null,
     val doseUnit: String,
+    val formulaUsed: String? = null,
     val notes: String?
 )
 

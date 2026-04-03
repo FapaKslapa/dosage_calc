@@ -29,13 +29,31 @@ class CalculateDosageUseCase @Inject constructor(
 
             FormulaType.FIXED -> calculateFixed(drug)
 
-            FormulaType.BY_RANGE -> {
-
-                DosageResult.Error(
-                    "La formula BY_RANGE non è ancora supportata per ${drug.name}."
-                )
-            }
+            FormulaType.BY_RANGE -> calculateByRange(drug, patientData)
         }
+    }
+
+    private fun calculateByRange(drug: Drug, patientData: PatientData): DosageResult {
+        val weight = patientData.weightKg!! 
+        val rawMinDose = drug.unitDose * weight
+        val rawMaxDose = (drug.unitDoseMax ?: drug.unitDose) * weight
+
+        val (finalMin, cappedMin) = applyCeiling(rawMinDose, drug.maxSingleDoseMcg)
+        val (finalMax, cappedMax) = applyCeiling(rawMaxDose, drug.maxSingleDoseMcg)
+
+        val capped = cappedMin || cappedMax
+        val formula = "Intervallo: ${drug.unitDose} - ${drug.unitDoseMax ?: drug.unitDose} ${drug.unit}/kg × $weight kg = $finalMin - $finalMax ${drug.unit}" +
+                if (capped) " (ridotta al massimo consentito)" else ""
+
+        return DosageResult.Success(
+            totalDose       = finalMin,
+            totalDoseMax    = finalMax,
+            unit            = drug.unit,
+            formula         = formula,
+            alert           = drug.alert,
+            source          = drug.source,
+            cappedToMaxDose = capped
+        )
     }
 
     private fun calculatePerKg(drug: Drug, patientData: PatientData): DosageResult {

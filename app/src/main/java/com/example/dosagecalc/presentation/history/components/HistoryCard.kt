@@ -88,12 +88,28 @@ fun HistoryCard(
                         color = MaterialTheme.colorScheme.onSurface
                     )
                     Spacer(modifier = Modifier.height(4.dp))
+
+                    val doseText = if (record.calculatedDoseMax != null) {
+                        "${String.format("%.2f", record.calculatedDose)} - ${String.format("%.2f", record.calculatedDoseMax)} ${record.doseUnit}"
+                    } else {
+                        "${String.format("%.2f", record.calculatedDose)} ${record.doseUnit}"
+                    }
+
                     Text(
-                        text = "${record.calculatedDose} ${record.doseUnit}",
+                        text = doseText,
                         style = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.Bold),
                         color = MaterialTheme.colorScheme.tertiary
                     )
                 }
+            }
+            if (!record.formulaUsed.isNullOrBlank()) {
+                Spacer(modifier = Modifier.height(8.dp))
+                Text(
+                    text = "Formula: ${record.formulaUsed}",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.padding(start = 64.dp)
+                )
             }
             Spacer(modifier = Modifier.height(16.dp))
             HorizontalDivider(color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.1f))

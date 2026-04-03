@@ -61,8 +61,14 @@ fun SuccessHeader(result: DosageResult.Success, drugLabel: String?) {
 
             Spacer(modifier = Modifier.height(16.dp))
 
+            val rangeText = if (result.totalDoseMax != null) {
+                "${formatDose(result.totalDose)} - ${formatDose(result.totalDoseMax)}"
+            } else {
+                formatDose(result.totalDose)
+            }
+
             Text(
-                text       = formatDose(result.totalDose),
+                text       = rangeText,
                 fontSize   = 54.sp,
                 fontFamily = FontFamily.Serif,
                 fontWeight = FontWeight.ExtraBold,

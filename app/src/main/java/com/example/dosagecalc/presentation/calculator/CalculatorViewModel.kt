@@ -149,7 +149,9 @@ class CalculatorViewModel @Inject constructor(
                     heightCm = state.heightInput.toFloatOrNull(),
                     ageYears = state.ageInput.toIntOrNull() ?: 0,
                     calculatedDose = result.totalDose,
+                    calculatedDoseMax = result.totalDoseMax,
                     doseUnit = result.unit,
+                    formulaUsed = result.formula,
                     notes = null
                 )
                 manageHistoryUseCase.saveHistoryRecord(record)

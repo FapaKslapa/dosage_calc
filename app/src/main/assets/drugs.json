@@ -11,7 +11,21 @@
     "minAgeYears": 5,
     "maxSingleDoseMcg": 400000.0,
     "alert": "Usare peso in kg. Controindicato sotto i 15 kg o sotto i 5 anni. Somministrare a stomaco vuoto 1 ora prima del pasto.",
-    "source": "WHO Model Formulary 2023 - Ivermectin 200 µg/kg per os"
+    "source": "WHO Model Formulary 2023 - Ivermectin 200 g/kg per os"
+  },
+  {
+    "id": "amoxicillina_infezione",
+    "name": "Amoxicillina",
+    "indication": "Infezione batterica (range)",
+    "formulaType": "by_range",
+    "unitDose": 40.0,
+    "unitDoseMax": 90.0,
+    "unit": "mg",
+    "minWeightKg": 5.0,
+    "maxWeightKg": 40.0,
+    "maxSingleDoseMcg": 1000.0,
+    "alert": "Somministrare in 2-3 dosi divise",
+    "source": "Linee guida pediatriche"
   },
   {
     "id": "metronidazolo_rosacea",

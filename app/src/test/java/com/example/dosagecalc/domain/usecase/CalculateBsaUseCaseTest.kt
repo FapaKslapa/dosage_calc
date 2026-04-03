@@ -31,9 +31,9 @@ class CalculateBsaUseCaseTest {
      *
      * Valori verificati manualmente con formula: sqrt(h*w/3600)
      */
-    @ParameterizedTest(name = "Paziente {0} kg / {1} cm → BSA atteso {2} m²")
+    @ParameterizedTest(name = "Paziente {0} kg / {1} cm †’ BSA atteso {2} m")
     @CsvSource(
-        "70.0, 175.0, 1.8484",   // adulto maschio tipico
+        "70.0, 175.0, 1.8447",   // adulto maschio tipico
         "60.0, 165.0, 1.6583",   // adulto femmina tipica
         "20.0, 120.0, 0.8165",   // bambino
         "15.0, 100.0, 0.6455"    // bambino piccolo al limite minimo Ivermectina

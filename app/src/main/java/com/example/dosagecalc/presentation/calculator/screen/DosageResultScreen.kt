@@ -1,5 +1,7 @@
 package com.example.dosagecalc.presentation.calculator.screen
 
+import android.content.Intent
+import android.provider.CalendarContract
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -29,6 +31,15 @@ import com.example.dosagecalc.presentation.calculator.components.DisclaimerCard
 import com.example.dosagecalc.presentation.calculator.components.ErrorHeader
 import com.example.dosagecalc.presentation.calculator.components.SuccessHeader
 import com.example.dosagecalc.presentation.ui.components.GradientBottomBar
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.DateRange
+import androidx.compose.material.icons.filled.Share
+import androidx.compose.material3.Icon
+import androidx.compose.material3.OutlinedButton
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.Row
+import android.widget.Toast
 
 @Composable
 fun DosageResultScreen(
@@ -64,6 +75,41 @@ fun DosageResultScreen(
 
                 if (result is DosageResult.Success) {
                     
+                    val context = LocalContext.current
+                    if (uiState.selectedPatient != null) {
+                        Row(modifier = Modifier.fillMaxWidth().padding(bottom = 16.dp)) {
+                            OutlinedButton(
+                                onClick = {
+                                    Toast.makeText(context, "Il calendario in-app sarà disponibile a breve!", Toast.LENGTH_SHORT).show()
+                                },
+                                modifier = Modifier.weight(1f),
+                                shape = RoundedCornerShape(12.dp)
+                            ) {
+                                Icon(Icons.Default.DateRange, contentDescription = "Calendario")
+                                Spacer(modifier = Modifier.width(8.dp))
+                                Text("Calendario")
+                            }
+                            Spacer(modifier = Modifier.width(8.dp))
+                            OutlinedButton(
+                                onClick = {
+                                    val sendIntent: Intent = Intent().apply {
+                                        action = Intent.ACTION_SEND
+                                        putExtra(Intent.EXTRA_TEXT, "Prescrizione:\nFarmaco: ${uiState.selectedDrug?.name}\nPaziente: ${uiState.selectedPatient?.name} ${uiState.selectedPatient?.surname}\nDose: ${result.totalDose} ${result.unit}\nIndicazione: ${uiState.selectedDrug?.indication}")
+                                        type = "text/plain"
+                                    }
+                                    val shareIntent = Intent.createChooser(sendIntent, "Condividi prescrizione")
+                                    context.startActivity(shareIntent)
+                                },
+                                modifier = Modifier.weight(1f),
+                                shape = RoundedCornerShape(12.dp)
+                            ) {
+                                Icon(Icons.Default.Share, contentDescription = "Condividi")
+                                Spacer(modifier = Modifier.width(8.dp))
+                                Text("Condividi")
+                            }
+                        }
+                    }
+
                     DetailsCard(result)
 
                     if (result.alert.isNotBlank()) {

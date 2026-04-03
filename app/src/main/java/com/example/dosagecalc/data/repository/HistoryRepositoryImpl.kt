@@ -59,7 +59,9 @@ class HistoryRepositoryImpl(
             heightCm = heightCm,
             ageYears = ageYears,
             calculatedDose = calculatedDose,
+            calculatedDoseMax = calculatedDoseMax,
             doseUnit = doseUnit,
+            formulaUsed = formulaUsed,
             notes = notes
         )
     }
@@ -75,7 +77,9 @@ class HistoryRepositoryImpl(
             heightCm = heightCm,
             ageYears = ageYears,
             calculatedDose = calculatedDose,
+            calculatedDoseMax = calculatedDoseMax,
             doseUnit = doseUnit,
+            formulaUsed = formulaUsed,
             notes = notes
         )
     }

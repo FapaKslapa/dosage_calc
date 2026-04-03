@@ -12,6 +12,8 @@ data class Drug(
 
     val unitDose: Double,
 
+    val unitDoseMax: Double? = null,
+
     val unit: String,
 
     val minWeightKg: Double?,

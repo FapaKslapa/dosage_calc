@@ -25,6 +25,9 @@ data class DrugDto(
     @SerialName("unitDose")
     val unitDose: Double,
 
+    @SerialName("unitDoseMax")
+    val unitDoseMax: Double? = null,
+
     @SerialName("unit")
     val unit: String,
 
@@ -62,6 +65,7 @@ data class DrugDto(
             }
         },
         unitDose        = unitDose,
+        unitDoseMax     = unitDoseMax,
         unit            = unit,
         minWeightKg     = minWeightKg,
         maxWeightKg     = maxWeightKg,
