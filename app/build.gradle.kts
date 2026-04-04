@@ -100,6 +100,11 @@ dependencies {
     implementation(libs.androidx.datastore.preferences)
     implementation(libs.sqlcipher.android)
 
+    // Glance Widgets
+    implementation(libs.androidx.glance)
+    implementation(libs.androidx.glance.appwidget)
+    implementation(libs.androidx.glance.material3)
+
     // Vico Charts
     implementation(libs.vico.compose)
     implementation(libs.vico.compose.m3)

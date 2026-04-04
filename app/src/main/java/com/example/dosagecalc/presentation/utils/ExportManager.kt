@@ -20,9 +20,9 @@ class ExportManager(private val context: Context) {
                 "id" to p.id,
                 "nome" to p.name,
                 "cognome" to p.surname,
-                "peso" to p.weightKg.toString(),
-                "altezza" to p.heightCm.toString(),
-                "eta" to p.ageYears.toString(),
+                "peso_kg" to p.weightKg.toString(),
+                "altezza_cm" to p.heightCm.toString(),
+                "eta_anni" to p.ageYears.toString(),
                 "note" to (p.notes ?: "")
             )
         })

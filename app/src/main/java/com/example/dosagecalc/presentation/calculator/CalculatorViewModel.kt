@@ -1,5 +1,7 @@
 package com.example.dosagecalc.presentation.calculator
 
+import android.content.Context
+import androidx.glance.appwidget.GlanceAppWidgetManager
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.dosagecalc.domain.model.DosageResult
@@ -14,7 +16,9 @@ import com.example.dosagecalc.domain.usecase.CalculateDosageUseCase
 import com.example.dosagecalc.domain.usecase.CheckDrugInteractionsUseCase
 import com.example.dosagecalc.domain.usecase.ManageHistoryUseCase
 import com.example.dosagecalc.domain.usecase.ManagePatientsUseCase
+import com.example.dosagecalc.presentation.ui.widget.LastDrugWidget
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -33,11 +37,11 @@ class CalculatorViewModel @Inject constructor(
     private val calculateDosageUseCase: CalculateDosageUseCase,
     private val managePatientsUseCase: ManagePatientsUseCase,
     private val manageHistoryUseCase: ManageHistoryUseCase,
-    private val checkDrugInteractionsUseCase: CheckDrugInteractionsUseCase
+    private val checkDrugInteractionsUseCase: CheckDrugInteractionsUseCase,
+    @ApplicationContext private val context: Context
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(CalculatorUiState())
-
     val uiState: StateFlow<CalculatorUiState> = _uiState.asStateFlow()
 
     init {
@@ -72,7 +76,6 @@ class CalculatorViewModel @Inject constructor(
         viewModelScope.launch {
             drugRepository.getDrugs()
                 .catch { error ->
-
                     _uiState.update { it.copy(
                         isLoadingDrugs = false,
                         loadError = "Impossibile caricare il catalogo farmaci: ${error.message}"
@@ -150,7 +153,6 @@ class CalculatorViewModel @Inject constructor(
     }
 
     fun onAgeChanged(value: String) {
-        
         val error = if (value.isBlank()) null else {
             val age = value.toIntOrNull()
             when {
@@ -215,6 +217,13 @@ class CalculatorViewModel @Inject constructor(
                     notes = null
                 )
                 manageHistoryUseCase.saveHistoryRecord(record)
+                
+                viewModelScope.launch {
+                    val manager = GlanceAppWidgetManager(context)
+                    manager.getGlanceIds(LastDrugWidget::class.java).forEach { id ->
+                        LastDrugWidget().update(context, id)
+                    }
+                }
             }
 
             _uiState.update { it.copy(
@@ -240,7 +249,8 @@ class CalculatorViewModel @Inject constructor(
             ageError      = null,
             dosageResult  = null,
             renalStage = com.example.dosagecalc.domain.model.RenalStage.NONE,
-            hepaticStage = com.example.dosagecalc.domain.model.HepaticStage.NONE
+            hepaticStage = com.example.dosagecalc.domain.model.HepaticStage.NONE,
+            interactions = emptyList()
         )}
     }
 

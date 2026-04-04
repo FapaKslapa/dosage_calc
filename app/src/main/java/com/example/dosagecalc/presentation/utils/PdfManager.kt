@@ -20,28 +20,24 @@ import java.util.Locale
 
 object PdfManager {
 
-    // ── Light-mode palette (mirrors the app's LightColorScheme) ──────────────
-    private val CLR_PRIMARY         = Color.parseColor("#6760F6")   // Purple40
-    private val CLR_PRIMARY_CONT    = Color.parseColor("#E8DEFF")   // Purple90
+    private val CLR_PRIMARY         = Color.parseColor("#6760F6")
+    private val CLR_PRIMARY_CONT    = Color.parseColor("#E8DEFF")
     private val CLR_ON_PRIMARY      = Color.WHITE
-    private val CLR_SECONDARY       = Color.parseColor("#148F84")   // Teal40
-    private val CLR_SECONDARY_CONT  = Color.parseColor("#B8EAE7")   // Teal90
-    private val CLR_ERROR           = Color.parseColor("#BA1A1A")   // Error40
-    private val CLR_ERROR_CONT      = Color.parseColor("#FFDAD6")   // Error90
-    private val CLR_BACKGROUND      = Color.parseColor("#FAF7F2")   // WarmWhite
+    private val CLR_SECONDARY       = Color.parseColor("#148F84")
+    private val CLR_SECONDARY_CONT  = Color.parseColor("#B8EAE7")
+    private val CLR_ERROR           = Color.parseColor("#BA1A1A")
+    private val CLR_ERROR_CONT      = Color.parseColor("#FFDAD6")
+    private val CLR_BACKGROUND      = Color.parseColor("#FAF7F2")
     private val CLR_SURFACE         = Color.WHITE
-    private val CLR_SURFACE_VAR     = Color.parseColor("#EFE9E1")   // WarmGray
-    private val CLR_ON_SURFACE      = Color.parseColor("#1C1B1F")   // DarkInk
-    private val CLR_ON_SURFACE_VAR  = Color.parseColor("#49454F")   // MediumInk
+    private val CLR_SURFACE_VAR     = Color.parseColor("#EFE9E1")
+    private val CLR_ON_SURFACE      = Color.parseColor("#1C1B1F")
+    private val CLR_ON_SURFACE_VAR  = Color.parseColor("#49454F")
     private val CLR_OUTLINE         = Color.parseColor("#B8B0A6")
 
-    // ── Page geometry ─────────────────────────────────────────────────────────
-    private const val PW  = 595f   // A4 width  at 72 PPI
-    private const val PH  = 842f   // A4 height at 72 PPI
-    private const val MX  = 44f    // horizontal margin
-    private const val CW  = PW - 2 * MX   // content width
-
-    // ─────────────────────────────────────────────────────────────────────────
+    private const val PW  = 595f
+    private const val PH  = 842f
+    private const val MX  = 44f
+    private const val CW  = PW - 2 * MX
 
     fun generateAndSharePdf(
         context: Context,
@@ -85,13 +81,10 @@ object PdfManager {
         }
     }
 
-    // ── Section drawers ───────────────────────────────────────────────────────
-
     private fun drawBackground(canvas: Canvas) {
         canvas.drawRect(0f, 0f, PW, PH, fill(CLR_BACKGROUND))
     }
 
-    /** Returns y after header. */
     private fun drawHeader(canvas: Canvas, drug: Drug, now: LocalDateTime): Float {
         val headerH = 130f
         val cornerRadius = 32f
@@ -112,7 +105,6 @@ object PdfManager {
             android.graphics.Shader.TileMode.CLAMP
         )
         canvas.drawRect(0f, 0f, PW, headerH, fill(CLR_PRIMARY).also { it.shader = shader })
-
         canvas.drawCircle(PW - 20f, -10f, 90f, fill(Color.WHITE).also { it.alpha = 18 })
         
         canvas.restore()
@@ -136,7 +128,6 @@ object PdfManager {
         return headerH + 24f
     }
 
-    /** Returns y after section. */
     private fun drawPatientSection(canvas: Canvas, patient: Patient?, startY: Float): Float {
         val label = "PAZIENTE"
         val rows: List<Pair<String, String>> = if (patient != null) listOf(
@@ -165,19 +156,16 @@ object PdfManager {
         return startY + cardH + 14f
     }
 
-    /** Dose hero — large centered dose display. Returns y after section. */
     private fun drawDoseHero(canvas: Canvas, result: DosageResult.Success, startY: Float): Float {
         val cardH = 110f
         drawCard(canvas, startY, cardH, CLR_PRIMARY_CONT)
 
-        // "Dose Calcolata" label
         canvas.drawText(
             "Dose Calcolata",
             PW / 2f, startY + 22f,
             txt(10f, CLR_PRIMARY).also { it.textAlign = Paint.Align.CENTER; it.alpha = 200 }
         )
 
-        // Big dose value
         val doseStr = formatDoseRange(result)
         canvas.drawText(
             doseStr,
@@ -185,14 +173,12 @@ object PdfManager {
             txt(38f, CLR_PRIMARY, bold = true, serif = true).also { it.textAlign = Paint.Align.CENTER }
         )
 
-        // Unit
         canvas.drawText(
             result.unit,
             PW / 2f, startY + 88f,
             txt(14f, CLR_PRIMARY, serif = true).also { it.textAlign = Paint.Align.CENTER; it.alpha = 200 }
         )
 
-        // Capped badge
         if (result.cappedToMaxDose) {
             val badge = "⚠  ridotta al massimo consentito"
             val bPaint = txt(9f, CLR_ERROR)
@@ -205,7 +191,6 @@ object PdfManager {
         return startY + cardH + 14f
     }
 
-    /** Returns y after section. */
     private fun drawDrugSection(canvas: Canvas, drug: Drug, startY: Float): Float {
         val rows = listOf(
             "Farmaco"     to drug.name,
@@ -214,14 +199,14 @@ object PdfManager {
         )
         val cardH = 28f + rows.size * 22f + 12f
         drawCard(canvas, startY, cardH, CLR_SURFACE)
-        drawSectionLabel(canvas, "FARMACO", startY + 18f, CLR_ON_SURFACE_VAR)
+        drawSectionLabel(canvas, "DETTAGLI FARMACO", startY + 18f, CLR_ON_SURFACE_VAR)
         var y = startY + 36f
         for ((k, v) in rows) {
             canvas.drawText(k, MX + 12f, y, txt(11f, CLR_ON_SURFACE_VAR))
             canvas.drawText(v, MX + 12f + 90f, y, txt(11f, CLR_ON_SURFACE, bold = true))
             y += 22f
         }
-        // Formula type badge
+        
         val badgeText = "  ${drug.formulaType.labelIt()}  "
         val badgePaint = txt(9f, CLR_PRIMARY)
         val badgeW = badgePaint.measureText(badgeText)
@@ -234,14 +219,12 @@ object PdfManager {
         return startY + cardH + 14f
     }
 
-    /** Returns y after section. */
     private fun drawFormulaSection(canvas: Canvas, result: DosageResult.Success, startY: Float): Float {
         val formulaLines = wrapText(result.formula, 68)
         val cardH = 32f + formulaLines.size * 17f + 12f
         drawCard(canvas, startY, cardH, CLR_SURFACE)
         drawSectionLabel(canvas, "FORMULA APPLICATA", startY + 18f, CLR_ON_SURFACE_VAR)
 
-        // Code-like tinted box
         canvas.drawRoundRect(
             RectF(MX + 8f, startY + 24f, MX + CW - 8f, startY + cardH - 8f),
             16f, 16f, fill(CLR_PRIMARY_CONT).also { it.alpha = 120 }
@@ -258,10 +241,9 @@ object PdfManager {
         return startY + cardH + 14f
     }
 
-    /** Returns y after section. */
     private fun drawAlertSection(canvas: Canvas, result: DosageResult.Success, drug: Drug, startY: Float): Float {
         val lines = mutableListOf<String>()
-        if (result.cappedToMaxDose) lines += "La dose è stata ridotta al massimo dose singola consentita."
+        if (result.cappedToMaxDose) lines += "La dose è stata ridotta al massimo consentito."
         if (drug.alert.isNotBlank()) lines += wrapText(drug.alert, 68)
         if (lines.isEmpty()) return startY
 
@@ -287,15 +269,12 @@ object PdfManager {
             canvas.drawText(line, MX, y, txt(8f, CLR_ON_SURFACE_VAR).also { it.alpha = 150 })
             y += 12f
         }
-        // Page number right-aligned
         canvas.drawText(
             "DosageCalc  •  1 / 1",
             PW - MX, PH - 12f,
             txt(8f, CLR_ON_SURFACE_VAR).also { it.textAlign = Paint.Align.RIGHT; it.alpha = 120 }
         )
     }
-
-    // ── Helpers ───────────────────────────────────────────────────────────────
 
     private fun drawCard(canvas: Canvas, y: Float, h: Float, color: Int) {
         val rect = RectF(MX, y, MX + CW, y + h)

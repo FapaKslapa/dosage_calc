@@ -39,8 +39,8 @@ class CalculateDosageUseCase @Inject constructor(
         val (finalDose, capped) = applyCeiling(impairedDose, drug.maxSingleDoseMcg)
 
         var formula = "${drug.unitDose} ${drug.unit}/kg × $weight kg = $rawDose ${drug.unit}"
-        if (impAlert.isNotBlank()) formula += "\n(Riduzione per patologia applicata)"
-        if (capped) formula += "\n(Limitata al massimo consentito: ${drug.maxSingleDoseMcg})"
+        if (impAlert.isNotBlank()) formula += "\n(Adjustment for pathology applied)"
+        if (capped) formula += "\n(Limited to maximum allowed: ${drug.maxSingleDoseMcg})"
 
         val fullAlert = listOf(drug.alert, impAlert).filter { it.isNotBlank() }.joinToString("\n\n")
 
@@ -70,8 +70,8 @@ class CalculateDosageUseCase @Inject constructor(
         val (finalDose, capped) = applyCeiling(impairedDose, drug.maxSingleDoseMcg)
 
         var formula = "${drug.unitDose} ${drug.unit}/m² × %.2f m² (BSA ${patientData.bsaFormula.name.lowercase().replaceFirstChar { it.uppercase() }}) = %.2f ${drug.unit}".format(bsa, rawDose)
-        if (impAlert.isNotBlank()) formula += "\n(Riduzione per patologia applicata)"
-        if (capped) formula += "\n(Limitata al massimo consentito)"
+        if (impAlert.isNotBlank()) formula += "\n(Adjustment for pathology applied)"
+        if (capped) formula += "\n(Limited to maximum allowed)"
 
         val fullAlert = listOf(drug.alert, impAlert).filter { it.isNotBlank() }.joinToString("\n\n")
 
@@ -94,7 +94,7 @@ class CalculateDosageUseCase @Inject constructor(
         val rawDose = drug.unitDose
         val (impairedDose, impAlert) = applyImpairments(rawDose, drug, patientData)
 
-        val formula = "Dose fissa: ${drug.unitDose} ${drug.unit}"
+        val formula = "Fixed dose: ${drug.unitDose} ${drug.unit}"
         val fullAlert = listOf(drug.alert, impAlert).filter { it.isNotBlank() }.joinToString("\n\n")
 
         val cycleDose = if (drug.daysPerCycle != null) impairedDose * drug.daysPerCycle else null
@@ -127,9 +127,9 @@ class CalculateDosageUseCase @Inject constructor(
         val (finalMax, cappedMax) = applyCeiling(impairedMax, drug.maxSingleDoseMcg)
 
         val capped = cappedMin || cappedMax
-        var formula = "Intervallo: $minDose–$maxDose ${drug.unit}/kg × $weight kg = $rawMin–$rawMax ${drug.unit}"
-        if (impAlert.isNotBlank()) formula += "\n(Riduzione per patologia applicata)"
-        if (capped) formula += "\n(Limitata al massimo consentito: ${drug.maxSingleDoseMcg})"
+        var formula = "Range: $minDose–$maxDose ${drug.unit}/kg × $weight kg = $rawMin–$rawMax ${drug.unit}"
+        if (impAlert.isNotBlank()) formula += "\n(Adjustment for pathology applied)"
+        if (capped) formula += "\n(Limited to maximum allowed: ${drug.maxSingleDoseMcg})"
 
         val fullAlert = listOf(drug.alert, impAlert).filter { it.isNotBlank() }.joinToString("\n\n")
 
@@ -160,12 +160,12 @@ class CalculateDosageUseCase @Inject constructor(
                 dose *= factor
                 val pct = ((1.0 - factor) * 100).roundToInt()
                 if (pct > 0) {
-                    alerts += "⚠ Dose ridotta del $pct% — ${stage.label} (${stage.gfrRange})." +
+                    alerts += "⚠ Dose reduced by $pct% — ${stage.label} (${stage.gfrRange})." +
                             if (drug.renalAlert != null) "\n${drug.renalAlert}" else ""
                 }
             } else {
                 if (stage != RenalStage.NONE) {
-                    alerts += "⚠ ${stage.label} (${stage.gfrRange}) — nessun aggiustamento definito nel RCP per questo farmaco. Valutare con cautela."
+                    alerts += "⚠ ${stage.label} (${stage.gfrRange}) — no adjustment defined in official documentation for this drug. Proceed with caution."
                 }
             }
         }
@@ -177,12 +177,12 @@ class CalculateDosageUseCase @Inject constructor(
                 dose *= factor
                 val pct = ((1.0 - factor) * 100).roundToInt()
                 if (pct > 0) {
-                    alerts += "⚠ Dose ridotta del $pct% — ${stage.label}: ${stage.description}." +
+                    alerts += "⚠ Dose reduced by $pct% — ${stage.label}: ${stage.description}." +
                             if (drug.hepaticAlert != null) "\n${drug.hepaticAlert}" else ""
                 }
             } else {
                 if (stage != HepaticStage.NONE) {
-                    alerts += "⚠ ${stage.label} — nessun aggiustamento definito nel RCP per questo farmaco. Valutare con cautela."
+                    alerts += "⚠ ${stage.label} — no adjustment defined in official documentation for this drug. Proceed with caution."
                 }
             }
         }

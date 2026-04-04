@@ -44,6 +44,30 @@
                 android:resource="@xml/file_paths" />
         </provider>
 
+        <receiver
+            android:name=".presentation.ui.widget.LastDrugWidgetReceiver"
+            android:exported="true"
+            android:label="Ultimo Farmaco">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/last_drug_widget_info" />
+        </receiver>
+
+        <receiver
+            android:name=".presentation.ui.widget.NextReminderWidgetReceiver"
+            android:exported="true"
+            android:label="Prossimo Promemoria">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/next_reminder_widget_info" />
+        </receiver>
+
     </application>
 
 </manifest>
