@@ -1,8 +1,5 @@
-import org.jetbrains.kotlin.gradle.dsl.JvmTarget
-
 plugins {
     alias(libs.plugins.android.application)
-    alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.ksp)
@@ -47,12 +44,6 @@ android {
         buildConfig = false
     }
 
-    sourceSets {
-        getByName("main") {
-            assets.srcDirs("src/main/assets")
-        }
-    }
-
     testOptions {
         unitTests.all {
             it.useJUnitPlatform()
@@ -60,11 +51,12 @@ android {
     }
 }
 
-kotlin {
+tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
     compilerOptions {
-        jvmTarget.set(JvmTarget.JVM_17)
-        optIn.add("androidx.compose.material3.ExperimentalMaterial3Api")
-        optIn.add("androidx.compose.foundation.layout.ExperimentalLayoutApi")
+        optIn.addAll(listOf(
+            "androidx.compose.material3.ExperimentalMaterial3Api",
+            "androidx.compose.foundation.layout.ExperimentalLayoutApi"
+        ))
     }
 }
 
