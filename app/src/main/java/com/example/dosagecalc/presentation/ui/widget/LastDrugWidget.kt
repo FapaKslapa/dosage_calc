@@ -1,5 +1,6 @@
 package com.example.dosagecalc.presentation.ui.widget
 
+import android.annotation.SuppressLint
 import android.content.Context
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
@@ -30,6 +31,7 @@ class LastDrugWidget : GlanceAppWidget() {
         provideContent { WidgetContent(lastDrug) }
     }
 
+    @SuppressLint("RestrictedApi")
     @Composable
     private fun WidgetContent(record: HistoryRecord?) {
         Box(
@@ -40,7 +42,6 @@ class LastDrugWidget : GlanceAppWidget() {
                 .clickable(actionStartActivity<MainActivity>()),
             contentAlignment = Alignment.TopStart
         ) {
-            // Cerchio decorativo grande top-right (come GradientScreenHeader)
             Box(
                 modifier = GlanceModifier
                     .fillMaxSize(),
@@ -54,7 +55,6 @@ class LastDrugWidget : GlanceAppWidget() {
                 ) {}
             }
 
-            // Cerchio decorativo piccolo bottom-left
             Box(
                 modifier = GlanceModifier
                     .fillMaxSize(),
@@ -68,13 +68,11 @@ class LastDrugWidget : GlanceAppWidget() {
                 ) {}
             }
 
-            // Contenuto principale
             Column(
                 modifier = GlanceModifier
                     .fillMaxSize()
                     .padding(horizontal = 14.dp, vertical = 12.dp)
             ) {
-                // Header: label + badge "Rx"
                 Row(
                     modifier = GlanceModifier.fillMaxWidth(),
                     verticalAlignment = Alignment.Vertical.CenterVertically
@@ -152,7 +150,7 @@ class LastDrugWidget : GlanceAppWidget() {
 
     private fun formatDose(dose: Double): String =
         if (dose == dose.toLong().toDouble()) dose.toLong().toString()
-        else String.format("%.1f", dose)
+        else String.format(java.util.Locale.US, "%.1f", dose)
 }
 
 class LastDrugWidgetReceiver : GlanceAppWidgetReceiver() {

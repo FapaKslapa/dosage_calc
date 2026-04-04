@@ -1,4 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Dosage Calc</string>
+    <string name="widget_last_drug_description">Shows the last calculated drug dose</string>
+    <string name="widget_next_reminder_description">Shows the next scheduled drug reminder</string>
 </resources>

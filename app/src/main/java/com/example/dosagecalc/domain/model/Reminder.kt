@@ -13,7 +13,7 @@ data class Reminder(
     val daySelection: Int, // 0 for daily, 1-7 for weekly, 1-31 for monthly
     val hour: Int,
     val minute: Int,
-    val durationDays: Int, // total days to repeat
+    val durationDays: Int,
     val timestamp: Long = System.currentTimeMillis()
 )
 

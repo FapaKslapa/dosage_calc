@@ -1,5 +1,6 @@
 package com.example.dosagecalc.presentation.ui.widget
 
+import android.annotation.SuppressLint
 import android.content.Context
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
@@ -29,9 +30,9 @@ class NextReminderWidget : GlanceAppWidget() {
         provideContent { WidgetContent(nextReminder) }
     }
 
+    @SuppressLint("RestrictedApi")
     @Composable
     private fun WidgetContent(reminder: Reminder?) {
-        // Teal40 — colore secondario dell'app, differenzia visivamente dal LastDrugWidget
         val bgColor = Color(0xFF148F84)
 
         Box(
@@ -42,7 +43,6 @@ class NextReminderWidget : GlanceAppWidget() {
                 .clickable(actionStartActivity<MainActivity>()),
             contentAlignment = Alignment.TopStart
         ) {
-            // Cerchio decorativo grande top-right
             Box(
                 modifier = GlanceModifier.fillMaxSize(),
                 contentAlignment = Alignment.TopEnd
@@ -55,7 +55,6 @@ class NextReminderWidget : GlanceAppWidget() {
                 ) {}
             }
 
-            // Cerchio decorativo piccolo bottom-left
             Box(
                 modifier = GlanceModifier.fillMaxSize(),
                 contentAlignment = Alignment.BottomStart
@@ -68,13 +67,11 @@ class NextReminderWidget : GlanceAppWidget() {
                 ) {}
             }
 
-            // Contenuto principale
             Column(
                 modifier = GlanceModifier
                     .fillMaxSize()
                     .padding(horizontal = 14.dp, vertical = 12.dp)
             ) {
-                // Header: label + badge orario
                 Row(
                     modifier = GlanceModifier.fillMaxWidth(),
                     verticalAlignment = Alignment.Vertical.CenterVertically
@@ -109,9 +106,8 @@ class NextReminderWidget : GlanceAppWidget() {
                 Spacer(modifier = GlanceModifier.height(10.dp))
 
                 if (reminder != null) {
-                    // Orario — elemento hero, grande e bold
                     Text(
-                        text = String.format("%02d:%02d", reminder.hour, reminder.minute),
+                        text = String.format(java.util.Locale.US, "%02d:%02d", reminder.hour, reminder.minute),
                         style = TextStyle(
                             color = ColorProvider(Color.White),
                             fontSize = 28.sp,

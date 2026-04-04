@@ -43,7 +43,6 @@ fun WavySlider(
                 val midY = size.height / 2f
                 val activeWidth = size.width * fraction
 
-                // Inactive track (straight)
                 if (activeWidth < size.width) {
                     drawLine(
                         color = inactiveColor,
@@ -54,13 +53,12 @@ fun WavySlider(
                     )
                 }
 
-                // Active track (wavy)
                 if (activeWidth > 0) {
                     val path = Path()
                     path.moveTo(0f, midY)
                     var x = 0f
                     while (x <= activeWidth) {
-                        val phase = (x / waveLength) * 2 * Math.PI
+                        val phase = (x / waveLength) * 2 * kotlin.math.PI
                         val y = midY + kotlin.math.sin(phase).toFloat() * amplitude
                         path.lineTo(x, y)
                         x += 2f

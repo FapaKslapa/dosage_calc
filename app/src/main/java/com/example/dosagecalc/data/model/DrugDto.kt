@@ -4,7 +4,6 @@ import com.example.dosagecalc.domain.model.Drug
 import com.example.dosagecalc.domain.model.FormulaType
 import kotlinx.serialization.Serializable
 
-@OptIn(kotlinx.serialization.InternalSerializationApi::class)
 @Serializable
 data class DrugDto(
     val id: String,

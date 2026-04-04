@@ -95,7 +95,6 @@ fun OnboardingScreen(onFinish: () -> Unit) {
             OnboardingPageContent(page = pages[index])
         }
 
-        // Dots indicator
         Row(
             modifier = Modifier
                 .align(Alignment.BottomCenter)
@@ -120,7 +119,6 @@ fun OnboardingScreen(onFinish: () -> Unit) {
             }
         }
 
-        // Bottom buttons
         Row(
             modifier = Modifier
                 .align(Alignment.BottomCenter)
@@ -169,11 +167,11 @@ private fun OnboardingPageContent(page: OnboardingPage) {
             .statusBarsPadding(),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        // Hero gradient area (top 55%)
+        // Hero gradient area (top 45%)
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .weight(0.55f)
+                .weight(0.45f)
                 .clip(RoundedCornerShape(bottomStart = 48.dp, bottomEnd = 48.dp))
                 .background(
                     Brush.verticalGradient(listOf(page.gradientStart(), page.gradientEnd()))
@@ -182,7 +180,7 @@ private fun OnboardingPageContent(page: OnboardingPage) {
         ) {
             Box(
                 modifier = Modifier
-                    .size(160.dp)
+                    .size(140.dp)
                     .background(page.gradientEnd().copy(alpha = 0.3f), CircleShape),
                 contentAlignment = Alignment.Center
             ) {
@@ -190,18 +188,19 @@ private fun OnboardingPageContent(page: OnboardingPage) {
                     imageVector = page.icon,
                     contentDescription = null,
                     tint = page.gradientStart(),
-                    modifier = Modifier.size(80.dp)
+                    modifier = Modifier.size(72.dp)
                 )
             }
         }
 
-        // Text content
+        // Text area — bottom 55%, with enough bottom padding to clear the nav buttons
         Column(
             modifier = Modifier
-                .weight(0.45f)
-                .padding(horizontal = 36.dp),
+                .weight(0.55f)
+                .padding(horizontal = 36.dp)
+                .padding(top = 32.dp, bottom = 160.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center
+            verticalArrangement = Arrangement.Top
         ) {
             Text(
                 text = page.title,

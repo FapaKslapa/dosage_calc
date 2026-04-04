@@ -34,6 +34,7 @@ fun GradientScreenHeader(
             .statusBarsPadding()
             .padding(bottom = 28.dp)
     ) {
+        // Large decorative circle — top-right, partially offscreen
         Box(
             modifier = Modifier
                 .size(140.dp)

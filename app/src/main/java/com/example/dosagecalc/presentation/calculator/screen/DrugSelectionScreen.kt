@@ -13,10 +13,10 @@ import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
@@ -92,7 +92,6 @@ fun DrugSelectionScreen(
                         .offset(x = (-30).dp, y = 36.dp)
                         .background(Color.White.copy(alpha = 0.06f), CircleShape)
                 )
-
                 IconButton(
                     onClick = onToggleTheme,
                     modifier = Modifier

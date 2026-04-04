@@ -19,7 +19,7 @@ class ThemeRepositoryImpl @Inject constructor(
     private val BSA_FORMULA_KEY = stringPreferencesKey("bsa_formula")
 
     override val isDarkTheme: Flow<Boolean> = dataStore.data.map { prefs ->
-        prefs[IS_DARK_KEY] ?: false   // default: light
+        prefs[IS_DARK_KEY] ?: false
     }
 
     override suspend fun setDarkTheme(dark: Boolean) {

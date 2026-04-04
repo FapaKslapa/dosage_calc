@@ -1,5 +1,10 @@
 package com.example.dosagecalc.presentation.navigation
 
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.CircularProgressIndicator
@@ -65,7 +70,11 @@ fun AppNavigation(
 
     NavHost(
         navController    = navController,
-        startDestination = startDestination
+        startDestination = startDestination,
+        enterTransition  = { slideInHorizontally(initialOffsetX = { it }, animationSpec = tween(280)) + fadeIn(tween(280)) },
+        exitTransition   = { slideOutHorizontally(targetOffsetX = { -it / 4 }, animationSpec = tween(280)) + fadeOut(tween(280)) },
+        popEnterTransition  = { slideInHorizontally(initialOffsetX = { -it / 4 }, animationSpec = tween(280)) + fadeIn(tween(280)) },
+        popExitTransition   = { slideOutHorizontally(targetOffsetX = { it }, animationSpec = tween(280)) + fadeOut(tween(280)) }
     ) {
 
         composable(route = AppRoute.Onboarding.route) {
