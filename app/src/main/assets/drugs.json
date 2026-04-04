@@ -12,7 +12,9 @@
     "maxSingleDoseMcg": 400000.0,
     "category": "dermatology",
     "alert": "Usare peso in kg. Controindicato sotto i 15 kg o sotto i 5 anni. Somministrare a stomaco vuoto 1 ora prima del pasto.",
-    "source": "WHO Model Formulary 2023 - Ivermectin 200 g/kg per os"
+    "source": "WHO Model Formulary 2023 - Ivermectin 200 g/kg per os",
+    "contraindications": "Ipersensibilità al principio attivo. Bambini di età inferiore a 5 anni o peso inferiore a 15 kg.",
+    "sideEffects": "Prurito, eruzioni cutanee, vertigini, nausea, dolori addominali."
   },
   {
     "id": "amoxicillina_infezione",
@@ -27,7 +29,9 @@
     "category": "pediatrics",
     "maxSingleDoseMcg": 1000.0,
     "alert": "Somministrare in 2-3 dosi divise",
-    "source": "Linee guida pediatriche"
+    "source": "Linee guida pediatriche",
+    "contraindications": "Ipersensibilità alle penicilline. Mononucleosi infettiva.",
+    "sideEffects": "Diarrea, nausea, rash cutaneo, candidosi mucocutanea."
   },
   {
     "id": "metronidazolo_rosacea",
@@ -42,7 +46,9 @@
     "category": "dermatology",
     "maxSingleDoseMcg": null,
     "alert": "Applicazione topica 0.75% - 1%. Solo per adulti. Evitare il contatto con gli occhi.",
-    "source": "AIFA - Scheda Tecnica Metronidazolo crema 0.75%"
+    "source": "AIFA - Scheda Tecnica Metronidazolo crema 0.75%",
+    "contraindications": "Ipersensibilità nota al metronidazolo o ad altri componenti della formulazione.",
+    "sideEffects": "Secchezza cutanea, eritema, prurito, fastidio cutaneo (sensazione di bruciore)."
   },
   {
     "id": "doxiciclina_acne",
@@ -59,7 +65,9 @@
     "alert": "100 mg/die per os. Controindicata in gravidanza e sotto i 12 anni. Assumere con abbondante acqua per evitare esofagiti.",
     "source": "RCP EMA - Doxiciclina 100 mg compresse",
     "hepaticDoseMultiplier": 0.5,
-    "hepaticAlert": "Usare con prudenza e dimezzare la dose in caso di grave insufficienza epatica."
+    "hepaticAlert": "Usare con prudenza e dimezzare la dose in caso di grave insufficienza epatica.",
+    "contraindications": "Gravidanza, allattamento, bambini sotto i 12 anni. Ipersensibilità alle tetracicline.",
+    "sideEffects": "Fotosensibilità, nausea, esofagite, alterazione del colore dei denti nei bambini."
   },
   {
     "id": "ceftriaxone_ev",
@@ -78,7 +86,9 @@
     "renalDoseMultiplier": 0.5,
     "renalAlert": "Dose massima 2g/die se GFR < 10 ml/min. Applicato limite del 50%.",
     "hepaticDoseMultiplier": 0.75,
-    "hepaticAlert": "Ridurre dose se insufficienza epatica contemporanea a renale."
+    "hepaticAlert": "Ridurre dose se insufficienza epatica contemporanea a renale.",
+    "contraindications": "Ipersensibilità alle cefalosporine. Neonati con iperbilirubinemia.",
+    "sideEffects": "Eosinofilia, leucopenia, diarrea, aumento degli enzimi epatici."
   },
   {
     "id": "paclitaxel_oncology",
@@ -93,6 +103,8 @@
     "alert": "Monitorare emocromo. Pre-medicare per evitare ipersensibilità.",
     "source": "Protocollo oncologico standard",
     "hepaticDoseMultiplier": 0.5,
-    "hepaticAlert": "Ridurre dose se bilirubina > 1.5 mg/dL."
+    "hepaticAlert": "Ridurre dose se bilirubina > 1.5 mg/dL.",
+    "contraindications": "Neutropenia grave (< 1500/mm³). Ipersensibilità al paclitaxel o all'olio di ricino poliossilato.",
+    "sideEffects": "Mielosoppressione, neuropatia periferica, alopecia, artralgia, mialgia."
   }
 ]

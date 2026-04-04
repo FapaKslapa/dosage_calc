@@ -54,6 +54,8 @@ fun AddDataScreen(
     var dose by remember { mutableStateOf("") }
     var maxDose by remember { mutableStateOf("") }
     var alert by remember { mutableStateOf("") }
+    var contraindications by remember { mutableStateOf("") }
+    var sideEffects by remember { mutableStateOf("") }
     var selectedCategory by remember { mutableStateOf(com.example.dosagecalc.domain.model.DrugCategory.OTHER) }
 
     var expanded by remember { mutableStateOf(false) }
@@ -70,6 +72,8 @@ fun AddDataScreen(
                 dose = drug.unitDose.toString()
                 maxDose = drug.unitDoseMax?.toString() ?: ""
                 alert = drug.alert
+                contraindications = drug.contraindications ?: ""
+                sideEffects = drug.sideEffects ?: ""
                 selectedCategory = drug.category
                 selectedFormula = when (drug.formulaType) {
                     FormulaType.PER_KG -> formulaOptions[0]
@@ -261,9 +265,27 @@ fun AddDataScreen(
                     value = alert,
                     onValueChange = { alert = it },
                     label = { Text("Note Cliniche / Avvertenze (Opzionale)") },
-                    modifier = Modifier.fillMaxWidth().height(120.dp),
+                    modifier = Modifier.fillMaxWidth().height(100.dp),
                     shape = RoundedCornerShape(12.dp),
-                    maxLines = 4
+                    maxLines = 3
+                )
+
+                OutlinedTextField(
+                    value = contraindications,
+                    onValueChange = { contraindications = it },
+                    label = { Text("Controindicazioni (Opzionale)") },
+                    modifier = Modifier.fillMaxWidth().height(100.dp),
+                    shape = RoundedCornerShape(12.dp),
+                    maxLines = 3
+                )
+
+                OutlinedTextField(
+                    value = sideEffects,
+                    onValueChange = { sideEffects = it },
+                    label = { Text("Effetti Collaterali (Opzionale)") },
+                    modifier = Modifier.fillMaxWidth().height(100.dp),
+                    shape = RoundedCornerShape(12.dp),
+                    maxLines = 3
                 )
 
                 Spacer(modifier = Modifier.height(24.dp))
@@ -289,6 +311,8 @@ fun AddDataScreen(
                         unit = unit,
                         maxDose = maxDose,
                         alert = alert,
+                        contraindications = contraindications,
+                        sideEffects = sideEffects,
                         onSuccess = onNavigateBack
                     )
                 },

@@ -141,6 +141,7 @@ fun DrugSelectionCard(
     drug: Drug,
     isSelected: Boolean,
     onClick: () -> Unit,
+    onInfoClick: () -> Unit,
     onDeleteClick: (() -> Unit)? = null,
     onEditClick: (() -> Unit)? = null
 ) {
@@ -198,6 +199,18 @@ fun DrugSelectionCard(
                             modifier = Modifier.size(20.dp)
                         )
                     }
+                }
+
+                androidx.compose.material3.IconButton(
+                    onClick = onInfoClick,
+                    modifier = Modifier.size(32.dp)
+                ) {
+                    Icon(
+                        Icons.Rounded.Info,
+                        contentDescription = "Dettagli",
+                        tint = MaterialTheme.colorScheme.secondary,
+                        modifier = Modifier.size(20.dp)
+                    )
                 }
 
                 if (onDeleteClick != null) {

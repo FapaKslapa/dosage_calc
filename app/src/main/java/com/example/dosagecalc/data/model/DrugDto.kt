@@ -26,7 +26,9 @@ data class DrugDto(
     val renalAlert: String? = null,
     val hepaticAlert: String? = null,
     val daysPerCycle: Int? = null,
-    val numberOfCycles: Int? = null
+    val numberOfCycles: Int? = null,
+    val contraindications: String? = null,
+    val sideEffects: String? = null
 ) {
     fun toDomain(): Drug = Drug(
         id                    = id,
@@ -60,6 +62,8 @@ data class DrugDto(
         renalAlert            = renalAlert,
         hepaticAlert          = hepaticAlert,
         daysPerCycle          = daysPerCycle,
-        numberOfCycles        = numberOfCycles
+        numberOfCycles        = numberOfCycles,
+        contraindications     = contraindications,
+        sideEffects           = sideEffects
     )
 }

@@ -61,11 +61,12 @@ fun DrugSelectionScreen(
     onNavigateToHistory: () -> Unit,
     onNavigateToReminders: () -> Unit,
     onNavigateToAddData: (String?) -> Unit,
+    onNavigateToDetail: (String) -> Unit,
     onToggleTheme: () -> Unit = {}
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     var drugToDelete by remember { mutableStateOf<com.example.dosagecalc.domain.model.Drug?>(null) }
-    val activity = LocalContext.current as? android.app.Activity
+    val activity = androidx.activity.compose.LocalActivity.current
     val isDark = MaterialTheme.colorScheme.background.luminance() < 0.5f
     BackHandler { activity?.finish() }
 
@@ -168,14 +169,22 @@ fun DrugSelectionScreen(
                         androidx.compose.material3.FilterChip(
                             selected = uiState.selectedCategory == null,
                             onClick = { viewModel.onCategorySelected(null) },
-                            label = { Text("Tutti") }
+                            label = { Text("Tutti") },
+                            colors = androidx.compose.material3.FilterChipDefaults.filterChipColors(
+                                selectedContainerColor = MaterialTheme.colorScheme.primary,
+                                selectedLabelColor = MaterialTheme.colorScheme.onPrimary
+                            )
                         )
                     }
                     items(com.example.dosagecalc.domain.model.DrugCategory.entries) { category ->
                         androidx.compose.material3.FilterChip(
                             selected = uiState.selectedCategory == category,
                             onClick = { viewModel.onCategorySelected(category) },
-                            label = { Text(category.label) }
+                            label = { Text(category.label) },
+                            colors = androidx.compose.material3.FilterChipDefaults.filterChipColors(
+                                selectedContainerColor = MaterialTheme.colorScheme.primary,
+                                selectedLabelColor = MaterialTheme.colorScheme.onPrimary
+                            )
                         )
                     }
                 }
@@ -212,6 +221,7 @@ fun DrugSelectionScreen(
                                     drug = drug,
                                     isSelected = uiState.selectedDrug == drug,
                                     onClick = { viewModel.onDrugSelected(drug) },
+                                    onInfoClick = { onNavigateToDetail(drug.id) },
                                     onDeleteClick = if (drug.id.startsWith("custom_")) {
                                         { drugToDelete = drug }
                                     } else null,

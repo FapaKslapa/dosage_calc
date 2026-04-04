@@ -34,6 +34,8 @@ class AddDataViewModel @Inject constructor(
         unit: String,
         maxDose: String,
         alert: String,
+        contraindications: String,
+        sideEffects: String,
         onSuccess: () -> Unit
     ) {
         val parsedDose = dose.replace(",", ".").toDoubleOrNull() ?: 0.0
@@ -61,7 +63,9 @@ class AddDataViewModel @Inject constructor(
             minWeightKg = null,
             maxWeightKg = null,
             minAgeYears = null,
-            maxSingleDoseMcg = parsedMaxDose // using parsedMaxDose as maxSingleDoseMcg as well to support capping
+            maxSingleDoseMcg = parsedMaxDose, // using parsedMaxDose as maxSingleDoseMcg as well to support capping
+            contraindications = contraindications.ifBlank { null },
+            sideEffects = sideEffects.ifBlank { null }
         )
 
         viewModelScope.launch {

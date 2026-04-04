@@ -20,7 +20,9 @@ data class Drug(
     val renalAlert: String? = null,
     val hepaticAlert: String? = null,
     val daysPerCycle: Int? = null,
-    val numberOfCycles: Int? = null
+    val numberOfCycles: Int? = null,
+    val contraindications: String? = null,
+    val sideEffects: String? = null
 )
 
 enum class FormulaType {

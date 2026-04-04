@@ -38,6 +38,7 @@ sealed class AppRoute(val route: String) {
     object GlobalHistory : AppRoute("global_history")
     object Reminders     : AppRoute("reminders")
     object AddData       : AppRoute("add_data")
+    object DrugDetail    : AppRoute("drug_detail")
 }
 
 @Composable
@@ -88,6 +89,9 @@ fun AppNavigation(
                     if (drugId != null) navController.navigate(AppRoute.AddData.route + "?drugId=$drugId")
                     else                navController.navigate(AppRoute.AddData.route)
                 },
+                onNavigateToDetail = { drugId ->
+                    navController.navigate(AppRoute.DrugDetail.route + "/$drugId")
+                },
                 onToggleTheme = onToggleTheme
             )
         }
@@ -123,6 +127,17 @@ fun AppNavigation(
         ) { backStackEntry ->
             AddDataScreen(
                 drugId         = backStackEntry.arguments?.getString("drugId"),
+                onNavigateBack = { navController.popBackStack() }
+            )
+        }
+
+        composable(
+            route = AppRoute.DrugDetail.route + "/{drugId}",
+            arguments = listOf(navArgument("drugId") { type = NavType.StringType })
+        ) { backStackEntry ->
+            val drugId = backStackEntry.arguments?.getString("drugId") ?: return@composable
+            com.example.dosagecalc.presentation.calculator.screen.DrugDetailScreen(
+                drugId = drugId,
                 onNavigateBack = { navController.popBackStack() }
             )
         }

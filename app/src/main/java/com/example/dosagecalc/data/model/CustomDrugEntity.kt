@@ -26,7 +26,9 @@ data class CustomDrugEntity(
     val renalAlert: String?,
     val hepaticAlert: String?,
     val daysPerCycle: Int? = null,
-    val numberOfCycles: Int? = null
+    val numberOfCycles: Int? = null,
+    val contraindications: String? = null,
+    val sideEffects: String? = null
 ) {
     fun toDomain(): Drug {
         return Drug(
@@ -49,7 +51,9 @@ data class CustomDrugEntity(
             renalAlert = renalAlert,
             hepaticAlert = hepaticAlert,
             daysPerCycle = daysPerCycle,
-            numberOfCycles = numberOfCycles
+            numberOfCycles = numberOfCycles,
+            contraindications = contraindications,
+            sideEffects = sideEffects
         )
     }
 }
@@ -75,7 +79,9 @@ fun Drug.toEntity(): CustomDrugEntity {
         renalAlert = renalAlert,
         hepaticAlert = hepaticAlert,
         daysPerCycle = daysPerCycle,
-        numberOfCycles = numberOfCycles
+        numberOfCycles = numberOfCycles,
+        contraindications = contraindications,
+        sideEffects = sideEffects
     )
 }
 

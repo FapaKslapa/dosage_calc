@@ -46,7 +46,9 @@ fun ImpairmentChipsRow(
                         { Icon(Icons.Filled.Warning, contentDescription = null, modifier = Modifier.size(16.dp)) }
                     } else null,
                     colors = FilterChipDefaults.filterChipColors(
-                        selectedContainerColor = if (stage == RenalStage.NONE) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.errorContainer
+                        selectedContainerColor = MaterialTheme.colorScheme.primary,
+                        selectedLabelColor = MaterialTheme.colorScheme.onPrimary,
+                        selectedLeadingIconColor = MaterialTheme.colorScheme.onPrimary
                     )
                 )
             }
@@ -71,7 +73,9 @@ fun ImpairmentChipsRow(
                         { Icon(Icons.Filled.Warning, contentDescription = null, modifier = Modifier.size(16.dp)) }
                     } else null,
                     colors = FilterChipDefaults.filterChipColors(
-                        selectedContainerColor = if (stage == HepaticStage.NONE) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.errorContainer
+                        selectedContainerColor = MaterialTheme.colorScheme.primary,
+                        selectedLabelColor = MaterialTheme.colorScheme.onPrimary,
+                        selectedLeadingIconColor = MaterialTheme.colorScheme.onPrimary
                     )
                 )
             }

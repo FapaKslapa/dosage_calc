@@ -57,7 +57,7 @@ abstract class DataModule {
                 "dosagecalc_database"
             // Versions 1-5 were pre-release installs; destructive wipe is acceptable.
             // Any future schema bump (v7+) must provide a proper Migration object.
-            ).fallbackToDestructiveMigrationFrom(1, 2, 3, 4, 5, 6).build()
+            ).fallbackToDestructiveMigrationFrom(1, 2, 3, 4, 5, 6, 7).build()
         }
 
         @Provides
