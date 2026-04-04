@@ -99,6 +99,11 @@ dependencies {
     implementation(libs.kotlinx.coroutines.android)
     implementation(libs.androidx.datastore.preferences)
 
+    // Vico Charts
+    implementation(libs.vico.compose)
+    implementation(libs.vico.compose.m3)
+    implementation(libs.vico.core)
+
     debugImplementation(libs.androidx.compose.ui.tooling)
 
     testImplementation(libs.junit5.api)

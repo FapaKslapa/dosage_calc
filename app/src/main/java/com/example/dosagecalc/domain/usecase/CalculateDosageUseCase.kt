@@ -31,10 +31,6 @@ class CalculateDosageUseCase @Inject constructor(
         }
     }
 
-    // ──────────────────────────────────────────────────────────────────────────
-    // Formula implementations
-    // ──────────────────────────────────────────────────────────────────────────
-
     private fun calculatePerKg(drug: Drug, patientData: PatientData): DosageResult {
         val weight = patientData.weightKg!!
         val rawDose = drug.unitDose * weight
@@ -153,15 +149,6 @@ class CalculateDosageUseCase @Inject constructor(
         )
     }
 
-    // ──────────────────────────────────────────────────────────────────────────
-    // Impairment helpers
-    // ──────────────────────────────────────────────────────────────────────────
-
-    /**
-     * Applica i moltiplicatori di aggiustamento renale/epatico in base allo staging.
-     * Il [Drug.renalDoseMultiplier] rappresenta la riduzione massima (G5 / Child-Pugh C).
-     * I gradi intermedi vengono interpolati linearmente.
-     */
     private fun applyImpairments(rawDose: Double, drug: Drug, patientData: PatientData): Pair<Double, String> {
         var dose = rawDose
         val alerts = mutableListOf<String>()

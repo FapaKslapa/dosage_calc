@@ -6,7 +6,6 @@ import android.net.Uri
 import androidx.core.content.FileProvider
 import com.example.dosagecalc.domain.model.HistoryRecord
 import com.example.dosagecalc.domain.model.Patient
-import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import java.io.File
 import java.time.format.DateTimeFormatter

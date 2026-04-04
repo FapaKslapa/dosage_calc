@@ -21,8 +21,14 @@ junit5 = "5.14.3"
 mockk = "1.14.9"
 turbine = "1.2.1"
 androidxTestRunner = "1.7.0"
+vico = "2.0.0-alpha.28"
 
 [libraries]
+# Vico Charts
+vico-compose = { group = "com.patrykandpatrick.vico", name = "compose", version.ref = "vico" }
+vico-compose-m3 = { group = "com.patrykandpatrick.vico", name = "compose-m3", version.ref = "vico" }
+vico-core = { group = "com.patrykandpatrick.vico", name = "core", version.ref = "vico" }
+
 # AndroidX Core
 androidx-core-ktx               = { group = "androidx.core",     name = "core-ktx",              version.ref = "coreKtx" }
 androidx-activity-compose       = { group = "androidx.activity", name = "activity-compose",       version.ref = "activityCompose" }

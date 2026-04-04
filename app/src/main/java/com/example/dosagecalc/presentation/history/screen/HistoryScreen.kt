@@ -15,7 +15,9 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.Analytics
 import androidx.compose.material.icons.filled.Search
+import androidx.compose.material.icons.filled.Share
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
@@ -26,6 +28,7 @@ import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -33,27 +36,35 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.paging.compose.collectAsLazyPagingItems
-import androidx.compose.material.icons.filled.Share
-import androidx.compose.ui.platform.LocalContext
-import com.example.dosagecalc.presentation.utils.ExportManager
 import com.example.dosagecalc.presentation.history.HistoryViewModel
 import com.example.dosagecalc.presentation.history.components.HistoryCard
 import com.example.dosagecalc.presentation.ui.components.GradientScreenHeader
+import com.example.dosagecalc.presentation.utils.ExportManager
 
 @Composable
 fun HistoryScreen(
     viewModel: HistoryViewModel,
-    onNavigateBack: () -> Unit
+    patientId: String? = null,
+    onNavigateBack: () -> Unit,
+    onNavigateToAnalytics: () -> Unit
 ) {
     val context = LocalContext.current
     val exportManager = remember { ExportManager(context) }
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val searchQuery by viewModel.searchQuery.collectAsStateWithLifecycle()
+    val filteredPatientName by viewModel.filteredPatientName.collectAsStateWithLifecycle()
     val pagedHistory = viewModel.historyPaged.collectAsLazyPagingItems()
+
+    LaunchedEffect(patientId) {
+        if (patientId != null) {
+            viewModel.setFilterPatientId(patientId)
+        }
+    }
 
     Box(
         modifier = Modifier
@@ -86,6 +97,15 @@ fun HistoryScreen(
                             color = MaterialTheme.colorScheme.onTertiary.copy(alpha = 0.8f)
                         )
                         Spacer(modifier = Modifier.weight(1f))
+                        
+                        IconButton(onClick = onNavigateToAnalytics) {
+                            Icon(
+                                imageVector = Icons.Default.Analytics,
+                                contentDescription = "Statistiche",
+                                tint = MaterialTheme.colorScheme.onTertiary
+                            )
+                        }
+
                         IconButton(onClick = {
                             viewModel.getAllHistory { list ->
                                 exportManager.exportHistoryToCsv(list)
@@ -101,15 +121,29 @@ fun HistoryScreen(
 
                     Column(modifier = Modifier.padding(start = 24.dp, end = 24.dp, top = 4.dp)) {
                         Text(
-                            text  = "Storico Calcoli",
+                            text  = filteredPatientName ?: "Storico Calcoli",
                             style = MaterialTheme.typography.headlineMedium.copy(fontFamily = FontFamily.Serif),
                             color = MaterialTheme.colorScheme.onTertiary
                         )
-                        Text(
-                            text  = "Tutte le dosi calcolate",
-                            style = MaterialTheme.typography.bodyLarge,
-                            color = MaterialTheme.colorScheme.onTertiary.copy(alpha = 0.9f)
-                        )
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            modifier = Modifier.fillMaxWidth()
+                        ) {
+                            Text(
+                                text  = if (filteredPatientName != null) "Cronologia specifica" else "Tutte le dosi calcolate",
+                                style = MaterialTheme.typography.bodyLarge,
+                                color = MaterialTheme.colorScheme.onTertiary.copy(alpha = 0.9f),
+                                modifier = Modifier.weight(1f)
+                            )
+                            if (filteredPatientName != null) {
+                                TextButton(
+                                    onClick = { viewModel.setFilterPatientId(null) },
+                                    contentPadding = PaddingValues(0.dp)
+                                ) {
+                                    Text("Rimuovi filtro", color = MaterialTheme.colorScheme.onTertiary, style = MaterialTheme.typography.labelMedium)
+                                }
+                            }
+                        }
                         Spacer(modifier = Modifier.height(16.dp))
                         OutlinedTextField(
                             value = searchQuery,
@@ -185,4 +219,3 @@ fun HistoryScreen(
         }
     }
 }
-

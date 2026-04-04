@@ -14,6 +14,8 @@ class ManagePatientsUseCase @Inject constructor(
 
     fun getPatientsPaged(query: String): Flow<PagingData<Patient>> = patientRepository.getPatientsPaged(query)
 
+    suspend fun getPatientById(id: String): Patient? = patientRepository.getPatientById(id)
+
     suspend fun savePatient(patient: Patient) {
         val toSave = if (patient.id.isBlank()) {
             patient.copy(id = UUID.randomUUID().toString())

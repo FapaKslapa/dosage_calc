@@ -32,11 +32,6 @@ enum class FormulaType {
     BY_RANGE
 }
 
-/**
- * Staging dell'insufficienza renale (CKD) secondo KDIGO.
- * [drugMultiplier] nel modello Drug rappresenta la riduzione massima (G5).
- * I gradi intermedi vengono interpolati in CalculateDosageUseCase.
- */
 enum class RenalStage(val label: String, val gfrRange: String) {
     NONE("Normale (G1)",               "GFR ≥ 90 ml/min"),
     G2("Lieve riduzione (G2)",         "GFR 60–89 ml/min"),
@@ -45,10 +40,6 @@ enum class RenalStage(val label: String, val gfrRange: String) {
     G5("IRC Grave/Terminale (G5)",     "GFR < 15 ml/min")
 }
 
-/**
- * Staging dell'insufficienza epatica secondo Child-Pugh.
- * [drugMultiplier] rappresenta la riduzione massima (Child-Pugh C).
- */
 enum class HepaticStage(val label: String, val description: String) {
     NONE("Nessuna (Normale)", ""),
     CHILD_A("Child-Pugh A",    "Lieve — 5–6 punti"),

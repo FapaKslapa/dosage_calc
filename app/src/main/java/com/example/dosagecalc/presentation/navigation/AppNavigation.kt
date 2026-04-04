@@ -36,6 +36,7 @@ sealed class AppRoute(val route: String) {
     object DosageResult  : AppRoute("dosage_result")
     object PatientsList  : AppRoute("patients_list")
     object GlobalHistory : AppRoute("global_history")
+    object HistoryAnalytics : AppRoute("history_analytics")
     object Reminders     : AppRoute("reminders")
     object AddData       : AppRoute("add_data")
     object DrugDetail    : AppRoute("drug_detail")
@@ -101,14 +102,40 @@ fun AppNavigation(
             PatientsScreen(
                 viewModel         = patientsViewModel,
                 onNavigateBack    = { navController.popBackStack() },
-                onNavigateToHistory = { navController.navigate(AppRoute.GlobalHistory.route) }
+                onNavigateToHistory = { patientId -> 
+                    navController.navigate(AppRoute.GlobalHistory.route + "?patientId=$patientId")
+                }
             )
         }
 
-        composable(route = AppRoute.GlobalHistory.route) {
+        composable(
+            route = AppRoute.GlobalHistory.route + "?patientId={patientId}",
+            arguments = listOf(navArgument("patientId") { type = NavType.StringType; nullable = true })
+        ) { backStackEntry ->
+            val patientId = backStackEntry.arguments?.getString("patientId")
             val historyViewModel: HistoryViewModel = hiltViewModel()
             HistoryScreen(
                 viewModel      = historyViewModel,
+                patientId      = patientId,
+                onNavigateBack = { navController.popBackStack() },
+                onNavigateToAnalytics = {
+                    val route = if (patientId != null) AppRoute.HistoryAnalytics.route + "?patientId=$patientId"
+                                else AppRoute.HistoryAnalytics.route
+                    navController.navigate(route)
+                }
+            )
+        }
+
+        composable(
+            route = AppRoute.HistoryAnalytics.route + "?patientId={patientId}",
+            arguments = listOf(navArgument("patientId") { type = NavType.StringType; nullable = true })
+        ) { backStackEntry ->
+            val patientId = backStackEntry.arguments?.getString("patientId")
+            val historyViewModel: HistoryViewModel = hiltViewModel()
+            com.example.dosagecalc.presentation.history.screen.HistoryAnalyticsScreen(
+                historyViewModel = historyViewModel,
+                calculatorViewModel = viewModel,
+                initialPatientId = patientId,
                 onNavigateBack = { navController.popBackStack() }
             )
         }

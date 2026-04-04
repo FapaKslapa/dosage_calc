@@ -17,11 +17,9 @@ class CalculateBsaUseCase @Inject constructor() {
 
         val bsa = when (formula) {
             BsaFormulaType.MOSTELLER -> {
-                // Mosteller formula: BSA = sqrt((height * weight) / 3600)
                 sqrt((heightCm * weightKg) / 3600.0)
             }
             BsaFormulaType.DU_BOIS -> {
-                // Du Bois & Du Bois formula: BSA = 0.007184 * (cm^0.725) * (kg^0.425)
                 0.007184 * heightCm.pow(0.725) * weightKg.pow(0.425)
             }
         }
