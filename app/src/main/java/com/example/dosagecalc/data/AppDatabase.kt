@@ -13,7 +13,7 @@ import com.example.dosagecalc.data.model.ReminderEntity
 
 @Database(
     entities = [PatientEntity::class, HistoryEntity::class, ReminderEntity::class, CustomDrugEntity::class],
-    version = 6,
+    version = 7,
     exportSchema = true
 )
 abstract class AppDatabase : RoomDatabase() {

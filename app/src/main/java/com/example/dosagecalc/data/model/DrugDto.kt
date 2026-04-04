@@ -20,10 +20,13 @@ data class DrugDto(
     val maxSingleDoseMcg: Double? = null,
     val alert: String,
     val source: String,
+    val category: String? = null,
     val renalDoseMultiplier: Double? = null,
     val hepaticDoseMultiplier: Double? = null,
     val renalAlert: String? = null,
-    val hepaticAlert: String? = null
+    val hepaticAlert: String? = null,
+    val daysPerCycle: Int? = null,
+    val numberOfCycles: Int? = null
 ) {
     fun toDomain(): Drug = Drug(
         id                    = id,
@@ -45,9 +48,18 @@ data class DrugDto(
         maxSingleDoseMcg      = maxSingleDoseMcg,
         alert                 = alert,
         source                = source,
+        category              = when (category?.lowercase()) {
+            "dermatology"     -> com.example.dosagecalc.domain.model.DrugCategory.DERMATOLOGY
+            "oncology"        -> com.example.dosagecalc.domain.model.DrugCategory.ONCOLOGY
+            "infectious"      -> com.example.dosagecalc.domain.model.DrugCategory.INFECTIOUS
+            "pediatrics"      -> com.example.dosagecalc.domain.model.DrugCategory.PEDIATRICS
+            else              -> com.example.dosagecalc.domain.model.DrugCategory.OTHER
+        },
         renalDoseMultiplier   = renalDoseMultiplier,
         hepaticDoseMultiplier = hepaticDoseMultiplier,
         renalAlert            = renalAlert,
-        hepaticAlert          = hepaticAlert
+        hepaticAlert          = hepaticAlert,
+        daysPerCycle          = daysPerCycle,
+        numberOfCycles        = numberOfCycles
     )
 }

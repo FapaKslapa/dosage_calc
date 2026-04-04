@@ -93,14 +93,18 @@ class CalculatorViewModel @Inject constructor(
                 weightInput = patient.weightKg.toString(),
                 heightInput = patient.heightCm?.toString() ?: "",
                 ageInput = patient.ageYears.toString(),
-                hasRenalImpairment = patient.hasRenalImpairment,
-                hasHepaticImpairment = patient.hasHepaticImpairment,
+                renalStage = if (patient.hasRenalImpairment) com.example.dosagecalc.domain.model.RenalStage.G3 else com.example.dosagecalc.domain.model.RenalStage.NONE,
+                hepaticStage = if (patient.hasHepaticImpairment) com.example.dosagecalc.domain.model.HepaticStage.CHILD_B else com.example.dosagecalc.domain.model.HepaticStage.NONE,
                 weightError = null,
                 heightError = null,
                 ageError = null,
                 dosageResult = null
             ) }
         }
+    }
+
+    fun onCategorySelected(category: com.example.dosagecalc.domain.model.DrugCategory?) {
+        _uiState.update { it.copy(selectedCategory = category) }
     }
 
     fun onWeightChanged(value: String) {
@@ -133,12 +137,12 @@ class CalculatorViewModel @Inject constructor(
         }
     }
 
-    fun onRenalImpairmentChanged(checked: Boolean) {
-        _uiState.update { it.copy(hasRenalImpairment = checked, dosageResult = null) }
+    fun onRenalStageChanged(stage: com.example.dosagecalc.domain.model.RenalStage) {
+        _uiState.update { it.copy(renalStage = stage, dosageResult = null) }
     }
 
-    fun onHepaticImpairmentChanged(checked: Boolean) {
-        _uiState.update { it.copy(hasHepaticImpairment = checked, dosageResult = null) }
+    fun onHepaticStageChanged(stage: com.example.dosagecalc.domain.model.HepaticStage) {
+        _uiState.update { it.copy(hepaticStage = stage, dosageResult = null) }
     }
 
     fun calculateDosage() {
@@ -153,8 +157,8 @@ class CalculatorViewModel @Inject constructor(
                     weightKg  = state.weightInput.toDoubleOrNull(),
                     heightCm  = state.heightInput.toDoubleOrNull(),
                     ageYears  = state.ageInput.toIntOrNull(),
-                    hasRenalImpairment = state.hasRenalImpairment,
-                    hasHepaticImpairment = state.hasHepaticImpairment
+                    renalStage = state.renalStage,
+                    hepaticStage = state.hepaticStage
                 )
                 calculateDosageUseCase(drug, patientData)
             }
@@ -171,6 +175,8 @@ class CalculatorViewModel @Inject constructor(
                     ageYears = state.ageInput.toIntOrNull() ?: 0,
                     calculatedDose = result.totalDose,
                     calculatedDoseMax = result.totalDoseMax,
+                    calculatedCycleDose = result.totalCycleDose,
+                    calculatedTherapyDose = result.totalTherapyDose,
                     doseUnit = result.unit,
                     formulaUsed = result.formula,
                     notes = null
@@ -185,6 +191,10 @@ class CalculatorViewModel @Inject constructor(
         }
     }
 
+    fun clearResult() {
+        _uiState.update { it.copy(dosageResult = null) }
+    }
+
     fun resetCalculation() {
         _uiState.update { it.copy(
             selectedDrug  = null,
@@ -196,8 +206,8 @@ class CalculatorViewModel @Inject constructor(
             heightError   = null,
             ageError      = null,
             dosageResult  = null,
-            hasRenalImpairment = false,
-            hasHepaticImpairment = false
+            renalStage = com.example.dosagecalc.domain.model.RenalStage.NONE,
+            hepaticStage = com.example.dosagecalc.domain.model.HepaticStage.NONE
         )}
     }
 

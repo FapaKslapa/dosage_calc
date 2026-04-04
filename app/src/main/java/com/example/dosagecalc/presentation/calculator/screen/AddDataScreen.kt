@@ -54,8 +54,10 @@ fun AddDataScreen(
     var dose by remember { mutableStateOf("") }
     var maxDose by remember { mutableStateOf("") }
     var alert by remember { mutableStateOf("") }
+    var selectedCategory by remember { mutableStateOf(com.example.dosagecalc.domain.model.DrugCategory.OTHER) }
 
     var expanded by remember { mutableStateOf(false) }
+    var categoryExpanded by remember { mutableStateOf(false) }
     val formulaOptions = listOf("Per Kg (es. mg/kg)", "Per Superficie (es. mg/m²)", "Dose Fissa")
     var selectedFormula by remember { mutableStateOf(formulaOptions[0]) }
 
@@ -67,7 +69,8 @@ fun AddDataScreen(
                 unit = drug.unit
                 dose = drug.unitDose.toString()
                 maxDose = drug.unitDoseMax?.toString() ?: ""
-                alert = drug.alert ?: ""
+                alert = drug.alert
+                selectedCategory = drug.category
                 selectedFormula = when (drug.formulaType) {
                     FormulaType.PER_KG -> formulaOptions[0]
                     FormulaType.PER_M2 -> formulaOptions[1]
@@ -89,8 +92,8 @@ fun AddDataScreen(
         ) {
             GradientScreenHeader(
                 colors = listOf(
-                    MaterialTheme.colorScheme.primary,
-                    MaterialTheme.colorScheme.primaryContainer
+                    MaterialTheme.colorScheme.error,
+                    MaterialTheme.colorScheme.errorContainer
                 ),
                 modifier = Modifier.padding(bottom = 0.dp)
             ) {
@@ -103,13 +106,13 @@ fun AddDataScreen(
                             Icon(
                                 imageVector        = Icons.AutoMirrored.Filled.ArrowBack,
                                 contentDescription = "Indietro",
-                                tint               = MaterialTheme.colorScheme.onPrimary
+                                tint               = MaterialTheme.colorScheme.onError
                             )
                         }
                         Text(
                             text  = "Dashboard",
                             style = MaterialTheme.typography.titleMedium,
-                            color = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.8f)
+                            color = MaterialTheme.colorScheme.onError.copy(alpha = 0.8f)
                         )
                     }
 
@@ -117,13 +120,13 @@ fun AddDataScreen(
                         Text(
                             text  = if (drugId != null) "Modifica Farmaco" else "Aggiungi Farmaco",
                             style = MaterialTheme.typography.headlineMedium.copy(fontFamily = FontFamily.Serif),
-                            color = MaterialTheme.colorScheme.onPrimary
+                            color = MaterialTheme.colorScheme.onError
                         )
                         Spacer(modifier = Modifier.height(8.dp))
                         Text(
                             text  = if (drugId != null) "Modifica i dati del medicinale" else "Inserisci un nuovo medicinale",
                             style = MaterialTheme.typography.bodyMedium,
-                            color = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.9f)
+                            color = MaterialTheme.colorScheme.onError.copy(alpha = 0.9f)
                         )
                         Spacer(modifier = Modifier.height(24.dp))
                     }
@@ -160,6 +163,35 @@ fun AddDataScreen(
                     modifier = Modifier.fillMaxWidth(),
                     shape = RoundedCornerShape(12.dp)
                 )
+
+                ExposedDropdownMenuBox(
+                    expanded = categoryExpanded,
+                    onExpandedChange = { categoryExpanded = it },
+                ) {
+                    OutlinedTextField(
+                        value = selectedCategory.label,
+                        onValueChange = {},
+                        readOnly = true,
+                        label = { Text("Categoria Farmaco") },
+                        trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = categoryExpanded) },
+                        modifier = Modifier.fillMaxWidth().menuAnchor(),
+                        shape = RoundedCornerShape(12.dp)
+                    )
+                    ExposedDropdownMenu(
+                        expanded = categoryExpanded,
+                        onDismissRequest = { categoryExpanded = false }
+                    ) {
+                        com.example.dosagecalc.domain.model.DrugCategory.entries.forEach { category ->
+                            DropdownMenuItem(
+                                text = { Text(category.label) },
+                                onClick = {
+                                    selectedCategory = category
+                                    categoryExpanded = false
+                                }
+                            )
+                        }
+                    }
+                }
 
                 Text(
                     text = "Regole di Dosaggio",
@@ -251,6 +283,7 @@ fun AddDataScreen(
                         id = drugId,
                         name = name,
                         indication = indication,
+                        category = selectedCategory,
                         formula = selectedFormula,
                         dose = dose,
                         unit = unit,

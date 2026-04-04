@@ -40,8 +40,8 @@ fun PatientAddSheet(
     var weight by remember { mutableStateOf("") }
     var height by remember { mutableStateOf("") }
     var age by remember { mutableStateOf("") }
-    var renalImpair by remember { mutableStateOf(false) }
-    var hepaticImpair by remember { mutableStateOf(false) }
+    var renalStage by remember { mutableStateOf(com.example.dosagecalc.domain.model.RenalStage.NONE) }
+    var hepaticStage by remember { mutableStateOf(com.example.dosagecalc.domain.model.HepaticStage.NONE) }
 
     ModalBottomSheet(
         onDismissRequest = onDismiss,
@@ -108,10 +108,10 @@ fun PatientAddSheet(
                 Spacer(modifier = Modifier.height(8.dp))
 
                 ImpairmentChipsRow(
-                    hasRenalImpairment = renalImpair,
-                    hasHepaticImpairment = hepaticImpair,
-                    onRenalChanged = { renalImpair = it },
-                    onHepaticChanged = { hepaticImpair = it }
+                    renalStage = renalStage,
+                    hepaticStage = hepaticStage,
+                    onRenalStageChanged = { renalStage = it },
+                    onHepaticStageChanged = { hepaticStage = it }
                 )
 
                 Spacer(modifier = Modifier.height(24.dp))
@@ -120,7 +120,9 @@ fun PatientAddSheet(
             Button(
                 onClick = {
                     if (name.isNotBlank() && surname.isNotBlank() && weight.isNotBlank()) {
-                        onSave(name, surname, weight, height.ifBlank { null }, age, renalImpair, hepaticImpair)
+                        val hasRenal = renalStage != com.example.dosagecalc.domain.model.RenalStage.NONE
+                        val hasHepatic = hepaticStage != com.example.dosagecalc.domain.model.HepaticStage.NONE
+                        onSave(name, surname, weight, height.ifBlank { null }, age, hasRenal, hasHepatic)
                     }
                 },
                 modifier = Modifier

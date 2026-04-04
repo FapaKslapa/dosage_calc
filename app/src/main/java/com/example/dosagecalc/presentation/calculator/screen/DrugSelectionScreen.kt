@@ -1,6 +1,8 @@
 package com.example.dosagecalc.presentation.calculator.screen
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -36,6 +38,11 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.luminance
+import androidx.compose.material.icons.filled.DarkMode
+import androidx.compose.material.icons.filled.LightMode
+import androidx.compose.material3.IconButton
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -53,10 +60,14 @@ fun DrugSelectionScreen(
     onNavigateToPatients: () -> Unit,
     onNavigateToHistory: () -> Unit,
     onNavigateToReminders: () -> Unit,
-    onNavigateToAddData: (String?) -> Unit
+    onNavigateToAddData: (String?) -> Unit,
+    onToggleTheme: () -> Unit = {}
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     var drugToDelete by remember { mutableStateOf<com.example.dosagecalc.domain.model.Drug?>(null) }
+    val activity = LocalContext.current as? android.app.Activity
+    val isDark = MaterialTheme.colorScheme.background.luminance() < 0.5f
+    BackHandler { activity?.finish() }
 
     Box(
         modifier = Modifier
@@ -81,6 +92,19 @@ fun DrugSelectionScreen(
                         .offset(x = (-30).dp, y = 36.dp)
                         .background(Color.White.copy(alpha = 0.06f), CircleShape)
                 )
+
+                IconButton(
+                    onClick = onToggleTheme,
+                    modifier = Modifier
+                        .align(Alignment.TopEnd)
+                        .padding(top = 8.dp, end = 8.dp)
+                ) {
+                    Icon(
+                        imageVector = if (isDark) Icons.Default.LightMode else Icons.Default.DarkMode,
+                        contentDescription = if (isDark) "Passa a tema chiaro" else "Passa a tema scuro",
+                        tint = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.85f)
+                    )
+                }
 
                 Column(modifier = Modifier.padding(start = 24.dp, top = 40.dp)) {
                     Text(
@@ -134,6 +158,27 @@ fun DrugSelectionScreen(
                         .padding(horizontal = 20.dp),
                     singleLine = true
                 )
+                Spacer(modifier = Modifier.height(12.dp))
+
+                LazyRow(
+                    modifier = Modifier.fillMaxWidth().padding(horizontal = 20.dp),
+                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    item {
+                        androidx.compose.material3.FilterChip(
+                            selected = uiState.selectedCategory == null,
+                            onClick = { viewModel.onCategorySelected(null) },
+                            label = { Text("Tutti") }
+                        )
+                    }
+                    items(com.example.dosagecalc.domain.model.DrugCategory.entries) { category ->
+                        androidx.compose.material3.FilterChip(
+                            selected = uiState.selectedCategory == category,
+                            onClick = { viewModel.onCategorySelected(category) },
+                            label = { Text(category.label) }
+                        )
+                    }
+                }
                 Spacer(modifier = Modifier.height(16.dp))
 
                 when {
@@ -156,10 +201,7 @@ fun DrugSelectionScreen(
                         )
                     }
                     else -> {
-                        val filteredDrugs = uiState.availableDrugs.filter {
-                            it.name.contains(uiState.searchQuery, ignoreCase = true) ||
-                            it.indication.contains(uiState.searchQuery, ignoreCase = true)
-                        }
+                        val filteredDrugs = uiState.filteredDrugs
 
                         LazyRow(
                             modifier = Modifier.fillMaxWidth()

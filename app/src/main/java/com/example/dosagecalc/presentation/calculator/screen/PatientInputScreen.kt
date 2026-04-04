@@ -208,10 +208,10 @@ fun PatientInputScreen(
                         Spacer(modifier = Modifier.height(12.dp))
 
                         ImpairmentChipsRow(
-                            hasRenalImpairment = uiState.hasRenalImpairment,
-                            hasHepaticImpairment = uiState.hasHepaticImpairment,
-                            onRenalChanged = viewModel::onRenalImpairmentChanged,
-                            onHepaticChanged = viewModel::onHepaticImpairmentChanged
+                            renalStage = uiState.renalStage,
+                            hepaticStage = uiState.hepaticStage,
+                            onRenalStageChanged = viewModel::onRenalStageChanged,
+                            onHepaticStageChanged = viewModel::onHepaticStageChanged
                         )
                         
                     }

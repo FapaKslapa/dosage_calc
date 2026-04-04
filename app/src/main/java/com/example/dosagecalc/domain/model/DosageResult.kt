@@ -5,6 +5,8 @@ sealed class DosageResult {
     data class Success(
         val totalDose: Double,
         val totalDoseMax: Double? = null,
+        val totalCycleDose: Double? = null,
+        val totalTherapyDose: Double? = null,
         val unit: String,
         val formula: String,
         val alert: String,

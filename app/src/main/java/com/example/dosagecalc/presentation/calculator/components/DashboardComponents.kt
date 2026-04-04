@@ -42,6 +42,14 @@ import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
 import com.example.dosagecalc.domain.model.Drug
+import com.example.dosagecalc.domain.model.FormulaType
+
+private fun FormulaType.labelIt(): String = when (this) {
+    FormulaType.PER_KG   -> "per kg"
+    FormulaType.PER_M2   -> "per m²"
+    FormulaType.FIXED    -> "dose fissa"
+    FormulaType.BY_RANGE -> "per fascia"
+}
 
 private enum class ShortcutColorVariant { PRIMARY, SECONDARY, TERTIARY, ERROR }
 
@@ -221,7 +229,7 @@ fun DrugSelectionCard(
                     color = if (isSelected) MaterialTheme.colorScheme.primary.copy(alpha = 0.2f) else MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.1f)
                 ) {
                     Text(
-                        text = drug.formulaType.name.lowercase().replace("_", " "),
+                        text = drug.formulaType.labelIt(),
                         style = MaterialTheme.typography.labelSmall,
                         modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp),
                         color = if (isSelected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant
@@ -271,7 +279,7 @@ fun DrugPreviewCard(drug: Drug) {
                             color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
                         Text(
-                            text  = "${drug.unitDose} ${drug.unit} (${drug.formulaType.name.lowercase().replace("_", " ")})",
+                            text  = "${drug.unitDose} ${drug.unit} (${drug.formulaType.labelIt()})",
                             style = MaterialTheme.typography.titleMedium,
                             color = MaterialTheme.colorScheme.onSurface
                         )

@@ -13,6 +13,8 @@ data class HistoryRecord(
     val ageYears: Int,
     val calculatedDose: Double,
     val calculatedDoseMax: Double? = null,
+    val calculatedCycleDose: Double? = null,
+    val calculatedTherapyDose: Double? = null,
     val doseUnit: String,
     val formulaUsed: String? = null,
     val notes: String? = null

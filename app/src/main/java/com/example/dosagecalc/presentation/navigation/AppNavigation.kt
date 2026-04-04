@@ -1,7 +1,14 @@
 package com.example.dosagecalc.presentation.navigation
 
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
@@ -17,61 +24,79 @@ import com.example.dosagecalc.presentation.calculator.screen.PatientInputScreen
 import com.example.dosagecalc.presentation.calculator.screen.RemindersScreen
 import com.example.dosagecalc.presentation.history.HistoryViewModel
 import com.example.dosagecalc.presentation.history.screen.HistoryScreen
+import com.example.dosagecalc.presentation.onboarding.OnboardingViewModel
+import com.example.dosagecalc.presentation.onboarding.screen.OnboardingScreen
 import com.example.dosagecalc.presentation.patient.PatientsViewModel
 import com.example.dosagecalc.presentation.patient.screen.PatientsScreen
 
 sealed class AppRoute(val route: String) {
-    object DrugSelection  : AppRoute("drug_selection")
-    object PatientInput   : AppRoute("patient_input")
-    object DosageResult   : AppRoute("dosage_result")
-    object PatientsList   : AppRoute("patients_list")
-    object GlobalHistory  : AppRoute("global_history")
-    object Reminders      : AppRoute("reminders")
-    object AddData        : AppRoute("add_data")
+    object Onboarding    : AppRoute("onboarding")
+    object DrugSelection : AppRoute("drug_selection")
+    object PatientInput  : AppRoute("patient_input")
+    object DosageResult  : AppRoute("dosage_result")
+    object PatientsList  : AppRoute("patients_list")
+    object GlobalHistory : AppRoute("global_history")
+    object Reminders     : AppRoute("reminders")
+    object AddData       : AppRoute("add_data")
 }
 
 @Composable
 fun AppNavigation(
-    navController: NavHostController = rememberNavController()
+    navController: NavHostController = rememberNavController(),
+    onToggleTheme: () -> Unit = {}
 ) {
-    
+    val onboardingVm: OnboardingViewModel = hiltViewModel()
+    val onboardingDone by onboardingVm.isCompleted.collectAsStateWithLifecycle()
+
+    // Show a loading screen until DataStore emits its first value
+    if (onboardingDone == null) {
+        Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+            CircularProgressIndicator()
+        }
+        return
+    }
+
+    val startDestination = if (onboardingDone == true) AppRoute.DrugSelection.route
+                           else AppRoute.Onboarding.route
+
     val viewModel: CalculatorViewModel = hiltViewModel()
 
     NavHost(
         navController    = navController,
-        startDestination = AppRoute.DrugSelection.route
+        startDestination = startDestination
     ) {
+
+        composable(route = AppRoute.Onboarding.route) {
+            OnboardingScreen(
+                onFinish = {
+                    onboardingVm.completeOnboarding()
+                    navController.navigate(AppRoute.DrugSelection.route) {
+                        popUpTo(AppRoute.Onboarding.route) { inclusive = true }
+                    }
+                }
+            )
+        }
 
         composable(route = AppRoute.DrugSelection.route) {
             DrugSelectionScreen(
-                viewModel   = viewModel,
-                onNavigateToInput = {
-                    navController.navigate(AppRoute.PatientInput.route)
+                viewModel            = viewModel,
+                onNavigateToInput    = { navController.navigate(AppRoute.PatientInput.route) },
+                onNavigateToPatients = { navController.navigate(AppRoute.PatientsList.route) },
+                onNavigateToHistory  = { navController.navigate(AppRoute.GlobalHistory.route) },
+                onNavigateToReminders = { navController.navigate(AppRoute.Reminders.route) },
+                onNavigateToAddData  = { drugId ->
+                    if (drugId != null) navController.navigate(AppRoute.AddData.route + "?drugId=$drugId")
+                    else                navController.navigate(AppRoute.AddData.route)
                 },
-                onNavigateToPatients = {
-                    navController.navigate(AppRoute.PatientsList.route)
-                },
-                onNavigateToHistory = {
-                    navController.navigate(AppRoute.GlobalHistory.route)
-                },
-                onNavigateToReminders = {
-                    navController.navigate(AppRoute.Reminders.route)
-                },
-                onNavigateToAddData = { drugId ->
-                    if (drugId != null) {
-                        navController.navigate(AppRoute.AddData.route + "?drugId=$drugId")
-                    } else {
-                        navController.navigate(AppRoute.AddData.route)
-                    }
-                }
+                onToggleTheme = onToggleTheme
             )
         }
 
         composable(route = AppRoute.PatientsList.route) {
             val patientsViewModel: PatientsViewModel = hiltViewModel()
             PatientsScreen(
-                viewModel = patientsViewModel,
-                onNavigateBack = { navController.popBackStack() },
+                viewModel         = patientsViewModel,
+                onNavigateBack    = { navController.popBackStack() },
                 onNavigateToHistory = { navController.navigate(AppRoute.GlobalHistory.route) }
             )
         }
@@ -79,7 +104,7 @@ fun AppNavigation(
         composable(route = AppRoute.GlobalHistory.route) {
             val historyViewModel: HistoryViewModel = hiltViewModel()
             HistoryScreen(
-                viewModel = historyViewModel,
+                viewModel      = historyViewModel,
                 onNavigateBack = { navController.popBackStack() }
             )
         }
@@ -87,43 +112,37 @@ fun AppNavigation(
         composable(route = AppRoute.Reminders.route) {
             val remindersViewModel: RemindersViewModel = hiltViewModel()
             RemindersScreen(
-                viewModel = remindersViewModel,
+                viewModel      = remindersViewModel,
                 onNavigateBack = { navController.popBackStack() }
             )
         }
 
         composable(
-            route = AppRoute.AddData.route + "?drugId={drugId}",
+            route     = AppRoute.AddData.route + "?drugId={drugId}",
             arguments = listOf(navArgument("drugId") { type = NavType.StringType; nullable = true })
         ) { backStackEntry ->
-            val drugId = backStackEntry.arguments?.getString("drugId")
             AddDataScreen(
-                drugId = drugId,
+                drugId         = backStackEntry.arguments?.getString("drugId"),
                 onNavigateBack = { navController.popBackStack() }
             )
         }
 
         composable(route = AppRoute.PatientInput.route) {
             PatientInputScreen(
-                viewModel        = viewModel,
-                onNavigateBack   = { navController.popBackStack() },
-                onNavigateToResult = {
-                    navController.navigate(AppRoute.DosageResult.route)
-                }
+                viewModel          = viewModel,
+                onNavigateBack     = { navController.popBackStack() },
+                onNavigateToResult = { navController.navigate(AppRoute.DosageResult.route) }
             )
         }
 
         composable(route = AppRoute.DosageResult.route) {
             DosageResultScreen(
-                viewModel      = viewModel,
-                onNewCalculation = {
-                    
-                    navController.popBackStack(
-                        route         = AppRoute.DrugSelection.route,
-                        inclusive     = false
-                    )
+                viewModel             = viewModel,
+                onNewCalculation      = {
+                    navController.popBackStack(AppRoute.DrugSelection.route, inclusive = false)
                     viewModel.resetCalculation()
-                }
+                },
+                onNavigateBackToInput = { navController.popBackStack() }
             )
         }
     }

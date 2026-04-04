@@ -14,10 +14,13 @@ data class Drug(
     val maxSingleDoseMcg: Double?,
     val alert: String,
     val source: String,
+    val category: DrugCategory = DrugCategory.OTHER,
     val renalDoseMultiplier: Double? = null,
     val hepaticDoseMultiplier: Double? = null,
     val renalAlert: String? = null,
-    val hepaticAlert: String? = null
+    val hepaticAlert: String? = null,
+    val daysPerCycle: Int? = null,
+    val numberOfCycles: Int? = null
 )
 
 enum class FormulaType {
@@ -25,4 +28,36 @@ enum class FormulaType {
     PER_M2,
     FIXED,
     BY_RANGE
+}
+
+/**
+ * Staging dell'insufficienza renale (CKD) secondo KDIGO.
+ * [drugMultiplier] nel modello Drug rappresenta la riduzione massima (G5).
+ * I gradi intermedi vengono interpolati in CalculateDosageUseCase.
+ */
+enum class RenalStage(val label: String, val gfrRange: String) {
+    NONE("Normale (G1)",               "GFR ≥ 90 ml/min"),
+    G2("Lieve riduzione (G2)",         "GFR 60–89 ml/min"),
+    G3("IRC Lieve-Mod. (G3)",          "GFR 30–59 ml/min"),
+    G4("IRC Moderata-Grave (G4)",      "GFR 15–29 ml/min"),
+    G5("IRC Grave/Terminale (G5)",     "GFR < 15 ml/min")
+}
+
+/**
+ * Staging dell'insufficienza epatica secondo Child-Pugh.
+ * [drugMultiplier] rappresenta la riduzione massima (Child-Pugh C).
+ */
+enum class HepaticStage(val label: String, val description: String) {
+    NONE("Nessuna (Normale)", ""),
+    CHILD_A("Child-Pugh A",    "Lieve — 5–6 punti"),
+    CHILD_B("Child-Pugh B",    "Moderata — 7–9 punti"),
+    CHILD_C("Child-Pugh C",    "Grave — 10–15 punti")
+}
+
+enum class DrugCategory(val label: String) {
+    DERMATOLOGY("Dermatologia"),
+    ONCOLOGY("Oncologia"),
+    INFECTIOUS("Infettivologia"),
+    PEDIATRICS("Pediatria"),
+    OTHER("Altro")
 }

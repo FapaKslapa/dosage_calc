@@ -10,6 +10,7 @@
     "maxWeightKg": 150.0,
     "minAgeYears": 5,
     "maxSingleDoseMcg": 400000.0,
+    "category": "dermatology",
     "alert": "Usare peso in kg. Controindicato sotto i 15 kg o sotto i 5 anni. Somministrare a stomaco vuoto 1 ora prima del pasto.",
     "source": "WHO Model Formulary 2023 - Ivermectin 200 g/kg per os"
   },
@@ -23,6 +24,7 @@
     "unit": "mg",
     "minWeightKg": 5.0,
     "maxWeightKg": 40.0,
+    "category": "pediatrics",
     "maxSingleDoseMcg": 1000.0,
     "alert": "Somministrare in 2-3 dosi divise",
     "source": "Linee guida pediatriche"
@@ -37,6 +39,7 @@
     "minWeightKg": null,
     "maxWeightKg": null,
     "minAgeYears": 18,
+    "category": "dermatology",
     "maxSingleDoseMcg": null,
     "alert": "Applicazione topica 0.75% - 1%. Solo per adulti. Evitare il contatto con gli occhi.",
     "source": "AIFA - Scheda Tecnica Metronidazolo crema 0.75%"
@@ -51,6 +54,7 @@
     "minWeightKg": 40.0,
     "maxWeightKg": null,
     "minAgeYears": 12,
+    "category": "dermatology",
     "maxSingleDoseMcg": 100000.0,
     "alert": "100 mg/die per os. Controindicata in gravidanza e sotto i 12 anni. Assumere con abbondante acqua per evitare esofagiti.",
     "source": "RCP EMA - Doxiciclina 100 mg compresse",
@@ -67,6 +71,7 @@
     "minWeightKg": null,
     "maxWeightKg": null,
     "minAgeYears": null,
+    "category": "infectious",
     "maxSingleDoseMcg": 4000000.0,
     "alert": "Somministrazione endovenosa lenta (30 min).",
     "source": "Linee guida antimicrobiche 2024",
@@ -74,5 +79,20 @@
     "renalAlert": "Dose massima 2g/die se GFR < 10 ml/min. Applicato limite del 50%.",
     "hepaticDoseMultiplier": 0.75,
     "hepaticAlert": "Ridurre dose se insufficienza epatica contemporanea a renale."
+  },
+  {
+    "id": "paclitaxel_oncology",
+    "name": "Paclitaxel",
+    "indication": "Carcinoma mammario metastatico",
+    "formulaType": "per_m2",
+    "unitDose": 175.0,
+    "unit": "mg",
+    "category": "oncology",
+    "daysPerCycle": 1,
+    "numberOfCycles": 6,
+    "alert": "Monitorare emocromo. Pre-medicare per evitare ipersensibilità.",
+    "source": "Protocollo oncologico standard",
+    "hepaticDoseMultiplier": 0.5,
+    "hepaticAlert": "Ridurre dose se bilirubina > 1.5 mg/dL."
   }
 ]

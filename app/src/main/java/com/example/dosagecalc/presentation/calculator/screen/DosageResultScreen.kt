@@ -51,7 +51,8 @@ import com.example.dosagecalc.presentation.utils.PdfManager
 @Composable
 fun DosageResultScreen(
     viewModel: CalculatorViewModel,
-    onNewCalculation: () -> Unit
+    onNewCalculation: () -> Unit,
+    onNavigateBackToInput: () -> Unit = {}
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val result  = uiState.dosageResult ?: return   
@@ -176,7 +177,10 @@ fun DosageResultScreen(
                     if (result is DosageResult.ValidationError) {
                         Spacer(modifier = Modifier.height(8.dp))
                         FilledTonalButton(
-                            onClick  = viewModel::resetCalculation,
+                            onClick = {
+                                viewModel.clearResult()
+                                onNavigateBackToInput()
+                            },
                             shape    = RoundedCornerShape(50),
                             modifier = Modifier.fillMaxWidth().height(48.dp)
                         ) {

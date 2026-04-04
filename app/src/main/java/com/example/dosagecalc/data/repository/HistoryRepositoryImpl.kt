@@ -60,6 +60,8 @@ class HistoryRepositoryImpl(
             ageYears = ageYears,
             calculatedDose = calculatedDose,
             calculatedDoseMax = calculatedDoseMax,
+            calculatedCycleDose = calculatedCycleDose,
+            calculatedTherapyDose = calculatedTherapyDose,
             doseUnit = doseUnit,
             formulaUsed = formulaUsed,
             notes = notes
@@ -68,7 +70,7 @@ class HistoryRepositoryImpl(
 
     private fun HistoryRecord.toEntity(): HistoryEntity {
         return HistoryEntity(
-            id = id,
+            id = if (id.isBlank()) java.util.UUID.randomUUID().toString() else id,
             patientId = patientId,
             drugId = drugId,
             drugName = drugName,
@@ -78,6 +80,8 @@ class HistoryRepositoryImpl(
             ageYears = ageYears,
             calculatedDose = calculatedDose,
             calculatedDoseMax = calculatedDoseMax,
+            calculatedCycleDose = calculatedCycleDose,
+            calculatedTherapyDose = calculatedTherapyDose,
             doseUnit = doseUnit,
             formulaUsed = formulaUsed,
             notes = notes

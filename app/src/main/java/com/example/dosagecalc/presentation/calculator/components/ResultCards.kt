@@ -174,6 +174,70 @@ fun DetailsCard(result: DosageResult.Success) {
                 }
             }
 
+            if (result.totalCycleDose != null || result.totalTherapyDose != null) {
+                Spacer(modifier = Modifier.height(20.dp))
+                HorizontalDivider(
+                    color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.2f)
+                )
+                Spacer(modifier = Modifier.height(20.dp))
+
+                Column {
+                    result.totalCycleDose?.let { cycleDose ->
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            Icon(
+                                imageVector = Icons.Filled.CheckCircle,
+                                contentDescription = null,
+                                tint = MaterialTheme.colorScheme.primary.copy(alpha = 0.6f),
+                                modifier = Modifier.size(20.dp)
+                            )
+                            Spacer(modifier = Modifier.width(12.dp))
+                            Column {
+                                Text(
+                                    text = "Dose Totale per Ciclo",
+                                    style = MaterialTheme.typography.titleMedium,
+                                    color = MaterialTheme.colorScheme.onSurface
+                                )
+                                Text(
+                                    text = "${formatDose(cycleDose)} ${result.unit}",
+                                    style = MaterialTheme.typography.bodyLarge,
+                                    fontWeight = FontWeight.Bold,
+                                    color = MaterialTheme.colorScheme.primary
+                                )
+                            }
+                        }
+                    }
+
+                    if (result.totalCycleDose != null && result.totalTherapyDose != null) {
+                        Spacer(modifier = Modifier.height(16.dp))
+                    }
+
+                    result.totalTherapyDose?.let { therapyDose ->
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            Icon(
+                                imageVector = Icons.Filled.CheckCircle,
+                                contentDescription = null,
+                                tint = MaterialTheme.colorScheme.tertiary.copy(alpha = 0.6f),
+                                modifier = Modifier.size(20.dp)
+                            )
+                            Spacer(modifier = Modifier.width(12.dp))
+                            Column {
+                                Text(
+                                    text = "Dose Totale Terapia",
+                                    style = MaterialTheme.typography.titleMedium,
+                                    color = MaterialTheme.colorScheme.onSurface
+                                )
+                                Text(
+                                    text = "${formatDose(therapyDose)} ${result.unit}",
+                                    style = MaterialTheme.typography.bodyLarge,
+                                    fontWeight = FontWeight.Bold,
+                                    color = MaterialTheme.colorScheme.tertiary
+                                )
+                            }
+                        }
+                    }
+                }
+            }
+
             if (result.source.isNotBlank()) {
                 Spacer(modifier = Modifier.height(20.dp))
                 HorizontalDivider(

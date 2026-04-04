@@ -3,8 +3,11 @@ package com.example.dosagecalc.domain.usecase
 import com.example.dosagecalc.domain.model.DosageResult
 import com.example.dosagecalc.domain.model.Drug
 import com.example.dosagecalc.domain.model.FormulaType
+import com.example.dosagecalc.domain.model.HepaticStage
 import com.example.dosagecalc.domain.model.PatientData
+import com.example.dosagecalc.domain.model.RenalStage
 import javax.inject.Inject
+import kotlin.math.roundToInt
 
 class CalculateDosageUseCase @Inject constructor(
     private val validateInputUseCase: ValidateInputUseCase,
@@ -15,89 +18,43 @@ class CalculateDosageUseCase @Inject constructor(
 
         val validation = validateInputUseCase(drug, patientData)
         if (validation is ValidationResult.Invalid) {
-            
             return DosageResult.ValidationError(
                 reason = validation.errors.joinToString(separator = "\n• ", prefix = "• ")
             )
         }
 
         return when (drug.formulaType) {
-
-            FormulaType.PER_KG -> calculatePerKg(drug, patientData)
-
-            FormulaType.PER_M2 -> calculatePerM2(drug, patientData)
-
-            FormulaType.FIXED -> calculateFixed(drug, patientData)
-
+            FormulaType.PER_KG   -> calculatePerKg(drug, patientData)
+            FormulaType.PER_M2   -> calculatePerM2(drug, patientData)
+            FormulaType.FIXED    -> calculateFixed(drug, patientData)
             FormulaType.BY_RANGE -> calculateByRange(drug, patientData)
         }
     }
 
-    private fun applyImpairments(rawDose: Double, drug: Drug, patientData: PatientData): Pair<Double, String> {
-        var dose = rawDose
-        var alertMessage = ""
-
-        if (patientData.hasRenalImpairment && drug.renalDoseMultiplier != null) {
-            dose *= drug.renalDoseMultiplier
-            alertMessage += "⚠ Dose ridotta del ${((1 - drug.renalDoseMultiplier) * 100).toInt()}% per insufficienza renale. "
-            if (drug.renalAlert != null) alertMessage += "${drug.renalAlert} "
-        }
-
-        if (patientData.hasHepaticImpairment && drug.hepaticDoseMultiplier != null) {
-            dose *= drug.hepaticDoseMultiplier
-            alertMessage += "\n⚠ Dose ridotta del ${((1 - drug.hepaticDoseMultiplier) * 100).toInt()}% per insufficienza epatica. "
-            if (drug.hepaticAlert != null) alertMessage += "${drug.hepaticAlert} "
-        }
-
-        return Pair(dose, alertMessage)
-    }
-
-    private fun calculateByRange(drug: Drug, patientData: PatientData): DosageResult {
-        val weight = patientData.weightKg!! 
-        val rawMinDose = drug.unitDose * weight
-        val rawMaxDose = (drug.unitDoseMax ?: drug.unitDose) * weight
-
-        val (impairedMinDose, impAlertMin) = applyImpairments(rawMinDose, drug, patientData)
-        val (impairedMaxDose, impAlertMax) = applyImpairments(rawMaxDose, drug, patientData)
-
-        val (finalMin, cappedMin) = applyCeiling(impairedMinDose, drug.maxSingleDoseMcg)
-        val (finalMax, cappedMax) = applyCeiling(impairedMaxDose, drug.maxSingleDoseMcg)
-
-        val capped = cappedMin || cappedMax
-        var formula = "Intervallo base: ${drug.unitDose} - ${drug.unitDoseMax ?: drug.unitDose} ${drug.unit}/kg × $weight kg = $rawMinDose - $rawMaxDose ${drug.unit}."
-        if (impAlertMin.isNotBlank()) formula += "\nPenalità patologia applicata."
-
-        if (capped) formula += "\n(Ridotta al massimo consentito: ${drug.maxSingleDoseMcg})"
-
-        val fullAlert = sequenceOf(drug.alert, impAlertMin).filter { it.isNotBlank() }.joinToString("\n\n").trim()
-
-        return DosageResult.Success(
-            totalDose       = finalMin,
-            totalDoseMax    = finalMax,
-            unit            = drug.unit,
-            formula         = formula,
-            alert           = fullAlert,
-            source          = drug.source,
-            cappedToMaxDose = capped
-        )
-    }
+    // ──────────────────────────────────────────────────────────────────────────
+    // Formula implementations
+    // ──────────────────────────────────────────────────────────────────────────
 
     private fun calculatePerKg(drug: Drug, patientData: PatientData): DosageResult {
-        val weight = patientData.weightKg!!  
+        val weight = patientData.weightKg!!
         val rawDose = drug.unitDose * weight
 
         val (impairedDose, impAlert) = applyImpairments(rawDose, drug, patientData)
-
         val (finalDose, capped) = applyCeiling(impairedDose, drug.maxSingleDoseMcg)
 
         var formula = "${drug.unitDose} ${drug.unit}/kg × $weight kg = $rawDose ${drug.unit}"
-        if (impAlert.isNotBlank()) formula += "\n(Riduzione patologica applicata)"
-        if (capped) formula += " (limitato al massimo consentito: ${drug.maxSingleDoseMcg})"
+        if (impAlert.isNotBlank()) formula += "\n(Riduzione per patologia applicata)"
+        if (capped) formula += "\n(Limitata al massimo consentito: ${drug.maxSingleDoseMcg})"
 
-        val fullAlert = sequenceOf(drug.alert, impAlert).filter { it.isNotBlank() }.joinToString("\n\n").trim()
+        val fullAlert = listOf(drug.alert, impAlert).filter { it.isNotBlank() }.joinToString("\n\n")
+
+        val cycleDose = if (drug.daysPerCycle != null) finalDose * drug.daysPerCycle else null
+        val therapyDose = if (cycleDose != null && drug.numberOfCycles != null) cycleDose * drug.numberOfCycles else null
 
         return DosageResult.Success(
             totalDose       = finalDose,
+            totalCycleDose  = cycleDose,
+            totalTherapyDose = therapyDose,
             unit            = drug.unit,
             formula         = formula,
             alert           = fullAlert,
@@ -107,24 +64,28 @@ class CalculateDosageUseCase @Inject constructor(
     }
 
     private fun calculatePerM2(drug: Drug, patientData: PatientData): DosageResult {
-        val weight = patientData.weightKg!!   
-        val height = patientData.heightCm!!   
+        val weight = patientData.weightKg!!
+        val height = patientData.heightCm!!
 
         val bsa = calculateBsaUseCase(weight, height)
         val rawDose = drug.unitDose * bsa
 
         val (impairedDose, impAlert) = applyImpairments(rawDose, drug, patientData)
-
         val (finalDose, capped) = applyCeiling(impairedDose, drug.maxSingleDoseMcg)
 
-        var formula = "${drug.unitDose} ${drug.unit}/m² × $bsa m² (BSA) = $rawDose ${drug.unit}"
-        if (impAlert.isNotBlank()) formula += "\n(Riduzione patologica applicata)"
-        if (capped) formula += " (limitato al massimo consentito)"
+        var formula = "${drug.unitDose} ${drug.unit}/m² × %.2f m² (BSA Mosteller) = %.2f ${drug.unit}".format(bsa, rawDose)
+        if (impAlert.isNotBlank()) formula += "\n(Riduzione per patologia applicata)"
+        if (capped) formula += "\n(Limitata al massimo consentito)"
 
-        val fullAlert = sequenceOf(drug.alert, impAlert).filter { it.isNotBlank() }.joinToString("\n\n").trim()
+        val fullAlert = listOf(drug.alert, impAlert).filter { it.isNotBlank() }.joinToString("\n\n")
+
+        val cycleDose = if (drug.daysPerCycle != null) finalDose * drug.daysPerCycle else null
+        val therapyDose = if (cycleDose != null && drug.numberOfCycles != null) cycleDose * drug.numberOfCycles else null
 
         return DosageResult.Success(
             totalDose       = finalDose,
+            totalCycleDose  = cycleDose,
+            totalTherapyDose = therapyDose,
             unit            = drug.unit,
             formula         = formula,
             alert           = fullAlert,
@@ -136,12 +97,17 @@ class CalculateDosageUseCase @Inject constructor(
     private fun calculateFixed(drug: Drug, patientData: PatientData): DosageResult {
         val rawDose = drug.unitDose
         val (impairedDose, impAlert) = applyImpairments(rawDose, drug, patientData)
-        val formula = "Dose fissa: ${drug.unitDose} ${drug.unit}"
 
-        val fullAlert = sequenceOf(drug.alert, impAlert).filter { it.isNotBlank() }.joinToString("\n\n").trim()
+        val formula = "Dose fissa: ${drug.unitDose} ${drug.unit}"
+        val fullAlert = listOf(drug.alert, impAlert).filter { it.isNotBlank() }.joinToString("\n\n")
+
+        val cycleDose = if (drug.daysPerCycle != null) impairedDose * drug.daysPerCycle else null
+        val therapyDose = if (cycleDose != null && drug.numberOfCycles != null) cycleDose * drug.numberOfCycles else null
 
         return DosageResult.Success(
             totalDose       = impairedDose,
+            totalCycleDose  = cycleDose,
+            totalTherapyDose = therapyDose,
             unit            = drug.unit,
             formula         = formula,
             alert           = fullAlert,
@@ -149,6 +115,110 @@ class CalculateDosageUseCase @Inject constructor(
             cappedToMaxDose = false
         )
     }
+
+    private fun calculateByRange(drug: Drug, patientData: PatientData): DosageResult {
+        val weight = patientData.weightKg!!
+        val minDose = drug.unitDose
+        val maxDose = drug.unitDoseMax ?: drug.unitDose
+
+        val rawMin = minDose * weight
+        val rawMax = maxDose * weight
+
+        val (impairedMin, impAlert) = applyImpairments(rawMin, drug, patientData)
+        val (impairedMax, _)        = applyImpairments(rawMax, drug, patientData)
+
+        val (finalMin, cappedMin) = applyCeiling(impairedMin, drug.maxSingleDoseMcg)
+        val (finalMax, cappedMax) = applyCeiling(impairedMax, drug.maxSingleDoseMcg)
+
+        val capped = cappedMin || cappedMax
+        var formula = "Intervallo: $minDose–$maxDose ${drug.unit}/kg × $weight kg = $rawMin–$rawMax ${drug.unit}"
+        if (impAlert.isNotBlank()) formula += "\n(Riduzione per patologia applicata)"
+        if (capped) formula += "\n(Limitata al massimo consentito: ${drug.maxSingleDoseMcg})"
+
+        val fullAlert = listOf(drug.alert, impAlert).filter { it.isNotBlank() }.joinToString("\n\n")
+
+        val cycleDoseMin = if (drug.daysPerCycle != null) finalMin * drug.daysPerCycle else null
+        val therapyDoseMin = if (cycleDoseMin != null && drug.numberOfCycles != null) cycleDoseMin * drug.numberOfCycles else null
+
+        return DosageResult.Success(
+            totalDose       = finalMin,
+            totalDoseMax    = finalMax,
+            totalCycleDose  = cycleDoseMin,
+            totalTherapyDose = therapyDoseMin,
+            unit            = drug.unit,
+            formula         = formula,
+            alert           = fullAlert,
+            source          = drug.source,
+            cappedToMaxDose = capped
+        )
+    }
+
+    // ──────────────────────────────────────────────────────────────────────────
+    // Impairment helpers
+    // ──────────────────────────────────────────────────────────────────────────
+
+    /**
+     * Applica i moltiplicatori di aggiustamento renale/epatico in base allo staging.
+     * Il [Drug.renalDoseMultiplier] rappresenta la riduzione massima (G5 / Child-Pugh C).
+     * I gradi intermedi vengono interpolati linearmente.
+     */
+    private fun applyImpairments(rawDose: Double, drug: Drug, patientData: PatientData): Pair<Double, String> {
+        var dose = rawDose
+        val alerts = mutableListOf<String>()
+
+        if (patientData.hasRenalImpairment) {
+            val stage = patientData.renalStage
+            if (drug.renalDoseMultiplier != null) {
+                val factor = renalFactor(stage, drug.renalDoseMultiplier)
+                dose *= factor
+                val pct = ((1.0 - factor) * 100).roundToInt()
+                if (pct > 0) {
+                    alerts += "⚠ Dose ridotta del $pct% — ${stage.label} (${stage.gfrRange})." +
+                            if (drug.renalAlert != null) "\n${drug.renalAlert}" else ""
+                }
+            } else {
+                if (stage != RenalStage.NONE) {
+                    alerts += "⚠ ${stage.label} (${stage.gfrRange}) — nessun aggiustamento definito nel RCP per questo farmaco. Valutare con cautela."
+                }
+            }
+        }
+
+        if (patientData.hasHepaticImpairment) {
+            val stage = patientData.hepaticStage
+            if (drug.hepaticDoseMultiplier != null) {
+                val factor = hepaticFactor(stage, drug.hepaticDoseMultiplier)
+                dose *= factor
+                val pct = ((1.0 - factor) * 100).roundToInt()
+                if (pct > 0) {
+                    alerts += "⚠ Dose ridotta del $pct% — ${stage.label}: ${stage.description}." +
+                            if (drug.hepaticAlert != null) "\n${drug.hepaticAlert}" else ""
+                }
+            } else {
+                if (stage != HepaticStage.NONE) {
+                    alerts += "⚠ ${stage.label} — nessun aggiustamento definito nel RCP per questo farmaco. Valutare con cautela."
+                }
+            }
+        }
+
+        return Pair(dose, alerts.joinToString("\n\n"))
+    }
+
+    private fun renalFactor(stage: RenalStage, drugMultiplier: Double): Double = when (stage) {
+        RenalStage.NONE -> 1.0
+        RenalStage.G2   -> lerp(1.0, drugMultiplier, 0.10)
+        RenalStage.G3   -> lerp(1.0, drugMultiplier, 0.35)
+        RenalStage.G4   -> lerp(1.0, drugMultiplier, 0.75)
+        RenalStage.G5   -> drugMultiplier
+    }
+
+    private fun hepaticFactor(stage: HepaticStage, drugMultiplier: Double): Double = when (stage) {
+        HepaticStage.NONE    -> 1.0
+        HepaticStage.CHILD_A -> lerp(1.0, drugMultiplier, 0.25)
+        HepaticStage.CHILD_B -> lerp(1.0, drugMultiplier, 0.65)
+        HepaticStage.CHILD_C -> drugMultiplier
+    }
+
+    private fun lerp(a: Double, b: Double, t: Double) = a + (b - a) * t
 
     private fun applyCeiling(dose: Double, maxDose: Double?): Pair<Double, Boolean> {
         if (maxDose == null || dose <= maxDose) return Pair(dose, false)

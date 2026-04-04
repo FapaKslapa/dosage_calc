@@ -20,10 +20,13 @@ data class CustomDrugEntity(
     val maxSingleDoseMcg: Double?,
     val alert: String,
     val source: String,
+    val category: String,
     val renalDoseMultiplier: Double?,
     val hepaticDoseMultiplier: Double?,
     val renalAlert: String?,
-    val hepaticAlert: String?
+    val hepaticAlert: String?,
+    val daysPerCycle: Int? = null,
+    val numberOfCycles: Int? = null
 ) {
     fun toDomain(): Drug {
         return Drug(
@@ -40,10 +43,13 @@ data class CustomDrugEntity(
             maxSingleDoseMcg = maxSingleDoseMcg,
             alert = alert,
             source = source,
+            category = com.example.dosagecalc.domain.model.DrugCategory.valueOf(category),
             renalDoseMultiplier = renalDoseMultiplier,
             hepaticDoseMultiplier = hepaticDoseMultiplier,
             renalAlert = renalAlert,
-            hepaticAlert = hepaticAlert
+            hepaticAlert = hepaticAlert,
+            daysPerCycle = daysPerCycle,
+            numberOfCycles = numberOfCycles
         )
     }
 }
@@ -63,10 +69,13 @@ fun Drug.toEntity(): CustomDrugEntity {
         maxSingleDoseMcg = maxSingleDoseMcg,
         alert = alert,
         source = source,
+        category = category.name,
         renalDoseMultiplier = renalDoseMultiplier,
         hepaticDoseMultiplier = hepaticDoseMultiplier,
         renalAlert = renalAlert,
-        hepaticAlert = hepaticAlert
+        hepaticAlert = hepaticAlert,
+        daysPerCycle = daysPerCycle,
+        numberOfCycles = numberOfCycles
     )
 }
 
