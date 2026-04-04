@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Widget text colors (white with varying alpha) -->
+    <color name="widget_white_full">#FFFFFFFF</color>
+    <color name="widget_white_88">#E0FFFFFF</color>
+    <color name="widget_white_80">#CCFFFFFF</color>
+    <color name="widget_white_70">#B3FFFFFF</color>
+    <color name="widget_white_55">#8CFFFFFF</color>
+    <color name="widget_white_50">#80FFFFFF</color>
+</resources>
