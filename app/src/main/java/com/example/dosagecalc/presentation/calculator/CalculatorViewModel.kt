@@ -7,7 +7,9 @@ import com.example.dosagecalc.domain.model.Drug
 import com.example.dosagecalc.domain.model.HistoryRecord
 import com.example.dosagecalc.domain.model.Patient
 import com.example.dosagecalc.domain.model.PatientData
+import com.example.dosagecalc.domain.repository.BsaFormulaType
 import com.example.dosagecalc.domain.repository.DrugRepository
+import com.example.dosagecalc.domain.repository.ThemeRepository
 import com.example.dosagecalc.domain.usecase.CalculateDosageUseCase
 import com.example.dosagecalc.domain.usecase.ManageHistoryUseCase
 import com.example.dosagecalc.domain.usecase.ManagePatientsUseCase
@@ -26,6 +28,7 @@ import javax.inject.Inject
 @HiltViewModel
 class CalculatorViewModel @Inject constructor(
     private val drugRepository: DrugRepository,
+    private val themeRepository: ThemeRepository,
     private val calculateDosageUseCase: CalculateDosageUseCase,
     private val managePatientsUseCase: ManagePatientsUseCase,
     private val manageHistoryUseCase: ManageHistoryUseCase
@@ -38,6 +41,21 @@ class CalculatorViewModel @Inject constructor(
     init {
         loadDrugs()
         loadPatients()
+        observeSettings()
+    }
+
+    private fun observeSettings() {
+        viewModelScope.launch {
+            themeRepository.bsaFormula.collect { formula ->
+                _uiState.update { it.copy(bsaFormula = formula) }
+            }
+        }
+    }
+
+    fun onBsaFormulaChanged(formula: BsaFormulaType) {
+        viewModelScope.launch {
+            themeRepository.setBsaFormula(formula)
+        }
     }
 
     private fun loadPatients() {
@@ -158,7 +176,8 @@ class CalculatorViewModel @Inject constructor(
                     heightCm  = state.heightInput.toDoubleOrNull(),
                     ageYears  = state.ageInput.toIntOrNull(),
                     renalStage = state.renalStage,
-                    hepaticStage = state.hepaticStage
+                    hepaticStage = state.hepaticStage,
+                    bsaFormula = state.bsaFormula
                 )
                 calculateDosageUseCase(drug, patientData)
             }

@@ -1,6 +1,7 @@
 package com.example.dosagecalc.presentation.calculator.screen
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -191,13 +192,40 @@ fun PatientInputScreen(
                             onHeightChanged = viewModel::onHeightChanged,
                             onAgeChanged = viewModel::onAgeChanged,
                             showHeight = uiState.selectedDrug?.formulaType == FormulaType.PER_M2,
-                            heightHint = "Necessaria per il calcolo BSA (Mosteller)",
+                            heightHint = "Necessaria per il calcolo BSA (${uiState.bsaFormula.name.lowercase().replaceFirstChar { it.uppercase() }})",
                             weightError = uiState.weightError,
                             heightError = uiState.heightError,
                             ageError = uiState.ageError,
                             weightHint = uiState.selectedDrug?.minWeightKg?.let { "Minimo richiesto: $it kg" },
                             ageHint = uiState.selectedDrug?.minAgeYears?.let { "Età minima richiesta: $it anni" }
                         )
+
+                        if (uiState.selectedDrug?.formulaType == FormulaType.PER_M2) {
+                            Spacer(modifier = Modifier.height(24.dp))
+                            Text(
+                                text  = "Formula BSA Preferita",
+                                style = MaterialTheme.typography.titleMedium,
+                                color = MaterialTheme.colorScheme.onSurface
+                            )
+                            Spacer(modifier = Modifier.height(8.dp))
+                            Row(
+                                modifier = Modifier.fillMaxWidth(),
+                                horizontalArrangement = Arrangement.spacedBy(8.dp)
+                            ) {
+                                com.example.dosagecalc.domain.repository.BsaFormulaType.entries.forEach { formula ->
+                                    androidx.compose.material3.FilterChip(
+                                        selected = uiState.bsaFormula == formula,
+                                        onClick = { viewModel.onBsaFormulaChanged(formula) },
+                                        label = { Text(formula.name.replace("_", " ")) },
+                                        colors = androidx.compose.material3.FilterChipDefaults.filterChipColors(
+                                            selectedContainerColor = MaterialTheme.colorScheme.primary,
+                                            selectedLabelColor = MaterialTheme.colorScheme.onPrimary
+                                        ),
+                                        modifier = Modifier.weight(1f)
+                                    )
+                                }
+                            }
+                        }
 
                         Spacer(modifier = Modifier.height(24.dp))
                         Text(

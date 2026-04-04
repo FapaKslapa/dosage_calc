@@ -208,7 +208,7 @@ fun DrugSelectionCard(
                     Icon(
                         Icons.Rounded.Info,
                         contentDescription = "Dettagli",
-                        tint = MaterialTheme.colorScheme.secondary,
+                        tint = MaterialTheme.colorScheme.primary,
                         modifier = Modifier.size(20.dp)
                     )
                 }

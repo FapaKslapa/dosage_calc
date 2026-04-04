@@ -81,4 +81,12 @@ class PatientsViewModel @Inject constructor(
             managePatientsUseCase.deletePatient(patientId)
         }
     }
+
+    fun getAllPatients(onResult: (List<Patient>) -> Unit) {
+        viewModelScope.launch {
+            managePatientsUseCase.getPatients().collect { list ->
+                onResult(list)
+            }
+        }
+    }
 }

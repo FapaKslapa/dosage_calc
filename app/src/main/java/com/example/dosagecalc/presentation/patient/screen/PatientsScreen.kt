@@ -43,6 +43,9 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.paging.compose.collectAsLazyPagingItems
+import androidx.compose.material.icons.filled.Share
+import androidx.compose.ui.platform.LocalContext
+import com.example.dosagecalc.presentation.utils.ExportManager
 import com.example.dosagecalc.presentation.patient.PatientsViewModel
 import com.example.dosagecalc.presentation.patient.components.PatientAddSheet
 import com.example.dosagecalc.presentation.patient.components.PatientCard
@@ -54,6 +57,8 @@ fun PatientsScreen(
     onNavigateBack: () -> Unit,
     onNavigateToHistory: (String) -> Unit
 ) {
+    val context = LocalContext.current
+    val exportManager = remember { ExportManager(context) }
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val searchQuery by viewModel.searchQuery.collectAsStateWithLifecycle()
     val pagedPatients = viewModel.patientsPaged.collectAsLazyPagingItems()
@@ -99,6 +104,18 @@ fun PatientsScreen(
                             style = MaterialTheme.typography.titleMedium,
                             color = MaterialTheme.colorScheme.onSecondary.copy(alpha = 0.8f)
                         )
+                        Spacer(modifier = Modifier.weight(1f))
+                        IconButton(onClick = {
+                            viewModel.getAllPatients { list ->
+                                exportManager.exportPatientsToJson(list)
+                            }
+                        }) {
+                            Icon(
+                                imageVector = Icons.Filled.Share,
+                                contentDescription = "Esporta Backup",
+                                tint = MaterialTheme.colorScheme.onSecondary
+                            )
+                        }
                     }
 
                     Column(modifier = Modifier.padding(start = 24.dp, end = 24.dp, top = 4.dp)) {

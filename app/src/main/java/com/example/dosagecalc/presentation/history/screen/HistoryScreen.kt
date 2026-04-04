@@ -37,6 +37,9 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.paging.compose.collectAsLazyPagingItems
+import androidx.compose.material.icons.filled.Share
+import androidx.compose.ui.platform.LocalContext
+import com.example.dosagecalc.presentation.utils.ExportManager
 import com.example.dosagecalc.presentation.history.HistoryViewModel
 import com.example.dosagecalc.presentation.history.components.HistoryCard
 import com.example.dosagecalc.presentation.ui.components.GradientScreenHeader
@@ -46,6 +49,8 @@ fun HistoryScreen(
     viewModel: HistoryViewModel,
     onNavigateBack: () -> Unit
 ) {
+    val context = LocalContext.current
+    val exportManager = remember { ExportManager(context) }
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val searchQuery by viewModel.searchQuery.collectAsStateWithLifecycle()
     val pagedHistory = viewModel.historyPaged.collectAsLazyPagingItems()
@@ -80,6 +85,18 @@ fun HistoryScreen(
                             style = MaterialTheme.typography.titleMedium,
                             color = MaterialTheme.colorScheme.onTertiary.copy(alpha = 0.8f)
                         )
+                        Spacer(modifier = Modifier.weight(1f))
+                        IconButton(onClick = {
+                            viewModel.getAllHistory { list ->
+                                exportManager.exportHistoryToCsv(list)
+                            }
+                        }) {
+                            Icon(
+                                imageVector = Icons.Filled.Share,
+                                contentDescription = "Esporta CSV",
+                                tint = MaterialTheme.colorScheme.onTertiary
+                            )
+                        }
                     }
 
                     Column(modifier = Modifier.padding(start = 24.dp, end = 24.dp, top = 4.dp)) {

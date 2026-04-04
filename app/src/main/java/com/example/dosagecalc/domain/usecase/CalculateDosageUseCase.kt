@@ -67,13 +67,13 @@ class CalculateDosageUseCase @Inject constructor(
         val weight = patientData.weightKg!!
         val height = patientData.heightCm!!
 
-        val bsa = calculateBsaUseCase(weight, height)
+        val bsa = calculateBsaUseCase(weight, height, patientData.bsaFormula)
         val rawDose = drug.unitDose * bsa
 
         val (impairedDose, impAlert) = applyImpairments(rawDose, drug, patientData)
         val (finalDose, capped) = applyCeiling(impairedDose, drug.maxSingleDoseMcg)
 
-        var formula = "${drug.unitDose} ${drug.unit}/m² × %.2f m² (BSA Mosteller) = %.2f ${drug.unit}".format(bsa, rawDose)
+        var formula = "${drug.unitDose} ${drug.unit}/m² × %.2f m² (BSA ${patientData.bsaFormula.name.lowercase().replaceFirstChar { it.uppercase() }}) = %.2f ${drug.unit}".format(bsa, rawDose)
         if (impAlert.isNotBlank()) formula += "\n(Riduzione per patologia applicata)"
         if (capped) formula += "\n(Limitata al massimo consentito)"
 

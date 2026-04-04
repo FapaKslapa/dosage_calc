@@ -50,4 +50,12 @@ class HistoryViewModel @Inject constructor(
             manageHistoryUseCase.deleteHistoryRecord(recordId)
         }
     }
+
+    fun getAllHistory(onResult: (List<HistoryRecord>) -> Unit) {
+        viewModelScope.launch {
+            manageHistoryUseCase.getAllHistory().collect { list ->
+                onResult(list)
+            }
+        }
+    }
 }

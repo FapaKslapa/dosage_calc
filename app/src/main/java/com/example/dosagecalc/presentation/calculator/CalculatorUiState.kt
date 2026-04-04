@@ -25,7 +25,8 @@ data class CalculatorUiState(
     val dosageResult: DosageResult? = null,
     val isCalculating: Boolean = false,
     val renalStage: RenalStage = RenalStage.NONE,
-    val hepaticStage: HepaticStage = HepaticStage.NONE
+    val hepaticStage: HepaticStage = HepaticStage.NONE,
+    val bsaFormula: com.example.dosagecalc.domain.repository.BsaFormulaType = com.example.dosagecalc.domain.repository.BsaFormulaType.MOSTELLER
 ) {
     val filteredDrugs: List<Drug>
         get() = availableDrugs
