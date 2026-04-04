@@ -1,10 +1,8 @@
 package com.example.dosagecalc.presentation.calculator.screen
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -17,7 +15,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -25,7 +22,6 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.ExposedDropdownMenuDefaults
-import androidx.compose.material3.FilterChipDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -41,15 +37,14 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.input.ImeAction
-import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.dosagecalc.domain.model.FormulaType
 import com.example.dosagecalc.presentation.calculator.CalculatorViewModel
-import com.example.dosagecalc.presentation.calculator.components.PatientInputField
+import com.example.dosagecalc.presentation.calculator.components.AnthropometricInputsGroup
 import com.example.dosagecalc.presentation.ui.components.GradientBottomBar
 import com.example.dosagecalc.presentation.ui.components.GradientScreenHeader
+import com.example.dosagecalc.presentation.ui.components.ImpairmentChipsRow
 
 @Composable
 fun PatientInputScreen(
@@ -138,7 +133,7 @@ fun PatientInputScreen(
                             label = { Text("Seleziona Paziente (Opzionale)") },
                             trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
                             colors = OutlinedTextFieldDefaults.colors(),
-                            modifier = Modifier.menuAnchor(MenuAnchorType.PrimaryNotEditable).fillMaxWidth(),
+                            modifier = Modifier.menuAnchor(androidx.compose.material3.ExposedDropdownMenuAnchorType.PrimaryNotEditable).fillMaxWidth(),
                             shape = RoundedCornerShape(16.dp)
                         )
                         ExposedDropdownMenu(
@@ -188,56 +183,20 @@ fun PatientInputScreen(
                         )
                         Spacer(modifier = Modifier.height(20.dp))
 
-                        val weightVal = uiState.weightInput.toFloatOrNull() ?: 0f
-                        PatientInputField(
-                            label = "Peso",
-                            value = uiState.weightInput.ifEmpty { "" },
-                            onValueChange = viewModel::onWeightChanged,
-                            sliderValue = weightVal,
-                            onSliderChange = { viewModel.onWeightChanged(String.format(java.util.Locale.US, "%.1f", it)) },
-                            sliderRange = 1f..150f,
-                            suffix = "kg",
-                            activeColor = MaterialTheme.colorScheme.primary,
-                            inactiveColor = MaterialTheme.colorScheme.primaryContainer,
-                            errorMessage = uiState.weightError,
-                            hintMessage = uiState.selectedDrug?.minWeightKg?.let { "Minimo richiesto: $it kg" }
-                        )
-
-                        if (uiState.selectedDrug?.formulaType == FormulaType.PER_M2) {
-                            Spacer(modifier = Modifier.height(24.dp))
-                            val heightVal = uiState.heightInput.toFloatOrNull() ?: 0f
-                            PatientInputField(
-                                label = "Altezza",
-                                value = uiState.heightInput.ifEmpty { "" },
-                                onValueChange = viewModel::onHeightChanged,
-                                sliderValue = heightVal,
-                                onSliderChange = { viewModel.onHeightChanged(it.toInt().toString()) },
-                                sliderRange = 10f..250f,
-                                suffix = "cm",
-                                activeColor = MaterialTheme.colorScheme.secondary,
-                                inactiveColor = MaterialTheme.colorScheme.secondaryContainer,
-                                errorMessage = uiState.heightError,
-                                hintMessage = "Necessaria per il calcolo BSA (Mosteller)"
-                            )
-                        }
-
-                        Spacer(modifier = Modifier.height(24.dp))
-
-                        val ageVal = uiState.ageInput.toFloatOrNull() ?: 0f
-                        PatientInputField(
-                            label = "Età",
-                            value = uiState.ageInput.ifEmpty { "" },
-                            onValueChange = viewModel::onAgeChanged,
-                            sliderValue = ageVal,
-                            onSliderChange = { viewModel.onAgeChanged(it.toInt().toString()) },
-                            sliderRange = 0f..120f,
-                            suffix = "anni",
-                            keyboardType = KeyboardType.Number,
-                            imeAction = ImeAction.Done,
-                            activeColor = MaterialTheme.colorScheme.tertiary,
-                            inactiveColor = MaterialTheme.colorScheme.tertiaryContainer,
-                            errorMessage = uiState.ageError,
-                            hintMessage = uiState.selectedDrug?.minAgeYears?.let { "Età minima richiesta: $it anni" }
+                        AnthropometricInputsGroup(
+                            weightValue = uiState.weightInput,
+                            heightValue = uiState.heightInput,
+                            ageValue = uiState.ageInput,
+                            onWeightChanged = viewModel::onWeightChanged,
+                            onHeightChanged = viewModel::onHeightChanged,
+                            onAgeChanged = viewModel::onAgeChanged,
+                            showHeight = uiState.selectedDrug?.formulaType == FormulaType.PER_M2,
+                            heightHint = "Necessaria per il calcolo BSA (Mosteller)",
+                            weightError = uiState.weightError,
+                            heightError = uiState.heightError,
+                            ageError = uiState.ageError,
+                            weightHint = uiState.selectedDrug?.minWeightKg?.let { "Minimo richiesto: $it kg" },
+                            ageHint = uiState.selectedDrug?.minAgeYears?.let { "Età minima richiesta: $it anni" }
                         )
 
                         Spacer(modifier = Modifier.height(24.dp))
@@ -248,39 +207,12 @@ fun PatientInputScreen(
                         )
                         Spacer(modifier = Modifier.height(12.dp))
 
-                        FlowRow(
-                            modifier = Modifier.fillMaxWidth(),
-                            horizontalArrangement = Arrangement.spacedBy(8.dp),
-                            verticalArrangement = Arrangement.spacedBy(4.dp)
-                        ) {
-                            FilterChip(
-                                selected = uiState.hasRenalImpairment,
-                                onClick = { viewModel.onRenalImpairmentChanged(!uiState.hasRenalImpairment) },
-                                label = { Text("Insufficienza Renale") },
-                                leadingIcon = if (uiState.hasRenalImpairment) {
-                                    { Icon(Icons.Filled.Warning, contentDescription = null, modifier = Modifier.size(16.dp)) }
-                                } else null,
-                                colors = FilterChipDefaults.filterChipColors(
-                                    selectedContainerColor = MaterialTheme.colorScheme.errorContainer,
-                                    selectedLabelColor = MaterialTheme.colorScheme.onErrorContainer,
-                                    selectedLeadingIconColor = MaterialTheme.colorScheme.onErrorContainer
-                                )
-                            )
-
-                            FilterChip(
-                                selected = uiState.hasHepaticImpairment,
-                                onClick = { viewModel.onHepaticImpairmentChanged(!uiState.hasHepaticImpairment) },
-                                label = { Text("Insufficienza Epatica") },
-                                leadingIcon = if (uiState.hasHepaticImpairment) {
-                                    { Icon(Icons.Filled.Warning, contentDescription = null, modifier = Modifier.size(16.dp)) }
-                                } else null,
-                                colors = FilterChipDefaults.filterChipColors(
-                                    selectedContainerColor = MaterialTheme.colorScheme.errorContainer,
-                                    selectedLabelColor = MaterialTheme.colorScheme.onErrorContainer,
-                                    selectedLeadingIconColor = MaterialTheme.colorScheme.onErrorContainer
-                                )
-                            )
-                        }
+                        ImpairmentChipsRow(
+                            hasRenalImpairment = uiState.hasRenalImpairment,
+                            hasHepaticImpairment = uiState.hasHepaticImpairment,
+                            onRenalChanged = viewModel::onRenalImpairmentChanged,
+                            onHepaticChanged = viewModel::onHepaticImpairmentChanged
+                        )
                         
                     }
                 }

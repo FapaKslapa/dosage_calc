@@ -4,42 +4,33 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Search
-import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.FilterChip
-import androidx.compose.material3.FilterChipDefaults
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
-import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -49,16 +40,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontFamily
-import androidx.compose.ui.text.input.ImeAction
-import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.paging.compose.collectAsLazyPagingItems
-import com.example.dosagecalc.presentation.calculator.components.PatientInputField
 import com.example.dosagecalc.presentation.patient.PatientsViewModel
+import com.example.dosagecalc.presentation.patient.components.PatientAddSheet
 import com.example.dosagecalc.presentation.patient.components.PatientCard
 import com.example.dosagecalc.presentation.ui.components.GradientScreenHeader
-import java.util.Locale
 
 @Composable
 fun PatientsScreen(
@@ -213,175 +201,12 @@ fun PatientsScreen(
     }
 
     if (showAddSheet) {
-        val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
-
-        ModalBottomSheet(
-            onDismissRequest = { showAddSheet = false },
-            sheetState = sheetState,
-            containerColor = MaterialTheme.colorScheme.surface,
-            shape = RoundedCornerShape(topStart = 32.dp, topEnd = 32.dp)
-        ) {
-            var name by remember { mutableStateOf("") }
-            var surname by remember { mutableStateOf("") }
-            var weight by remember { mutableStateOf("") }
-            var height by remember { mutableStateOf("") }
-            var age by remember { mutableStateOf("") }
-            var renalImpair by remember { mutableStateOf(false) }
-            var hepaticImpair by remember { mutableStateOf(false) }
-
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 24.dp)
-                    .padding(top = 8.dp)
-            ) {
-                Text(
-                    text = "Nuova Cartella",
-                    style = MaterialTheme.typography.headlineSmall.copy(fontFamily = FontFamily.Serif),
-                    color = MaterialTheme.colorScheme.onSurface
-                )
-                Spacer(modifier = Modifier.height(8.dp))
-                Text(
-                    text = "Inserisci i dati per velocizzare i futuri calcoli",
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                )
-                Spacer(modifier = Modifier.height(24.dp))
-
-                Column(
-                    modifier = Modifier
-                        .weight(1f, fill = false)
-                        .verticalScroll(rememberScrollState())
-                ) {
-                    OutlinedTextField(
-                        value = name,
-                        onValueChange = { name = it },
-                        label = { Text("Nome") },
-                        singleLine = true,
-                        modifier = Modifier.fillMaxWidth(),
-                        shape = RoundedCornerShape(16.dp)
-                    )
-                    Spacer(modifier = Modifier.height(12.dp))
-                    OutlinedTextField(
-                        value = surname,
-                        onValueChange = { surname = it },
-                        label = { Text("Cognome") },
-                        singleLine = true,
-                        modifier = Modifier.fillMaxWidth(),
-                        shape = RoundedCornerShape(16.dp)
-                    )
-                    Spacer(modifier = Modifier.height(12.dp))
-
-                    val weightVal = weight.toFloatOrNull() ?: 0f
-                    PatientInputField(
-                        label = "Peso",
-                        value = weight,
-                        onValueChange = { weight = it },
-                        sliderValue = weightVal,
-                        onSliderChange = { weight = String.format(Locale.US, "%.1f", it) },
-                        sliderRange = 1f..150f,
-                        suffix = "kg",
-                        activeColor = MaterialTheme.colorScheme.primary,
-                        inactiveColor = MaterialTheme.colorScheme.primaryContainer,
-                        errorMessage = null,
-                        hintMessage = null
-                    )
-
-                    Spacer(modifier = Modifier.height(12.dp))
-
-                    val heightVal = height.toFloatOrNull() ?: 0f
-                    PatientInputField(
-                        label = "Altezza (opz)",
-                        value = height,
-                        onValueChange = { height = it },
-                        sliderValue = heightVal,
-                        onSliderChange = { height = it.toInt().toString() },
-                        sliderRange = 10f..250f,
-                        suffix = "cm",
-                        activeColor = MaterialTheme.colorScheme.secondary,
-                        inactiveColor = MaterialTheme.colorScheme.secondaryContainer,
-                        errorMessage = null,
-                        hintMessage = null
-                    )
-
-                    Spacer(modifier = Modifier.height(12.dp))
-
-                    val ageVal = age.toFloatOrNull() ?: 0f
-                    PatientInputField(
-                        label = "Età",
-                        value = age,
-                        onValueChange = { age = it },
-                        sliderValue = ageVal,
-                        onSliderChange = { age = it.toInt().toString() },
-                        sliderRange = 0f..120f,
-                        suffix = "anni",
-                        keyboardType = KeyboardType.Number,
-                        imeAction = ImeAction.Done,
-                        activeColor = MaterialTheme.colorScheme.tertiary,
-                        inactiveColor = MaterialTheme.colorScheme.tertiaryContainer,
-                        errorMessage = null,
-                        hintMessage = null
-                    )
-
-                    Spacer(modifier = Modifier.height(24.dp))
-                    Text("Patologie Concomitanti", style = MaterialTheme.typography.titleMedium)
-                    Spacer(modifier = Modifier.height(8.dp))
-
-                    FlowRow(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.spacedBy(8.dp),
-                        verticalArrangement = Arrangement.spacedBy(4.dp)
-                    ) {
-                        FilterChip(
-                            selected = renalImpair,
-                            onClick = { renalImpair = !renalImpair },
-                            label = { Text("Insufficienza Renale") },
-                            leadingIcon = if (renalImpair) {
-                                { Icon(Icons.Filled.Warning, contentDescription = null, modifier = Modifier.size(16.dp)) }
-                            } else null,
-                            colors = FilterChipDefaults.filterChipColors(
-                                selectedContainerColor = MaterialTheme.colorScheme.errorContainer,
-                                selectedLabelColor = MaterialTheme.colorScheme.onErrorContainer,
-                                selectedLeadingIconColor = MaterialTheme.colorScheme.onErrorContainer
-                            )
-                        )
-
-                        FilterChip(
-                            selected = hepaticImpair,
-                            onClick = { hepaticImpair = !hepaticImpair },
-                            label = { Text("Insufficienza Epatica") },
-                            leadingIcon = if (hepaticImpair) {
-                                { Icon(Icons.Filled.Warning, contentDescription = null, modifier = Modifier.size(16.dp)) }
-                            } else null,
-                            colors = FilterChipDefaults.filterChipColors(
-                                selectedContainerColor = MaterialTheme.colorScheme.errorContainer,
-                                selectedLabelColor = MaterialTheme.colorScheme.onErrorContainer,
-                                selectedLeadingIconColor = MaterialTheme.colorScheme.onErrorContainer
-                            )
-                        )
-                    }
-
-                    Spacer(modifier = Modifier.height(24.dp))
-                }
-                
-                // Sticky Button
-                Button(
-                    onClick = {
-                        if (name.isNotBlank() && surname.isNotBlank() && weight.isNotBlank()) {
-                            viewModel.savePatient(name, surname, weight, height.ifBlank { null }, age, renalImpair, hepaticImpair)
-                            showAddSheet = false
-                        }
-                    },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(vertical = 16.dp)
-                        .navigationBarsPadding()
-                        .height(56.dp),
-                    shape = RoundedCornerShape(50)
-                ) {
-                    Text("Salva Paziente", style = MaterialTheme.typography.titleMedium)
-                }
+        PatientAddSheet(
+            onDismiss = { showAddSheet = false },
+            onSave = { name, surname, weight, height, age, renalImpair, hepaticImpair ->
+                viewModel.savePatient(name, surname, weight, height, age, renalImpair, hepaticImpair)
+                showAddSheet = false
             }
-        }
+        )
     }
 }
