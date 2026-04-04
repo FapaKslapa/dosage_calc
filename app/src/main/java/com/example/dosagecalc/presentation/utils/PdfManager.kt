@@ -93,9 +93,19 @@ object PdfManager {
 
     /** Returns y after header. */
     private fun drawHeader(canvas: Canvas, drug: Drug, now: LocalDateTime): Float {
-        val headerH = 112f
+        val headerH = 130f
+        val cornerRadius = 32f
 
-        // Purple gradient band
+        val path = android.graphics.Path().apply {
+            addRoundRect(
+                RectF(0f, 0f, PW, headerH),
+                floatArrayOf(0f, 0f, 0f, 0f, cornerRadius, cornerRadius, cornerRadius, cornerRadius),
+                android.graphics.Path.Direction.CW
+            )
+        }
+        canvas.save()
+        canvas.clipPath(path)
+
         val shader = android.graphics.LinearGradient(
             0f, 0f, PW, headerH,
             CLR_PRIMARY, Color.parseColor("#9390FA"),
@@ -103,31 +113,27 @@ object PdfManager {
         )
         canvas.drawRect(0f, 0f, PW, headerH, fill(CLR_PRIMARY).also { it.shader = shader })
 
-        // Decorative circle (top-right, echoes the app's GradientScreenHeader)
-        canvas.drawCircle(PW - 20f, -10f, 80f, fill(Color.WHITE).also { it.alpha = 18 })
+        canvas.drawCircle(PW - 20f, -10f, 90f, fill(Color.WHITE).also { it.alpha = 18 })
+        
+        canvas.restore()
 
-        // App name
         canvas.drawText(
             "DosageCalc",
-            MX, 46f,
-            txt(22f, CLR_ON_PRIMARY, bold = true, serif = true)
+            MX, 50f,
+            txt(24f, CLR_ON_PRIMARY, bold = true, serif = true)
         )
-        // Screen subtitle
         canvas.drawText(
-            "Referto di Dosaggio",
-            MX, 66f,
-            txt(11f, CLR_ON_PRIMARY).also { it.alpha = 204 }
+            "Referto Clinico di Dosaggio",
+            MX, 72f,
+            txt(12f, CLR_ON_PRIMARY).also { it.alpha = 204 }
         )
-        // Drug name – right aligned
+        
         val datePaint = txt(10f, CLR_ON_PRIMARY).also { it.alpha = 178; it.textAlign = Paint.Align.RIGHT }
         val formatter = DateTimeFormatter.ofPattern("dd MMM yyyy  HH:mm", Locale.getDefault())
-        canvas.drawText(now.format(formatter), PW - MX, 46f, datePaint)
-        canvas.drawText(drug.name, PW - MX, 62f, datePaint.also { it.textSize = 11f; it.alpha = 204 })
+        canvas.drawText(now.format(formatter), PW - MX, 50f, datePaint)
+        canvas.drawText(drug.name, PW - MX, 68f, datePaint.also { it.textSize = 12f; it.alpha = 220 })
 
-        // White bottom accent line
-        canvas.drawRect(0f, headerH - 3f, PW, headerH, fill(Color.WHITE).also { it.alpha = 60 })
-
-        return headerH + 20f
+        return headerH + 24f
     }
 
     /** Returns y after section. */
@@ -238,7 +244,7 @@ object PdfManager {
         // Code-like tinted box
         canvas.drawRoundRect(
             RectF(MX + 8f, startY + 24f, MX + CW - 8f, startY + cardH - 8f),
-            8f, 8f, fill(CLR_PRIMARY_CONT).also { it.alpha = 120 }
+            16f, 16f, fill(CLR_PRIMARY_CONT).also { it.alpha = 120 }
         )
         var y = startY + 40f
         for (line in formulaLines) {
@@ -293,7 +299,7 @@ object PdfManager {
 
     private fun drawCard(canvas: Canvas, y: Float, h: Float, color: Int) {
         val rect = RectF(MX, y, MX + CW, y + h)
-        canvas.drawRoundRect(rect, 12f, 12f, fill(color))
+        canvas.drawRoundRect(rect, 24f, 24f, fill(color))
     }
 
     private fun drawSectionLabel(canvas: Canvas, text: String, y: Float, color: Int) {
