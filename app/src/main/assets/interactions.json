@@ -1,0 +1,20 @@
+[
+  {
+    "drugId1": "ivermectina_scabbia",
+    "drugId2": "ceftriaxone_ev",
+    "riskLevel": "MODERATE",
+    "description": "L'uso concomitante può aumentare il rischio di tossicità neurologica. Monitorare attentamente il paziente."
+  },
+  {
+    "drugId1": "doxiciclina_acne",
+    "drugId2": "amoxicillina_infezione",
+    "riskLevel": "HIGH",
+    "description": "I farmaci batteriostatici (tetracicline) possono interferire con l'azione battericida delle penicilline. Evitare la combinazione se possibile."
+  },
+  {
+    "drugId1": "paclitaxel_oncology",
+    "drugId2": "doxiciclina_acne",
+    "riskLevel": "MODERATE",
+    "description": "Possibile aumento della mielosoppressione. Monitorare i parametri ematologici."
+  }
+]

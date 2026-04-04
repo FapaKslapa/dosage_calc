@@ -98,6 +98,7 @@ dependencies {
 
     implementation(libs.kotlinx.coroutines.android)
     implementation(libs.androidx.datastore.preferences)
+    implementation(libs.sqlcipher.android)
 
     // Vico Charts
     implementation(libs.vico.compose)

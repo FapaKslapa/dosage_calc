@@ -22,8 +22,10 @@ mockk = "1.14.9"
 turbine = "1.2.1"
 androidxTestRunner = "1.7.0"
 vico = "2.0.0-alpha.28"
+sqlcipher = "4.14.1"
 
 [libraries]
+sqlcipher-android = { group = "net.zetetic", name = "sqlcipher-android", version.ref = "sqlcipher" }
 # Vico Charts
 vico-compose = { group = "com.patrykandpatrick.vico", name = "compose", version.ref = "vico" }
 vico-compose-m3 = { group = "com.patrykandpatrick.vico", name = "compose-m3", version.ref = "vico" }

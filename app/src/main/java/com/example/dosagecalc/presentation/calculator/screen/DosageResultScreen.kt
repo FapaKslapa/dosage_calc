@@ -43,6 +43,7 @@ import com.example.dosagecalc.presentation.calculator.components.AlertCard
 import com.example.dosagecalc.presentation.calculator.components.DetailsCard
 import com.example.dosagecalc.presentation.calculator.components.DisclaimerCard
 import com.example.dosagecalc.presentation.calculator.components.ErrorHeader
+import com.example.dosagecalc.presentation.calculator.components.InteractionsCard
 import com.example.dosagecalc.presentation.calculator.components.RemindersSheet
 import com.example.dosagecalc.presentation.calculator.components.SuccessHeader
 import com.example.dosagecalc.presentation.ui.components.GradientBottomBar
@@ -101,6 +102,11 @@ fun DosageResultScreen(
 
                         val context = LocalContext.current
                         
+                        if (uiState.interactions.isNotEmpty()) {
+                            InteractionsCard(interactions = uiState.interactions)
+                            Spacer(modifier = Modifier.height(16.dp))
+                        }
+
                         Row(modifier = Modifier.fillMaxWidth().padding(bottom = 16.dp)) {
                             if (uiState.selectedPatient != null) {
                                 OutlinedButton(

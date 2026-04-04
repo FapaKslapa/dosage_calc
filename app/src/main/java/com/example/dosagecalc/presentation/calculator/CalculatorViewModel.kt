@@ -11,6 +11,7 @@ import com.example.dosagecalc.domain.repository.BsaFormulaType
 import com.example.dosagecalc.domain.repository.DrugRepository
 import com.example.dosagecalc.domain.repository.ThemeRepository
 import com.example.dosagecalc.domain.usecase.CalculateDosageUseCase
+import com.example.dosagecalc.domain.usecase.CheckDrugInteractionsUseCase
 import com.example.dosagecalc.domain.usecase.ManageHistoryUseCase
 import com.example.dosagecalc.domain.usecase.ManagePatientsUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -31,7 +32,8 @@ class CalculatorViewModel @Inject constructor(
     private val themeRepository: ThemeRepository,
     private val calculateDosageUseCase: CalculateDosageUseCase,
     private val managePatientsUseCase: ManagePatientsUseCase,
-    private val manageHistoryUseCase: ManageHistoryUseCase
+    private val manageHistoryUseCase: ManageHistoryUseCase,
+    private val checkDrugInteractionsUseCase: CheckDrugInteractionsUseCase
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(CalculatorUiState())
@@ -97,15 +99,15 @@ class CalculatorViewModel @Inject constructor(
             dosageResult  = null,   
             weightError   = null,
             heightError   = null,
-            ageError      = null
+            ageError      = null,
+            interactions  = emptyList()
         )}
     }
 
     fun onPatientSelected(patient: Patient?) {
         if (patient == null) {
-            _uiState.update { it.copy(selectedPatient = null) }
+            _uiState.update { it.copy(selectedPatient = null, interactions = emptyList()) }
         } else {
-            
             _uiState.update { it.copy(
                 selectedPatient = patient,
                 weightInput = patient.weightKg.toString(),
@@ -118,6 +120,18 @@ class CalculatorViewModel @Inject constructor(
                 ageError = null,
                 dosageResult = null
             ) }
+            checkInteractions(patient.id)
+        }
+    }
+
+    private fun checkInteractions(patientId: String) {
+        val drug = _uiState.value.selectedDrug ?: return
+        viewModelScope.launch {
+            manageHistoryUseCase.getHistoryForPatient(patientId).collect { history ->
+                val otherDrugIds = history.map { it.drugId }
+                val interactions = checkDrugInteractionsUseCase(drug.id, otherDrugIds)
+                _uiState.update { it.copy(interactions = interactions) }
+            }
         }
     }
 

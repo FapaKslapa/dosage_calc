@@ -10,12 +10,14 @@ import com.example.dosagecalc.data.datasource.CustomDrugDao
 import com.example.dosagecalc.data.datasource.HistoryDao
 import com.example.dosagecalc.data.datasource.PatientDao
 import com.example.dosagecalc.data.datasource.ReminderDao
+import com.example.dosagecalc.data.repository.DrugInteractionRepositoryImpl
 import com.example.dosagecalc.data.repository.DrugRepositoryImpl
 import com.example.dosagecalc.data.repository.HistoryRepositoryImpl
 import com.example.dosagecalc.data.repository.OnboardingRepositoryImpl
 import com.example.dosagecalc.data.repository.PatientRepositoryImpl
 import com.example.dosagecalc.data.repository.ReminderRepositoryImpl
 import com.example.dosagecalc.data.repository.ThemeRepositoryImpl
+import com.example.dosagecalc.domain.repository.DrugInteractionRepository
 import com.example.dosagecalc.domain.repository.DrugRepository
 import com.example.dosagecalc.domain.repository.HistoryRepository
 import com.example.dosagecalc.domain.repository.OnboardingRepository
@@ -28,6 +30,7 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
+import net.zetetic.database.sqlcipher.SupportOpenHelperFactory
 import javax.inject.Singleton
 
 private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "settings")
@@ -39,10 +42,19 @@ abstract class DataModule {
     @Binds @Singleton abstract fun bindDrugRepository(impl: DrugRepositoryImpl): DrugRepository
     @Binds @Singleton abstract fun bindThemeRepository(impl: ThemeRepositoryImpl): ThemeRepository
     @Binds @Singleton abstract fun bindOnboardingRepository(impl: OnboardingRepositoryImpl): OnboardingRepository
+    @Binds @Singleton abstract fun bindInteractionRepository(impl: DrugInteractionRepositoryImpl): DrugInteractionRepository
 
     @Module
     @InstallIn(SingletonComponent::class)
     object ProviderModule {
+        @Provides
+        @Singleton
+        fun provideJson(): kotlinx.serialization.json.Json = kotlinx.serialization.json.Json {
+            ignoreUnknownKeys = true
+            isLenient = true
+            prettyPrint = true
+        }
+
         @Provides
         @Singleton
         fun provideDataStore(@ApplicationContext context: Context): DataStore<Preferences> =
@@ -51,13 +63,18 @@ abstract class DataModule {
         @Provides
         @Singleton
         fun provideAppDatabase(@ApplicationContext context: Context): AppDatabase {
+            System.loadLibrary("sqlcipher")
+            val passphrase = "dosage-calc-secure-key".toByteArray()
+            val factory = SupportOpenHelperFactory(passphrase)
+
             return Room.databaseBuilder(
                 context,
                 AppDatabase::class.java,
-                "dosagecalc_database"
-            // Versions 1-5 were pre-release installs; destructive wipe is acceptable.
-            // Any future schema bump (v7+) must provide a proper Migration object.
-            ).fallbackToDestructiveMigrationFrom(1, 2, 3, 4, 5, 6, 7).build()
+                "dosagecalc_secure_db"
+            )
+            .openHelperFactory(factory)
+            .fallbackToDestructiveMigration(true)
+            .build()
         }
 
         @Provides
@@ -99,4 +116,3 @@ abstract class DataModule {
         }
     }
 }
-
