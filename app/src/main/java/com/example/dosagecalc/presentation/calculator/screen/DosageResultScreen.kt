@@ -5,6 +5,12 @@ import android.os.Build
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.spring
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.slideInVertically
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -28,10 +34,12 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import kotlinx.coroutines.delay
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -62,6 +70,14 @@ fun DosageResultScreen(
     val canExportPdf = result is DosageResult.Success && uiState.selectedDrug != null
 
     var showReminderSheet by remember { mutableStateOf(false) }
+    var detailsVisible by remember(result) { mutableStateOf(false) }
+    var alertVisible by remember(result) { mutableStateOf(false) }
+    var disclaimerVisible by remember(result) { mutableStateOf(false) }
+    LaunchedEffect(result) {
+        delay(80); detailsVisible = true
+        delay(80); alertVisible = true
+        delay(80); disclaimerVisible = true
+    }
 
     val permissionLauncher = rememberLauncherForActivityResult(
         ActivityResultContracts.RequestPermission()
@@ -144,16 +160,34 @@ fun DosageResultScreen(
                             }
                         }
 
-                        DetailsCard(result)
+                        AnimatedVisibility(
+                            visible = detailsVisible,
+                            enter = fadeIn(tween(250)) + slideInVertically(
+                                initialOffsetY = { it / 3 },
+                                animationSpec = spring(Spring.DampingRatioMediumBouncy, Spring.StiffnessMediumLow)
+                            )
+                        ) { DetailsCard(result) }
 
                         if (result.alert.isNotBlank()) {
                             Spacer(modifier = Modifier.height(16.dp))
-                            AlertCard(result.alert)
+                            AnimatedVisibility(
+                                visible = alertVisible,
+                                enter = fadeIn(tween(250)) + slideInVertically(
+                                    initialOffsetY = { it / 3 },
+                                    animationSpec = spring(Spring.DampingRatioMediumBouncy, Spring.StiffnessMediumLow)
+                                )
+                            ) { AlertCard(result.alert) }
                         }
                         Spacer(modifier = Modifier.height(16.dp))
                     }
 
-                    DisclaimerCard()
+                    AnimatedVisibility(
+                        visible = disclaimerVisible,
+                        enter = fadeIn(tween(250)) + slideInVertically(
+                            initialOffsetY = { it / 3 },
+                            animationSpec = spring(Spring.DampingRatioMediumBouncy, Spring.StiffnessMediumLow)
+                        )
+                    ) { DisclaimerCard() }
                 }
             }
 

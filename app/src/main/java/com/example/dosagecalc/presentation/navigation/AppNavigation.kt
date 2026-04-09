@@ -13,6 +13,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
@@ -20,6 +21,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+
 import com.example.dosagecalc.presentation.calculator.CalculatorViewModel
 import com.example.dosagecalc.presentation.calculator.RemindersViewModel
 import com.example.dosagecalc.presentation.calculator.screen.AddDataScreen
@@ -33,6 +35,12 @@ import com.example.dosagecalc.presentation.onboarding.OnboardingViewModel
 import com.example.dosagecalc.presentation.onboarding.screen.OnboardingScreen
 import com.example.dosagecalc.presentation.patient.PatientsViewModel
 import com.example.dosagecalc.presentation.patient.screen.PatientsScreen
+
+private fun NavHostController.safePop() {
+    if (currentBackStackEntry?.lifecycle?.currentState == Lifecycle.State.RESUMED) {
+        popBackStack()
+    }
+}
 
 sealed class AppRoute(val route: String) {
     object Onboarding    : AppRoute("onboarding")
@@ -110,7 +118,7 @@ fun AppNavigation(
             val patientsViewModel: PatientsViewModel = hiltViewModel()
             PatientsScreen(
                 viewModel         = patientsViewModel,
-                onNavigateBack    = { navController.popBackStack() },
+                onNavigateBack    = { navController.safePop() },
                 onNavigateToHistory = { patientId -> 
                     navController.navigate(AppRoute.GlobalHistory.route + "?patientId=$patientId")
                 }
@@ -126,7 +134,7 @@ fun AppNavigation(
             HistoryScreen(
                 viewModel      = historyViewModel,
                 patientId      = patientId,
-                onNavigateBack = { navController.popBackStack() },
+                onNavigateBack = { navController.safePop() },
                 onNavigateToAnalytics = {
                     val route = if (patientId != null) AppRoute.HistoryAnalytics.route + "?patientId=$patientId"
                                 else AppRoute.HistoryAnalytics.route
@@ -145,7 +153,7 @@ fun AppNavigation(
                 historyViewModel = historyViewModel,
                 calculatorViewModel = viewModel,
                 initialPatientId = patientId,
-                onNavigateBack = { navController.popBackStack() }
+                onNavigateBack = { navController.safePop() }
             )
         }
 
@@ -153,7 +161,7 @@ fun AppNavigation(
             val remindersViewModel: RemindersViewModel = hiltViewModel()
             RemindersScreen(
                 viewModel      = remindersViewModel,
-                onNavigateBack = { navController.popBackStack() }
+                onNavigateBack = { navController.safePop() }
             )
         }
 
@@ -163,7 +171,7 @@ fun AppNavigation(
         ) { backStackEntry ->
             AddDataScreen(
                 drugId         = backStackEntry.arguments?.getString("drugId"),
-                onNavigateBack = { navController.popBackStack() }
+                onNavigateBack = { navController.safePop() }
             )
         }
 
@@ -174,14 +182,14 @@ fun AppNavigation(
             val drugId = backStackEntry.arguments?.getString("drugId") ?: return@composable
             com.example.dosagecalc.presentation.calculator.screen.DrugDetailScreen(
                 drugId = drugId,
-                onNavigateBack = { navController.popBackStack() }
+                onNavigateBack = { navController.safePop() }
             )
         }
 
         composable(route = AppRoute.PatientInput.route) {
             PatientInputScreen(
                 viewModel          = viewModel,
-                onNavigateBack     = { navController.popBackStack() },
+                onNavigateBack     = { navController.safePop() },
                 onNavigateToResult = { navController.navigate(AppRoute.DosageResult.route) }
             )
         }
@@ -193,7 +201,7 @@ fun AppNavigation(
                     navController.popBackStack(AppRoute.DrugSelection.route, inclusive = false)
                     viewModel.resetCalculation()
                 },
-                onNavigateBackToInput = { navController.popBackStack() }
+                onNavigateBackToInput = { navController.safePop() }
             )
         }
     }

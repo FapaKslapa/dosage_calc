@@ -93,7 +93,9 @@ fun DrugSelectionCard(
                 ) {
                     Text(
                         text = drug.name.take(1).uppercase(),
-                        style = MaterialTheme.typography.titleLarge,
+                        style = MaterialTheme.typography.titleLarge.copy(
+                            fontFamily = androidx.compose.ui.text.font.FontFamily.Serif
+                        ),
                         color = if (isSelected) MaterialTheme.colorScheme.onPrimary
                                 else MaterialTheme.colorScheme.onSurface
                     )
