@@ -76,6 +76,33 @@ class PatientsViewModel @Inject constructor(
         }
     }
 
+    fun updatePatient(
+        original: Patient,
+        name: String,
+        surname: String,
+        weightKg: String,
+        heightCm: String?,
+        ageYears: String,
+        hasRenalImpairment: Boolean,
+        hasHepaticImpairment: Boolean
+    ) {
+        val weight = weightKg.toFloatOrNull() ?: return
+        val height = heightCm?.toFloatOrNull()
+        val age = ageYears.toIntOrNull() ?: 0
+        val updated = original.copy(
+            name = name,
+            surname = surname,
+            weightKg = weight,
+            heightCm = height,
+            ageYears = age,
+            hasRenalImpairment = hasRenalImpairment,
+            hasHepaticImpairment = hasHepaticImpairment
+        )
+        viewModelScope.launch {
+            managePatientsUseCase.savePatient(updated)
+        }
+    }
+
     fun deletePatient(patientId: String) {
         viewModelScope.launch {
             managePatientsUseCase.deletePatient(patientId)

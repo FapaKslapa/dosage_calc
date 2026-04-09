@@ -1,6 +1,14 @@
 package com.example.dosagecalc.presentation.calculator.screen
 
 import androidx.activity.compose.BackHandler
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.spring
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -234,10 +242,25 @@ fun DrugSelectionScreen(
                     }
                 }
 
-                if (uiState.selectedDrug != null) {
-                    Spacer(modifier = Modifier.height(24.dp))
-                    Box(modifier = Modifier.padding(horizontal = 20.dp)) {
-                        DrugPreviewCard(drug = uiState.selectedDrug!!)
+                AnimatedVisibility(
+                    visible = uiState.selectedDrug != null,
+                    enter = fadeIn(animationSpec = tween(250)) + slideInVertically(
+                        initialOffsetY = { it / 2 },
+                        animationSpec = spring(
+                            dampingRatio = Spring.DampingRatioMediumBouncy,
+                            stiffness = Spring.StiffnessMediumLow
+                        )
+                    ),
+                    exit = fadeOut(animationSpec = tween(180)) + slideOutVertically(
+                        targetOffsetY = { it / 3 },
+                        animationSpec = tween(180)
+                    )
+                ) {
+                    Column {
+                        Spacer(modifier = Modifier.height(24.dp))
+                        Box(modifier = Modifier.padding(horizontal = 20.dp)) {
+                            uiState.selectedDrug?.let { DrugPreviewCard(drug = it) }
+                        }
                     }
                 }
             }

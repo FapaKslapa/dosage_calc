@@ -1,5 +1,8 @@
 ﻿package com.example.dosagecalc.presentation.calculator.components
 
+import androidx.compose.animation.core.FastOutSlowInEasing
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -12,6 +15,11 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.Warning
@@ -36,6 +44,17 @@ import java.util.Locale
 
 @Composable
 fun SuccessHeader(result: DosageResult.Success, drugLabel: String?) {
+    var startAnimation by remember(result.totalDose) { mutableStateOf(false) }
+    val animatedFraction by animateFloatAsState(
+        targetValue = if (startAnimation) 1f else 0f,
+        animationSpec = tween(durationMillis = 550, easing = FastOutSlowInEasing),
+        label = "dose_count_up"
+    )
+    LaunchedEffect(result.totalDose) { startAnimation = true }
+
+    val displayDose = result.totalDose * animatedFraction.toDouble()
+    val displayDoseMax = result.totalDoseMax?.let { it * animatedFraction.toDouble() }
+
     GradientScreenHeader(
         colors = listOf(
             MaterialTheme.colorScheme.primary,
@@ -61,10 +80,10 @@ fun SuccessHeader(result: DosageResult.Success, drugLabel: String?) {
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            val rangeText = if (result.totalDoseMax != null) {
-                "${formatDose(result.totalDose)} - ${formatDose(result.totalDoseMax)}"
+            val rangeText = if (displayDoseMax != null) {
+                "${formatDose(displayDose)} - ${formatDose(displayDoseMax)}"
             } else {
-                formatDose(result.totalDose)
+                formatDose(displayDose)
             }
 
             Text(

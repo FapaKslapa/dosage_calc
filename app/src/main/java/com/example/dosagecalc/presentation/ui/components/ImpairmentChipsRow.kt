@@ -38,17 +38,21 @@ fun ImpairmentChipsRow(
             horizontalArrangement = Arrangement.spacedBy(8.dp),
         ) {
             RenalStage.entries.forEach { stage ->
+                val isDanger = stage != RenalStage.NONE
                 FilterChip(
                     selected = renalStage == stage,
                     onClick = { onRenalStageChanged(stage) },
                     label = { Text(stage.label) },
-                    leadingIcon = if (renalStage == stage && stage != RenalStage.NONE) {
+                    leadingIcon = if (renalStage == stage && isDanger) {
                         { Icon(Icons.Filled.Warning, contentDescription = null, modifier = Modifier.size(16.dp)) }
                     } else null,
                     colors = FilterChipDefaults.filterChipColors(
-                        selectedContainerColor = MaterialTheme.colorScheme.primary,
-                        selectedLabelColor = MaterialTheme.colorScheme.onPrimary,
-                        selectedLeadingIconColor = MaterialTheme.colorScheme.onPrimary
+                        selectedContainerColor = if (isDanger) MaterialTheme.colorScheme.errorContainer
+                                                else MaterialTheme.colorScheme.primary,
+                        selectedLabelColor = if (isDanger) MaterialTheme.colorScheme.onErrorContainer
+                                            else MaterialTheme.colorScheme.onPrimary,
+                        selectedLeadingIconColor = if (isDanger) MaterialTheme.colorScheme.onErrorContainer
+                                                   else MaterialTheme.colorScheme.onPrimary
                     )
                 )
             }
@@ -65,17 +69,21 @@ fun ImpairmentChipsRow(
             horizontalArrangement = Arrangement.spacedBy(8.dp),
         ) {
             HepaticStage.entries.forEach { stage ->
+                val isDanger = stage != HepaticStage.NONE
                 FilterChip(
                     selected = hepaticStage == stage,
                     onClick = { onHepaticStageChanged(stage) },
                     label = { Text(stage.label) },
-                    leadingIcon = if (hepaticStage == stage && stage != HepaticStage.NONE) {
+                    leadingIcon = if (hepaticStage == stage && isDanger) {
                         { Icon(Icons.Filled.Warning, contentDescription = null, modifier = Modifier.size(16.dp)) }
                     } else null,
                     colors = FilterChipDefaults.filterChipColors(
-                        selectedContainerColor = MaterialTheme.colorScheme.primary,
-                        selectedLabelColor = MaterialTheme.colorScheme.onPrimary,
-                        selectedLeadingIconColor = MaterialTheme.colorScheme.onPrimary
+                        selectedContainerColor = if (isDanger) MaterialTheme.colorScheme.errorContainer
+                                                else MaterialTheme.colorScheme.primary,
+                        selectedLabelColor = if (isDanger) MaterialTheme.colorScheme.onErrorContainer
+                                            else MaterialTheme.colorScheme.onPrimary,
+                        selectedLeadingIconColor = if (isDanger) MaterialTheme.colorScheme.onErrorContainer
+                                                   else MaterialTheme.colorScheme.onPrimary
                     )
                 )
             }

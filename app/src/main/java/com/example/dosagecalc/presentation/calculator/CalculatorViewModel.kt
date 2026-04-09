@@ -144,12 +144,12 @@ class CalculatorViewModel @Inject constructor(
 
     fun onWeightChanged(value: String) {
         val error = validateNumericField(value, min = 1.0, max = 500.0, fieldName = "peso")
-        _uiState.update { it.copy(weightInput = value, weightError = error, dosageResult = null) }
+        _uiState.update { it.copy(weightInput = value, weightError = error, dosageResult = null, selectedPatient = null, interactions = emptyList()) }
     }
 
     fun onHeightChanged(value: String) {
         val error = validateNumericField(value, min = 30.0, max = 280.0, fieldName = "altezza")
-        _uiState.update { it.copy(heightInput = value, heightError = error, dosageResult = null) }
+        _uiState.update { it.copy(heightInput = value, heightError = error, dosageResult = null, selectedPatient = null, interactions = emptyList()) }
     }
 
     fun onAgeChanged(value: String) {
@@ -162,7 +162,7 @@ class CalculatorViewModel @Inject constructor(
                 else           -> null
             }
         }
-        _uiState.update { it.copy(ageInput = value, ageError = error, dosageResult = null) }
+        _uiState.update { it.copy(ageInput = value, ageError = error, dosageResult = null, selectedPatient = null, interactions = emptyList()) }
     }
 
     fun deleteCustomDrug(id: String) {

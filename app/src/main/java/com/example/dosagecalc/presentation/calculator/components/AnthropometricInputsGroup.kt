@@ -39,7 +39,7 @@ fun AnthropometricInputsGroup(
         onValueChange = onWeightChanged,
         sliderValue = weightValue.toFloatOrNull() ?: 0f,
         onSliderChange = { onWeightChanged(String.format(Locale.US, "%.1f", it)) },
-        sliderRange = 1f..150f,
+        sliderRange = 1f..300f,
         suffix = "kg",
         activeColor = MaterialTheme.colorScheme.primary,
         inactiveColor = MaterialTheme.colorScheme.primaryContainer,

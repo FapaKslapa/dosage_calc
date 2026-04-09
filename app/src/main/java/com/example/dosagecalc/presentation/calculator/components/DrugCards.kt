@@ -1,5 +1,9 @@
 package com.example.dosagecalc.presentation.calculator.components
 
+import androidx.compose.animation.animateColorAsState
+import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.spring
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -27,8 +31,10 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.scale
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.example.dosagecalc.domain.model.Drug
@@ -50,12 +56,27 @@ fun DrugSelectionCard(
     onDeleteClick: (() -> Unit)? = null,
     onEditClick: (() -> Unit)? = null
 ) {
+    val scale by animateFloatAsState(
+        targetValue = if (isSelected) 1.03f else 1f,
+        animationSpec = spring(
+            dampingRatio = Spring.DampingRatioMediumBouncy,
+            stiffness = Spring.StiffnessMedium
+        ),
+        label = "drug_card_scale"
+    )
+    val avatarColor by animateColorAsState(
+        targetValue = if (isSelected) MaterialTheme.colorScheme.primary
+                      else MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.2f),
+        animationSpec = spring(stiffness = Spring.StiffnessMedium),
+        label = "avatar_color"
+    )
     val borderColor = if (isSelected) MaterialTheme.colorScheme.primary else androidx.compose.ui.graphics.Color.Transparent
 
     Card(
         modifier = Modifier
             .width(260.dp)
             .wrapContentHeight()
+            .scale(scale)
             .clickable { onClick() },
         shape = RoundedCornerShape(20.dp),
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant),
@@ -67,11 +88,7 @@ fun DrugSelectionCard(
                 Box(
                     modifier = Modifier
                         .size(40.dp)
-                        .background(
-                            if (isSelected) MaterialTheme.colorScheme.primary
-                            else MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.2f),
-                            RoundedCornerShape(12.dp)
-                        ),
+                        .background(avatarColor, RoundedCornerShape(12.dp)),
                     contentAlignment = Alignment.Center
                 ) {
                     Text(

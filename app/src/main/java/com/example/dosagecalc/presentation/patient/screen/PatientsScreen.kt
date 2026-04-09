@@ -15,16 +15,19 @@ import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.PersonOff
 import androidx.compose.material.icons.filled.Search
+import androidx.compose.material.icons.filled.SearchOff
 import androidx.compose.material.icons.filled.Share
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -33,6 +36,7 @@ import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -45,9 +49,11 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.paging.compose.collectAsLazyPagingItems
+import com.example.dosagecalc.domain.model.Patient
 import com.example.dosagecalc.presentation.patient.PatientsViewModel
 import com.example.dosagecalc.presentation.patient.components.PatientAddSheet
 import com.example.dosagecalc.presentation.patient.components.PatientCard
+import com.example.dosagecalc.presentation.ui.components.EmptyStateView
 import com.example.dosagecalc.presentation.ui.components.GradientScreenHeader
 import com.example.dosagecalc.presentation.utils.ExportManager
 
@@ -64,6 +70,9 @@ fun PatientsScreen(
     val pagedPatients = viewModel.patientsPaged.collectAsLazyPagingItems()
 
     var showAddSheet by remember { mutableStateOf(false) }
+    var patientBeingEdited by remember { mutableStateOf<Patient?>(null) }
+    val listState = rememberLazyListState()
+    val fabExpanded by remember { derivedStateOf { listState.firstVisibleItemIndex == 0 } }
 
     Box(
         modifier = Modifier
@@ -155,14 +164,23 @@ fun PatientsScreen(
                 }
             } else if (pagedPatients.itemCount == 0) {
                 Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                    Text(
-                        text = if (searchQuery.isBlank()) "Nessun paziente salvato" else "Nessun risultato",
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        style = MaterialTheme.typography.bodyLarge
-                    )
+                    if (searchQuery.isBlank()) {
+                        EmptyStateView(
+                            icon = Icons.Default.PersonOff,
+                            title = "Nessun paziente",
+                            subtitle = "Aggiungi una cartella paziente per velocizzare i futuri calcoli"
+                        )
+                    } else {
+                        EmptyStateView(
+                            icon = Icons.Default.SearchOff,
+                            title = "Nessun risultato",
+                            subtitle = "Nessun paziente corrisponde a \"$searchQuery\""
+                        )
+                    }
                 }
             } else {
                 LazyColumn(
+                    state = listState,
                     modifier = Modifier.fillMaxSize(),
                     contentPadding = PaddingValues(top = 16.dp, bottom = 100.dp, start = 20.dp, end = 20.dp),
                     verticalArrangement = Arrangement.spacedBy(16.dp)
@@ -175,7 +193,8 @@ fun PatientsScreen(
                             PatientCard(
                                 patient = patient,
                                 onClick = { onNavigateToHistory(patient.id) },
-                                onDeleteClick = { showDeleteDialog = true }
+                                onDeleteClick = { showDeleteDialog = true },
+                                onEditClick = { patientBeingEdited = patient }
                             )
 
                             if (showDeleteDialog) {
@@ -204,17 +223,18 @@ fun PatientsScreen(
             }
         }
 
-        FloatingActionButton(
+        ExtendedFloatingActionButton(
+            text = { Text("Aggiungi Paziente", style = MaterialTheme.typography.labelLarge) },
+            icon = { Icon(Icons.Filled.Add, "Aggiungi Paziente") },
             onClick = { showAddSheet = true },
+            expanded = fabExpanded,
             modifier = Modifier
                 .align(Alignment.BottomEnd)
                 .navigationBarsPadding()
                 .padding(24.dp),
             containerColor = MaterialTheme.colorScheme.primary,
             contentColor = MaterialTheme.colorScheme.onPrimary
-        ) {
-            Icon(Icons.Filled.Add, "Aggiungi Paziente")
-        }
+        )
     }
 
     if (showAddSheet) {
@@ -223,6 +243,17 @@ fun PatientsScreen(
             onSave = { name, surname, weight, height, age, renalImpair, hepaticImpair ->
                 viewModel.savePatient(name, surname, weight, height, age, renalImpair, hepaticImpair)
                 showAddSheet = false
+            }
+        )
+    }
+
+    patientBeingEdited?.let { editing ->
+        PatientAddSheet(
+            patientToEdit = editing,
+            onDismiss = { patientBeingEdited = null },
+            onSave = { name, surname, weight, height, age, renalImpair, hepaticImpair ->
+                viewModel.updatePatient(editing, name, surname, weight, height, age, renalImpair, hepaticImpair)
+                patientBeingEdited = null
             }
         )
     }

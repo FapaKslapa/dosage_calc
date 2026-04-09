@@ -16,6 +16,7 @@ import androidx.glance.appwidget.cornerRadius
 import androidx.glance.appwidget.provideContent
 import androidx.glance.background
 import androidx.glance.layout.*
+import androidx.glance.text.FontFamily
 import androidx.glance.text.FontWeight
 import androidx.glance.text.Text
 import androidx.glance.text.TextStyle
@@ -111,7 +112,8 @@ class NextReminderWidget : GlanceAppWidget() {
                         style = TextStyle(
                             color = ColorProvider(Color.White),
                             fontSize = 28.sp,
-                            fontWeight = FontWeight.Bold
+                            fontWeight = FontWeight.Bold,
+                            fontFamily = FontFamily.Serif
                         )
                     )
                     Spacer(modifier = GlanceModifier.height(3.dp))

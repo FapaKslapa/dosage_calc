@@ -23,23 +23,34 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.dp
+import com.example.dosagecalc.domain.model.HepaticStage
+import com.example.dosagecalc.domain.model.Patient
+import com.example.dosagecalc.domain.model.RenalStage
 import com.example.dosagecalc.presentation.calculator.components.AnthropometricInputsGroup
 import com.example.dosagecalc.presentation.ui.components.ImpairmentChipsRow
 
 @Composable
 fun PatientAddSheet(
     onDismiss: () -> Unit,
-    onSave: (name: String, surname: String, weight: String, height: String?, age: String, renalImpairment: Boolean, hepaticImpairment: Boolean) -> Unit
+    onSave: (name: String, surname: String, weight: String, height: String?, age: String, renalImpairment: Boolean, hepaticImpairment: Boolean) -> Unit,
+    patientToEdit: Patient? = null
 ) {
+    val isEditMode = patientToEdit != null
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
 
-    var name by remember { mutableStateOf("") }
-    var surname by remember { mutableStateOf("") }
-    var weight by remember { mutableStateOf("") }
-    var height by remember { mutableStateOf("") }
-    var age by remember { mutableStateOf("") }
-    var renalStage by remember { mutableStateOf(com.example.dosagecalc.domain.model.RenalStage.NONE) }
-    var hepaticStage by remember { mutableStateOf(com.example.dosagecalc.domain.model.HepaticStage.NONE) }
+    var name by remember { mutableStateOf(patientToEdit?.name ?: "") }
+    var surname by remember { mutableStateOf(patientToEdit?.surname ?: "") }
+    var weight by remember { mutableStateOf(patientToEdit?.weightKg?.toString() ?: "") }
+    var height by remember { mutableStateOf(patientToEdit?.heightCm?.toString() ?: "") }
+    var age by remember { mutableStateOf(patientToEdit?.ageYears?.takeIf { it > 0 }?.toString() ?: "") }
+    var renalStage by remember { mutableStateOf(
+        if (patientToEdit?.hasRenalImpairment == true) RenalStage.G3 else RenalStage.NONE
+    ) }
+    var hepaticStage by remember { mutableStateOf(
+        if (patientToEdit?.hasHepaticImpairment == true) HepaticStage.CHILD_B else HepaticStage.NONE
+    ) }
+    var weightError by remember { mutableStateOf<String?>(null) }
+    var heightError by remember { mutableStateOf<String?>(null) }
 
     ModalBottomSheet(
         onDismissRequest = onDismiss,
@@ -54,13 +65,14 @@ fun PatientAddSheet(
                 .padding(top = 8.dp)
         ) {
             Text(
-                text = "Nuova Cartella",
+                text = if (isEditMode) "Modifica Cartella" else "Nuova Cartella",
                 style = MaterialTheme.typography.headlineSmall.copy(fontFamily = FontFamily.Serif),
                 color = MaterialTheme.colorScheme.onSurface
             )
             Spacer(modifier = Modifier.height(8.dp))
             Text(
-                text = "Inserisci i dati per velocizzare i futuri calcoli",
+                text = if (isEditMode) "Aggiorna i dati di ${patientToEdit?.name} ${patientToEdit?.surname}"
+                       else "Inserisci i dati per velocizzare i futuri calcoli",
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
@@ -94,11 +106,19 @@ fun PatientAddSheet(
                     weightValue = weight,
                     heightValue = height,
                     ageValue = age,
-                    onWeightChanged = { weight = it },
-                    onHeightChanged = { height = it },
+                    onWeightChanged = {
+                        weight = it
+                        weightError = if ((it.toFloatOrNull() ?: 0f) > 300f) "Dati inesatti: peso max 300 kg" else null
+                    },
+                    onHeightChanged = {
+                        height = it
+                        heightError = if ((it.toFloatOrNull() ?: 0f) > 300f) "Dati inesatti: altezza max 300 cm" else null
+                    },
                     onAgeChanged = { age = it },
                     heightLabel = "Altezza (opz)",
-                    verticalSpacing = 12.dp
+                    verticalSpacing = 12.dp,
+                    weightError = weightError,
+                    heightError = heightError
                 )
 
                 Spacer(modifier = Modifier.height(24.dp))
@@ -115,14 +135,17 @@ fun PatientAddSheet(
                 Spacer(modifier = Modifier.height(24.dp))
             }
 
+            val canSave = name.isNotBlank() && surname.isNotBlank() && weight.isNotBlank()
+                && weightError == null && heightError == null
             Button(
                 onClick = {
-                    if (name.isNotBlank() && surname.isNotBlank() && weight.isNotBlank()) {
-                        val hasRenal = renalStage != com.example.dosagecalc.domain.model.RenalStage.NONE
-                        val hasHepatic = hepaticStage != com.example.dosagecalc.domain.model.HepaticStage.NONE
+                    if (canSave) {
+                        val hasRenal = renalStage != RenalStage.NONE
+                        val hasHepatic = hepaticStage != HepaticStage.NONE
                         onSave(name, surname, weight, height.ifBlank { null }, age, hasRenal, hasHepatic)
                     }
                 },
+                enabled = canSave,
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(vertical = 16.dp)
@@ -130,7 +153,7 @@ fun PatientAddSheet(
                     .height(56.dp),
                 shape = RoundedCornerShape(50)
             ) {
-                Text("Salva Paziente", style = MaterialTheme.typography.titleMedium)
+                Text(if (isEditMode) "Aggiorna" else "Salva Paziente", style = MaterialTheme.typography.titleMedium)
             }
         }
     }

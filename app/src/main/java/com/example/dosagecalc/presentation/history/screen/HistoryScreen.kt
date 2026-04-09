@@ -11,12 +11,16 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.ui.unit.dp
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Analytics
+import androidx.compose.material.icons.filled.History
 import androidx.compose.material.icons.filled.Search
+import androidx.compose.material.icons.filled.SearchOff
 import androidx.compose.material.icons.filled.Share
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.CircularProgressIndicator
@@ -43,6 +47,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.example.dosagecalc.presentation.history.HistoryViewModel
 import com.example.dosagecalc.presentation.history.components.HistoryCard
+import com.example.dosagecalc.presentation.ui.components.EmptyStateView
 import com.example.dosagecalc.presentation.ui.components.GradientScreenHeader
 import com.example.dosagecalc.presentation.utils.ExportManager
 
@@ -170,11 +175,19 @@ fun HistoryScreen(
                 }
             } else if (pagedHistory.itemCount == 0) {
                 Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                    Text(
-                        text = if (searchQuery.isBlank()) "Nessun calcolo in cronologia" else "Nessun risultato",
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        style = MaterialTheme.typography.bodyLarge
-                    )
+                    if (searchQuery.isBlank()) {
+                        EmptyStateView(
+                            icon = Icons.Default.History,
+                            title = "Nessun calcolo",
+                            subtitle = "I calcoli effettuati appariranno qui con tutti i dati del paziente"
+                        )
+                    } else {
+                        EmptyStateView(
+                            icon = Icons.Default.SearchOff,
+                            title = "Nessun risultato",
+                            subtitle = "Nessun calcolo corrisponde a \"$searchQuery\""
+                        )
+                    }
                 }
             } else {
                 LazyColumn(

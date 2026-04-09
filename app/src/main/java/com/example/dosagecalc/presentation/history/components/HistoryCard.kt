@@ -11,7 +11,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
@@ -59,11 +58,8 @@ fun HistoryCard(
                     )
                 }
                 Spacer(modifier = Modifier.weight(1f))
-                IconButton(
-                    onClick = onDeleteClick,
-                    modifier = Modifier.size(32.dp).background(MaterialTheme.colorScheme.errorContainer.copy(alpha = 0.5f), CircleShape)
-                ) {
-                    Icon(Icons.Filled.Delete, "Elimina", tint = MaterialTheme.colorScheme.error.copy(alpha = 0.7f), modifier = Modifier.size(18.dp))
+                IconButton(onClick = onDeleteClick) {
+                    Icon(Icons.Filled.Delete, "Elimina", tint = MaterialTheme.colorScheme.error, modifier = Modifier.size(20.dp))
                 }
             }
             Spacer(modifier = Modifier.height(16.dp))
@@ -71,12 +67,12 @@ fun HistoryCard(
                 Box(
                     modifier = Modifier
                         .size(48.dp)
-                        .background(MaterialTheme.colorScheme.tertiaryContainer, CircleShape),
+                        .background(MaterialTheme.colorScheme.tertiaryContainer, RoundedCornerShape(12.dp)),
                     contentAlignment = Alignment.Center
                 ) {
                     Text(
                         text = record.drugName.take(1).uppercase(),
-                        style = MaterialTheme.typography.titleMedium,
+                        style = MaterialTheme.typography.titleMedium.copy(fontFamily = FontFamily.Serif),
                         color = MaterialTheme.colorScheme.onTertiaryContainer
                     )
                 }
