@@ -34,9 +34,9 @@ class CalculateBsaUseCaseTest {
 
     @ParameterizedTest(name = "Du Bois: {0} kg / {1} cm -> BSA {2} m²")
     @CsvSource(
-        "70.0, 175.0, 1.8592",
-        "60.0, 165.0, 1.6616",
-        "20.0, 120.0, 0.7914"
+        "70.0, 175.0, 1.8481",
+        "60.0, 165.0, 1.6587",
+        "20.0, 120.0, 0.8255"
     )
     fun `Du Bois BSA calcolato correttamente`(
         weightKg: Double, heightCm: Double, expectedBsa: Double

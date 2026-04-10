@@ -115,6 +115,7 @@ dependencies {
     testImplementation(libs.junit5.api)
     testImplementation(libs.junit5.params)
     testRuntimeOnly(libs.junit5.engine)
+    testRuntimeOnly(libs.junit5.launcher)
     testImplementation(libs.mockk.core)
     testImplementation(libs.turbine)
     testImplementation(libs.kotlinx.coroutines.test)
