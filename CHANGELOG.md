@@ -6,6 +6,13 @@ versioning follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ---
 
+## [1.1.0] — 2026-04-10
+
+### Added
+- Responsive layout: portrait, landscape and tablet support.
+
+---
+
 ## [1.0.0] — 2026-04-10
 
 ### Added
@@ -54,4 +61,5 @@ versioning follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ---
 
+[1.1.0]: https://github.com/FapaKslapa/dispositivi_mobile_marocco/releases/tag/v1.1.0
 [1.0.0]: https://github.com/FapaKslapa/dispositivi_mobile_marocco/releases/tag/v1.0.0

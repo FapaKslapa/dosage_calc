@@ -119,7 +119,7 @@ fun RemindersScreen(
                 }
             } else {
                 LazyVerticalGrid(
-                    columns = GridCells.Fixed(2),
+                    columns = GridCells.Adaptive(minSize = 180.dp),
                     modifier = Modifier.fillMaxSize(),
                     contentPadding = PaddingValues(horizontal = 16.dp, vertical = 24.dp),
                     horizontalArrangement = Arrangement.spacedBy(12.dp),

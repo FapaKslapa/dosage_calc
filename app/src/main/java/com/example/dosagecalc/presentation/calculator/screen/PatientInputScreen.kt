@@ -40,6 +40,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.example.dosagecalc.presentation.ui.util.responsiveContentWidth
 import com.example.dosagecalc.domain.model.FormulaType
 import com.example.dosagecalc.presentation.calculator.CalculatorViewModel
 import com.example.dosagecalc.presentation.calculator.components.AnthropometricInputsGroup
@@ -115,8 +116,10 @@ fun PatientInputScreen(
                     .weight(1f)
                     .verticalScroll(rememberScrollState())
                     .padding(horizontal = 20.dp)
-                    .padding(bottom = 100.dp)
+                    .padding(bottom = 100.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
+                Column(modifier = Modifier.responsiveContentWidth()) {
                 Spacer(modifier = Modifier.height(20.dp))
 
                 if (uiState.savedPatients.isNotEmpty()) {
@@ -241,8 +244,9 @@ fun PatientInputScreen(
                             onRenalStageChanged = viewModel::onRenalStageChanged,
                             onHepaticStageChanged = viewModel::onHepaticStageChanged
                         )
-                        
+
                     }
+                }
                 }
             }
         }

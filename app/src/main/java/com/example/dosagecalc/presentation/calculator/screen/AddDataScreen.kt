@@ -37,6 +37,8 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.example.dosagecalc.presentation.ui.util.responsiveContentWidth
+import com.example.dosagecalc.presentation.ui.util.isCompactHeight
 import com.example.dosagecalc.domain.model.FormulaType
 import com.example.dosagecalc.presentation.calculator.AddDataViewModel
 import com.example.dosagecalc.presentation.ui.components.GradientScreenHeader
@@ -84,6 +86,8 @@ fun AddDataScreen(
         }
     }
 
+    val isCompact = isCompactHeight()
+
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -125,13 +129,15 @@ fun AddDataScreen(
                             style = MaterialTheme.typography.headlineMedium.copy(fontFamily = FontFamily.Serif),
                             color = MaterialTheme.colorScheme.onError
                         )
-                        Spacer(modifier = Modifier.height(8.dp))
-                        Text(
-                            text  = if (drugId != null) "Modifica i dati del medicinale" else "Inserisci un nuovo medicinale",
-                            style = MaterialTheme.typography.bodyMedium,
-                            color = MaterialTheme.colorScheme.onError.copy(alpha = 0.9f)
-                        )
-                        Spacer(modifier = Modifier.height(24.dp))
+                        if (!isCompact) {
+                            Spacer(modifier = Modifier.height(8.dp))
+                            Text(
+                                text  = if (drugId != null) "Modifica i dati del medicinale" else "Inserisci un nuovo medicinale",
+                                style = MaterialTheme.typography.bodyMedium,
+                                color = MaterialTheme.colorScheme.onError.copy(alpha = 0.9f)
+                            )
+                        }
+                        Spacer(modifier = Modifier.height(if (isCompact) 4.dp else 24.dp))
                     }
                 }
             }
@@ -143,6 +149,10 @@ fun AddDataScreen(
                     .verticalScroll(rememberScrollState())
                     .padding(horizontal = 20.dp, vertical = 24.dp)
                     .padding(bottom = 100.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+            Column(
+                modifier = Modifier.responsiveContentWidth(),
                 verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
                 Text(
@@ -288,6 +298,7 @@ fun AddDataScreen(
                 )
 
                 Spacer(modifier = Modifier.height(24.dp))
+            }
             }
         }
 

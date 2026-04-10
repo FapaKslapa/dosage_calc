@@ -71,6 +71,7 @@ private fun resolveColors(variant: ShortcutColorVariant, cs: ColorScheme) = when
 
 @Composable
 fun DashboardShortcuts(
+    modifier: Modifier = Modifier,
     onNavigateToPatients: () -> Unit,
     onNavigateToHistory: () -> Unit,
     onNavigateToReminders: () -> Unit = {},
@@ -84,11 +85,10 @@ fun DashboardShortcuts(
     )
 
     Row(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
             .horizontalScroll(rememberScrollState())
             .padding(horizontal = 20.dp)
-            .offset(y = (-30).dp)
     ) {
         items.forEachIndexed { index, item ->
             ShortcutCard(item)

@@ -12,7 +12,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.ui.unit.dp
 import androidx.compose.material.icons.Icons
@@ -47,6 +48,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.example.dosagecalc.presentation.history.HistoryViewModel
 import com.example.dosagecalc.presentation.history.components.HistoryCard
+import com.example.dosagecalc.presentation.ui.util.isCompactHeight
 import com.example.dosagecalc.presentation.ui.components.EmptyStateView
 import com.example.dosagecalc.presentation.ui.components.GradientScreenHeader
 import com.example.dosagecalc.presentation.utils.ExportManager
@@ -60,6 +62,7 @@ fun HistoryScreen(
 ) {
     val context = LocalContext.current
     val exportManager = remember { ExportManager(context) }
+    val isCompact = isCompactHeight()
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val searchQuery by viewModel.searchQuery.collectAsStateWithLifecycle()
     val filteredPatientName by viewModel.filteredPatientName.collectAsStateWithLifecycle()
@@ -149,7 +152,7 @@ fun HistoryScreen(
                                 }
                             }
                         }
-                        Spacer(modifier = Modifier.height(16.dp))
+                        Spacer(modifier = Modifier.height(if (isCompact) 8.dp else 16.dp))
                         OutlinedTextField(
                             value = searchQuery,
                             onValueChange = viewModel::updateSearchQuery,
@@ -190,9 +193,11 @@ fun HistoryScreen(
                     }
                 }
             } else {
-                LazyColumn(
+                LazyVerticalGrid(
+                    columns = GridCells.Adaptive(minSize = 320.dp),
                     modifier = Modifier.fillMaxSize(),
                     contentPadding = PaddingValues(top = 16.dp, bottom = 40.dp, start = 20.dp, end = 20.dp),
+                    horizontalArrangement = Arrangement.spacedBy(16.dp),
                     verticalArrangement = Arrangement.spacedBy(16.dp)
                 ) {
                     items(count = pagedHistory.itemCount) { index ->

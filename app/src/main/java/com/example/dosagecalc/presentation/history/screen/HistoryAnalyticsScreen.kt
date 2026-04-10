@@ -5,6 +5,8 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -32,6 +34,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.example.dosagecalc.presentation.ui.util.isExpandedWidth
+import com.example.dosagecalc.presentation.ui.util.isCompactHeight
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.dosagecalc.domain.model.Patient
 import com.example.dosagecalc.presentation.calculator.CalculatorViewModel
@@ -56,7 +60,6 @@ fun HistoryAnalyticsScreen(
     var selectedDrugName by remember { mutableStateOf<String?>(null) }
     var selectedPatient by remember { mutableStateOf<Patient?>(null) }
 
-    // Pre-select patient when navigating from patient detail screen
     LaunchedEffect(initialPatientId, drugsState.savedPatients) {
         if (initialPatientId != null && selectedPatient == null) {
             selectedPatient = drugsState.savedPatients.find { it.id == initialPatientId }
@@ -70,6 +73,8 @@ fun HistoryAnalyticsScreen(
             matchDrug && matchPatient
         }
     }
+
+    val isCompact = isCompactHeight()
 
     val categoryDist = remember(history, drugsState.availableDrugs) {
         historyViewModel.getCategoryDistribution(history, drugsState.availableDrugs)
@@ -111,59 +116,120 @@ fun HistoryAnalyticsScreen(
                         )
                     }
 
-                    Column(modifier = Modifier.padding(start = 24.dp, end = 24.dp, top = 16.dp, bottom = 24.dp)) {
+                    Column(modifier = Modifier.padding(
+                        start = 24.dp, end = 24.dp,
+                        top = if (isCompact) 8.dp else 16.dp,
+                        bottom = if (isCompact) 8.dp else 24.dp
+                    )) {
                         Text(
                             text = "Statistiche",
-                            style = MaterialTheme.typography.displaySmall.copy(fontFamily = FontFamily.Serif),
+                            style = if (isCompact) MaterialTheme.typography.headlineMedium.copy(fontFamily = FontFamily.Serif)
+                                    else MaterialTheme.typography.displaySmall.copy(fontFamily = FontFamily.Serif),
                             color = MaterialTheme.colorScheme.onTertiary
                         )
-                        Text(
-                            text = if (selectedDrugName == null) "Panoramica globale" else "Trend: $selectedDrugName",
-                            style = MaterialTheme.typography.bodyLarge,
-                            color = MaterialTheme.colorScheme.onTertiary.copy(alpha = 0.9f)
-                        )
+                        if (!isCompact) {
+                            Text(
+                                text = if (selectedDrugName == null) "Panoramica globale" else "Trend: $selectedDrugName",
+                                style = MaterialTheme.typography.bodyLarge,
+                                color = MaterialTheme.colorScheme.onTertiary.copy(alpha = 0.9f)
+                            )
+                        }
                     }
                 }
             }
 
-            Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .verticalScroll(rememberScrollState())
-                    .padding(20.dp),
-                verticalArrangement = Arrangement.spacedBy(20.dp)
-            ) {
-                StatsSummaryCard(filteredHistory.size, categoryDist.size)
+            val expanded = isExpandedWidth()
 
-                FilterSection(
-                    drugs = uniqueDrugs,
-                    patients = uniquePatients,
-                    selectedDrug = selectedDrugName,
-                    selectedPatient = selectedPatient,
-                    onDrugSelected = { selectedDrugName = it },
-                    onPatientSelected = { selectedPatient = it }
-                )
-
-                if (selectedDrugName != null && filteredHistory.size >= 2) {
-                    Card(
-                        modifier = Modifier.fillMaxWidth(),
-                        shape = RoundedCornerShape(28.dp),
-                        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
-                        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+            if (expanded) {
+                Row(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(horizontal = 20.dp, vertical = 16.dp),
+                    horizontalArrangement = Arrangement.spacedBy(20.dp)
+                ) {
+                    Column(
+                        modifier = Modifier
+                            .weight(1f)
+                            .verticalScroll(rememberScrollState()),
+                        verticalArrangement = Arrangement.spacedBy(20.dp)
                     ) {
-                        DoseTrendChart(records = filteredHistory)
+                        StatsSummaryCard(filteredHistory.size, categoryDist.size)
+                        FilterSection(
+                            drugs = uniqueDrugs,
+                            patients = uniquePatients,
+                            selectedDrug = selectedDrugName,
+                            selectedPatient = selectedPatient,
+                            onDrugSelected = { selectedDrugName = it },
+                            onPatientSelected = { selectedPatient = it }
+                        )
+                        if (selectedDrugName != null && filteredHistory.size >= 2) {
+                            Card(
+                                modifier = Modifier.fillMaxWidth(),
+                                shape = RoundedCornerShape(28.dp),
+                                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
+                                elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+                            ) {
+                                DoseTrendChart(records = filteredHistory)
+                            }
+                        } else if (selectedDrugName == null) {
+                            InfoNote(text = "Seleziona un farmaco specifico dai filtri per visualizzare l'andamento del dosaggio nel tempo.")
+                        } else {
+                            InfoNote(text = "Dati insufficienti per generare un grafico di trend per questo farmaco.")
+                        }
+                        Spacer(modifier = Modifier.height(40.dp))
                     }
-                } else if (selectedDrugName == null) {
-                    InfoNote(text = "Seleziona un farmaco specifico dai filtri per visualizzare l'andamento del dosaggio nel tempo.")
-                } else {
-                    InfoNote(text = "Dati insufficienti per generare un grafico di trend per questo farmaco.")
+                    Column(
+                        modifier = Modifier
+                            .weight(1f)
+                            .verticalScroll(rememberScrollState()),
+                        verticalArrangement = Arrangement.spacedBy(20.dp)
+                    ) {
+                        if (selectedDrugName == null && categoryDist.isNotEmpty()) {
+                            CategoryDistributionCard(categoryDist)
+                        }
+                        Spacer(modifier = Modifier.height(40.dp))
+                    }
                 }
+            } else {
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .verticalScroll(rememberScrollState())
+                        .padding(20.dp),
+                    verticalArrangement = Arrangement.spacedBy(20.dp)
+                ) {
+                    StatsSummaryCard(filteredHistory.size, categoryDist.size)
 
-                if (selectedDrugName == null && categoryDist.isNotEmpty()) {
-                    CategoryDistributionCard(categoryDist)
+                    FilterSection(
+                        drugs = uniqueDrugs,
+                        patients = uniquePatients,
+                        selectedDrug = selectedDrugName,
+                        selectedPatient = selectedPatient,
+                        onDrugSelected = { selectedDrugName = it },
+                        onPatientSelected = { selectedPatient = it }
+                    )
+
+                    if (selectedDrugName != null && filteredHistory.size >= 2) {
+                        Card(
+                            modifier = Modifier.fillMaxWidth(),
+                            shape = RoundedCornerShape(28.dp),
+                            colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
+                            elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+                        ) {
+                            DoseTrendChart(records = filteredHistory)
+                        }
+                    } else if (selectedDrugName == null) {
+                        InfoNote(text = "Seleziona un farmaco specifico dai filtri per visualizzare l'andamento del dosaggio nel tempo.")
+                    } else {
+                        InfoNote(text = "Dati insufficienti per generare un grafico di trend per questo farmaco.")
+                    }
+
+                    if (selectedDrugName == null && categoryDist.isNotEmpty()) {
+                        CategoryDistributionCard(categoryDist)
+                    }
+
+                    Spacer(modifier = Modifier.height(40.dp))
                 }
-
-                Spacer(modifier = Modifier.height(40.dp))
             }
         }
     }

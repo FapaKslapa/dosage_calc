@@ -40,6 +40,7 @@ import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.example.dosagecalc.presentation.ui.util.responsiveContentWidth
 import com.example.dosagecalc.domain.model.Drug
 import com.example.dosagecalc.presentation.calculator.AddDataViewModel
 import com.example.dosagecalc.presentation.ui.components.GradientScreenHeader
@@ -120,8 +121,10 @@ fun DrugDetailScreen(
                     modifier = Modifier
                         .fillMaxWidth()
                         .verticalScroll(rememberScrollState())
-                        .padding(20.dp)
+                        .padding(20.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally
                 ) {
+                Column(modifier = Modifier.responsiveContentWidth(maxWidth = 720.dp)) {
                     InfoSection(
                         title = "Indicazione",
                         content = drug!!.indication,
@@ -165,6 +168,7 @@ fun DrugDetailScreen(
                     )
                     
                     Spacer(modifier = Modifier.height(40.dp))
+                }
                 }
             }
         }

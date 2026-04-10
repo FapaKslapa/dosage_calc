@@ -32,3 +32,8 @@ google-services.json
 
 # Android Profiling
 *.hprof
+CLAUDE.md
+.claude/
+clean.py
+progetto.md
+strip_comments.py

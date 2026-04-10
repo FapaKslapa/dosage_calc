@@ -34,9 +34,11 @@ import androidx.compose.material3.SegmentedButtonDefaults
 import androidx.compose.material3.SingleChoiceSegmentedButtonRow
 import androidx.compose.material3.Text
 import androidx.compose.material3.TimePicker
+import androidx.compose.material3.TimeInput
 import androidx.compose.material3.TimePickerDefaults
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.material3.rememberTimePickerState
+import com.example.dosagecalc.presentation.ui.util.isCompactHeight
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -64,6 +66,7 @@ fun RemindersSheet(
 ) {
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     val reminders by viewModel.reminders.collectAsStateWithLifecycle()
+    val isCompact = isCompactHeight()
     ModalBottomSheet(
         onDismissRequest = onDismissRequest,
         sheetState = sheetState,
@@ -186,18 +189,20 @@ fun RemindersSheet(
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
                 Spacer(modifier = Modifier.height(8.dp))
+                val timePickerColors = TimePickerDefaults.colors(
+                    clockDialSelectedContentColor = MaterialTheme.colorScheme.onPrimary,
+                    selectorColor = MaterialTheme.colorScheme.primary,
+                    timeSelectorSelectedContainerColor = MaterialTheme.colorScheme.primaryContainer,
+                    timeSelectorSelectedContentColor = MaterialTheme.colorScheme.onPrimaryContainer,
+                    periodSelectorSelectedContainerColor = MaterialTheme.colorScheme.primaryContainer,
+                    periodSelectorSelectedContentColor = MaterialTheme.colorScheme.onPrimaryContainer
+                )
                 Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
-                    TimePicker(
-                        state = timePickerState,
-                        colors = TimePickerDefaults.colors(
-                            clockDialSelectedContentColor = MaterialTheme.colorScheme.onPrimary,
-                            selectorColor = MaterialTheme.colorScheme.primary,
-                            timeSelectorSelectedContainerColor = MaterialTheme.colorScheme.primaryContainer,
-                            timeSelectorSelectedContentColor = MaterialTheme.colorScheme.onPrimaryContainer,
-                            periodSelectorSelectedContainerColor = MaterialTheme.colorScheme.primaryContainer,
-                            periodSelectorSelectedContentColor = MaterialTheme.colorScheme.onPrimaryContainer
-                        )
-                    )
+                    if (isCompact) {
+                        TimeInput(state = timePickerState, colors = timePickerColors)
+                    } else {
+                        TimePicker(state = timePickerState, colors = timePickerColors)
+                    }
                 }
 
                 Spacer(modifier = Modifier.height(16.dp))

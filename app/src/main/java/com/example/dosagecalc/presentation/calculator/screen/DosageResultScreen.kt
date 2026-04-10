@@ -45,6 +45,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.example.dosagecalc.presentation.ui.util.responsiveContentWidth
 import com.example.dosagecalc.domain.model.DosageResult
 import com.example.dosagecalc.presentation.calculator.CalculatorViewModel
 import com.example.dosagecalc.presentation.calculator.components.AlertCard
@@ -108,7 +109,12 @@ fun DosageResultScreen(
                 }
 
                 Column(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                Column(
                     modifier = Modifier
+                        .responsiveContentWidth(maxWidth = 720.dp)
                         .padding(horizontal = 20.dp)
                         .padding(bottom = 108.dp)
                 ) {
@@ -188,6 +194,7 @@ fun DosageResultScreen(
                             animationSpec = spring(Spring.DampingRatioMediumBouncy, Spring.StiffnessMediumLow)
                         )
                     ) { DisclaimerCard() }
+                }
                 }
             }
 

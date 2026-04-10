@@ -39,6 +39,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import com.example.dosagecalc.presentation.ui.util.isCompactHeight
 
 @Composable
 fun GradientScreenHeader(
@@ -46,18 +47,18 @@ fun GradientScreenHeader(
     modifier: Modifier = Modifier,
     content: @Composable BoxScope.() -> Unit
 ) {
+    val compact = isCompactHeight()
     Box(
         modifier = modifier
             .fillMaxWidth()
             .clip(RoundedCornerShape(bottomStart = 40.dp, bottomEnd = 40.dp))
             .background(Brush.verticalGradient(colors = colors))
             .statusBarsPadding()
-            .padding(bottom = 28.dp)
+            .padding(bottom = if (compact) 12.dp else 28.dp)
     ) {
-        // Large decorative circle — top-right, partially offscreen
         Box(
             modifier = Modifier
-                .size(140.dp)
+                .size(if (compact) 80.dp else 140.dp)
                 .align(Alignment.TopEnd)
                 .offset(x = 36.dp, y = (-20).dp)
                 .background(Color.White.copy(alpha = 0.07f), CircleShape)

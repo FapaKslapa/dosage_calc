@@ -13,6 +13,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -24,6 +25,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import com.example.dosagecalc.presentation.ui.util.isMediumOrExpandedWidth
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
@@ -59,6 +61,7 @@ import com.example.dosagecalc.presentation.calculator.components.DrugPreviewCard
 import com.example.dosagecalc.presentation.calculator.components.DrugSelectionCard
 import com.example.dosagecalc.presentation.ui.components.GradientBottomBar
 import com.example.dosagecalc.presentation.ui.components.GradientScreenHeader
+import com.example.dosagecalc.presentation.ui.util.isCompactHeight
 
 @Composable
 fun DrugSelectionScreen(
@@ -72,6 +75,8 @@ fun DrugSelectionScreen(
     onToggleTheme: () -> Unit = {}
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val isWide = isMediumOrExpandedWidth()
+    val isCompact = isCompactHeight()
     var drugToDelete by remember { mutableStateOf<com.example.dosagecalc.domain.model.Drug?>(null) }
     val activity = androidx.activity.compose.LocalActivity.current
     val isDark = MaterialTheme.colorScheme.background.luminance() < 0.5f
@@ -113,39 +118,53 @@ fun DrugSelectionScreen(
                     )
                 }
 
-                Column(modifier = Modifier.padding(start = 24.dp, top = 40.dp)) {
+                Column(modifier = Modifier.padding(start = 24.dp, top = if (isCompact) 4.dp else 40.dp)) {
                     Text(
-                        text  = "Bentornato,\nDottore.",
+                        text  = if (isCompact) "Bentornato, Dottore." else "Bentornato,\nDottore.",
                         style = MaterialTheme.typography.displayLarge.copy(
                             fontFamily = androidx.compose.ui.text.font.FontFamily.Serif,
                             fontWeight = androidx.compose.ui.text.font.FontWeight.Medium,
-                            fontSize = 32.sp
+                            fontSize = if (isCompact) 22.sp else 32.sp
                         ),
                         color = MaterialTheme.colorScheme.onPrimary
                     )
-                    Spacer(modifier = Modifier.height(12.dp))
-                    Text(
-                        text  = "Cosa desideri fare oggi?",
-                        style = MaterialTheme.typography.bodyLarge,
-                        color = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.8f)
-                    )
+                    if (!isCompact) {
+                        Spacer(modifier = Modifier.height(12.dp))
+                        Text(
+                            text  = "Cosa desideri fare oggi?",
+                            style = MaterialTheme.typography.bodyLarge,
+                            color = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.8f)
+                        )
+                    }
                 }
             }
 
-            DashboardShortcuts(
-                onNavigateToPatients = onNavigateToPatients,
-                onNavigateToHistory = onNavigateToHistory,
-                onNavigateToReminders = onNavigateToReminders,
-                onNavigateToAddData = { onNavigateToAddData(null) }
-            )
+            if (!isCompact) {
+                DashboardShortcuts(
+                    modifier = Modifier.offset(y = (-30).dp),
+                    onNavigateToPatients = onNavigateToPatients,
+                    onNavigateToHistory = onNavigateToHistory,
+                    onNavigateToReminders = onNavigateToReminders,
+                    onNavigateToAddData = { onNavigateToAddData(null) }
+                )
+            }
 
             Column(
                 modifier = Modifier
                     .weight(1f)
                     .verticalScroll(rememberScrollState())
                     .padding(horizontal = 0.dp)
-                    .padding(bottom = 120.dp)    
+                    .padding(bottom = 120.dp)
             ) {
+                if (isCompact) {
+                    DashboardShortcuts(
+                        modifier = Modifier.padding(vertical = 12.dp),
+                        onNavigateToPatients = onNavigateToPatients,
+                        onNavigateToHistory = onNavigateToHistory,
+                        onNavigateToReminders = onNavigateToReminders,
+                        onNavigateToAddData = { onNavigateToAddData(null) }
+                    )
+                }
                 Text(
                     text  = "Schede Farmaci",
                     style = MaterialTheme.typography.titleLarge.copy(fontFamily = androidx.compose.ui.text.font.FontFamily.Serif),
@@ -218,26 +237,49 @@ fun DrugSelectionScreen(
                     else -> {
                         val filteredDrugs = uiState.filteredDrugs
 
-                        LazyRow(
-                            modifier = Modifier.fillMaxWidth()
-                        ) {
-                            item { Spacer(modifier = Modifier.width(20.dp)) }
-                            items(filteredDrugs) { drug ->
-                                DrugSelectionCard(
-                                    drug = drug,
-                                    isSelected = uiState.selectedDrug == drug,
-                                    onClick = { viewModel.onDrugSelected(drug) },
-                                    onInfoClick = { onNavigateToDetail(drug.id) },
-                                    onDeleteClick = if (drug.id.startsWith("custom_")) {
-                                        { drugToDelete = drug }
-                                    } else null,
-                                    onEditClick = if (drug.id.startsWith("custom_")) {
-                                        { onNavigateToAddData(drug.id) }
-                                    } else null
-                                )
-                                Spacer(modifier = Modifier.width(16.dp))
+                        if (isWide) {
+                            FlowRow(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(horizontal = 20.dp),
+                                horizontalArrangement = Arrangement.spacedBy(16.dp),
+                                verticalArrangement = Arrangement.spacedBy(16.dp)
+                            ) {
+                                filteredDrugs.forEach { drug ->
+                                    DrugSelectionCard(
+                                        drug = drug,
+                                        isSelected = uiState.selectedDrug == drug,
+                                        onClick = { viewModel.onDrugSelected(drug) },
+                                        onInfoClick = { onNavigateToDetail(drug.id) },
+                                        onDeleteClick = if (drug.id.startsWith("custom_")) {
+                                            { drugToDelete = drug }
+                                        } else null,
+                                        onEditClick = if (drug.id.startsWith("custom_")) {
+                                            { onNavigateToAddData(drug.id) }
+                                        } else null
+                                    )
+                                }
                             }
-                            item { Spacer(modifier = Modifier.width(4.dp)) }
+                        } else {
+                            LazyRow(modifier = Modifier.fillMaxWidth()) {
+                                item { Spacer(modifier = Modifier.width(20.dp)) }
+                                items(filteredDrugs) { drug ->
+                                    DrugSelectionCard(
+                                        drug = drug,
+                                        isSelected = uiState.selectedDrug == drug,
+                                        onClick = { viewModel.onDrugSelected(drug) },
+                                        onInfoClick = { onNavigateToDetail(drug.id) },
+                                        onDeleteClick = if (drug.id.startsWith("custom_")) {
+                                            { drugToDelete = drug }
+                                        } else null,
+                                        onEditClick = if (drug.id.startsWith("custom_")) {
+                                            { onNavigateToAddData(drug.id) }
+                                        } else null
+                                    )
+                                    Spacer(modifier = Modifier.width(16.dp))
+                                }
+                                item { Spacer(modifier = Modifier.width(4.dp)) }
+                            }
                         }
                     }
                 }

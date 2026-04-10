@@ -14,8 +14,10 @@ import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.rememberLazyGridState
+import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -71,8 +73,8 @@ fun PatientsScreen(
 
     var showAddSheet by remember { mutableStateOf(false) }
     var patientBeingEdited by remember { mutableStateOf<Patient?>(null) }
-    val listState = rememberLazyListState()
-    val fabExpanded by remember { derivedStateOf { listState.firstVisibleItemIndex == 0 } }
+    val gridState = rememberLazyGridState()
+    val fabExpanded by remember { derivedStateOf { gridState.firstVisibleItemIndex == 0 } }
 
     Box(
         modifier = Modifier
@@ -179,10 +181,12 @@ fun PatientsScreen(
                     }
                 }
             } else {
-                LazyColumn(
-                    state = listState,
+                LazyVerticalGrid(
+                    columns = GridCells.Adaptive(minSize = 320.dp),
+                    state = gridState,
                     modifier = Modifier.fillMaxSize(),
                     contentPadding = PaddingValues(top = 16.dp, bottom = 100.dp, start = 20.dp, end = 20.dp),
+                    horizontalArrangement = Arrangement.spacedBy(16.dp),
                     verticalArrangement = Arrangement.spacedBy(16.dp)
                 ) {
                     items(count = pagedPatients.itemCount) { index ->

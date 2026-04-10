@@ -39,6 +39,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.dosagecalc.domain.model.DosageResult
 import com.example.dosagecalc.presentation.ui.components.GradientScreenHeader
+import com.example.dosagecalc.presentation.ui.util.isCompactHeight
 import java.util.Locale
 
 @Composable
@@ -54,6 +55,11 @@ fun SuccessHeader(result: DosageResult.Success, drugLabel: String?) {
     val displayDose = result.totalDose * animatedFraction.toDouble()
     val displayDoseMax = result.totalDoseMax?.let { it * animatedFraction.toDouble() }
 
+    val compact = isCompactHeight()
+    val verticalPad = if (compact) 12.dp else 28.dp
+    val doseFontSize = if (compact) 36.sp else 54.sp
+    val doseFontLineHeight = if (compact) 42.sp else 60.sp
+
     GradientScreenHeader(
         colors = listOf(
             MaterialTheme.colorScheme.primary,
@@ -61,7 +67,7 @@ fun SuccessHeader(result: DosageResult.Success, drugLabel: String?) {
         ),
         modifier = Modifier.padding(bottom = 0.dp)
     ) {
-        Column(modifier = Modifier.padding(horizontal = 24.dp, vertical = 28.dp)) {
+        Column(modifier = Modifier.padding(horizontal = 24.dp, vertical = verticalPad)) {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Icon(
                     imageVector        = Icons.Filled.CheckCircle,
@@ -77,7 +83,7 @@ fun SuccessHeader(result: DosageResult.Success, drugLabel: String?) {
                 )
             }
 
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(if (compact) 8.dp else 16.dp))
 
             val rangeText = if (displayDoseMax != null) {
                 "${formatDose(displayDose)} - ${formatDose(displayDoseMax)}"
@@ -87,21 +93,21 @@ fun SuccessHeader(result: DosageResult.Success, drugLabel: String?) {
 
             Text(
                 text       = rangeText,
-                fontSize   = 54.sp,
+                fontSize   = doseFontSize,
                 fontFamily = FontFamily.Serif,
                 fontWeight = FontWeight.ExtraBold,
                 color      = MaterialTheme.colorScheme.onPrimary,
-                lineHeight = 60.sp
+                lineHeight = doseFontLineHeight
             )
             Text(
                 text  = result.unit,
-                style = MaterialTheme.typography.headlineMedium,
+                style = if (compact) MaterialTheme.typography.titleLarge else MaterialTheme.typography.headlineMedium,
                 fontFamily = FontFamily.Serif,
                 color = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.9f)
             )
 
             if (result.cappedToMaxDose) {
-                Spacer(modifier = Modifier.height(16.dp))
+                Spacer(modifier = Modifier.height(if (compact) 8.dp else 16.dp))
                 Surface(
                     shape = RoundedCornerShape(50),
                     color = MaterialTheme.colorScheme.errorContainer
@@ -120,13 +126,14 @@ fun SuccessHeader(result: DosageResult.Success, drugLabel: String?) {
 
 @Composable
 fun ErrorHeader(title: String, message: String) {
+    val compact = isCompactHeight()
     GradientScreenHeader(
         colors = listOf(
             MaterialTheme.colorScheme.error,
             MaterialTheme.colorScheme.errorContainer
         )
     ) {
-        Column(modifier = Modifier.padding(horizontal = 24.dp, vertical = 28.dp)) {
+        Column(modifier = Modifier.padding(horizontal = 24.dp, vertical = if (compact) 12.dp else 28.dp)) {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Icon(
                     imageVector        = Icons.Filled.Warning,

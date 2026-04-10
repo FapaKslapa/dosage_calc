@@ -87,6 +87,7 @@ junit5-api                      = { group = "org.junit.jupiter", name = "junit-j
 junit5-engine                   = { group = "org.junit.jupiter", name = "junit-jupiter-engine",  version.ref = "junit5" }
 junit5-params                   = { group = "org.junit.jupiter", name = "junit-jupiter-params",  version.ref = "junit5" }
 junit5-launcher                 = { group = "org.junit.platform", name = "junit-platform-launcher", version.ref = "junit5Platform" }
+material3-window-size           = { group = "androidx.compose.material3", name = "material3-window-size-class" }
 mockk-core                      = { group = "io.mockk",          name = "mockk",                 version.ref = "mockk" }
 turbine                         = { group = "app.cash.turbine",  name = "turbine",               version.ref = "turbine" }
 

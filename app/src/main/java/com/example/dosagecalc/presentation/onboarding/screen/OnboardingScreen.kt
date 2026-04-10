@@ -5,9 +5,11 @@ import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -18,6 +20,8 @@ import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -161,65 +165,126 @@ fun OnboardingScreen(onFinish: () -> Unit) {
 
 @Composable
 private fun OnboardingPageContent(page: OnboardingPage) {
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .statusBarsPadding(),
-        horizontalAlignment = Alignment.CenterHorizontally
+    BoxWithConstraints(
+        modifier = Modifier.fillMaxSize().statusBarsPadding()
     ) {
-        // Hero gradient area (top 45%)
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .weight(0.45f)
-                .clip(RoundedCornerShape(bottomStart = 48.dp, bottomEnd = 48.dp))
-                .background(
-                    Brush.verticalGradient(listOf(page.gradientStart(), page.gradientEnd()))
-                ),
-            contentAlignment = Alignment.Center
-        ) {
-            Box(
-                modifier = Modifier
-                    .size(140.dp)
-                    .background(page.gradientEnd().copy(alpha = 0.3f), CircleShape),
-                contentAlignment = Alignment.Center
-            ) {
-                Icon(
-                    imageVector = page.icon,
-                    contentDescription = null,
-                    tint = page.gradientStart(),
-                    modifier = Modifier.size(72.dp)
-                )
-            }
-        }
+        val isLandscape = maxWidth > maxHeight
 
-        // Text area — bottom 55%, with enough bottom padding to clear the nav buttons
-        Column(
-            modifier = Modifier
-                .weight(0.55f)
-                .padding(horizontal = 36.dp)
-                .padding(top = 32.dp, bottom = 160.dp),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Top
-        ) {
-            Text(
-                text = page.title,
-                style = MaterialTheme.typography.headlineMedium.copy(
-                    fontFamily = FontFamily.Serif,
-                    fontWeight = FontWeight.Bold,
-                    lineHeight = 34.sp
-                ),
-                textAlign = TextAlign.Center,
-                color = MaterialTheme.colorScheme.onBackground
-            )
-            Spacer(modifier = Modifier.height(16.dp))
-            Text(
-                text = page.description,
-                style = MaterialTheme.typography.bodyLarge,
-                textAlign = TextAlign.Center,
-                color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.7f),
-                lineHeight = 26.sp
-            )
+        if (isLandscape) {
+            Row(modifier = Modifier.fillMaxSize()) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxHeight()
+                        .weight(0.4f)
+                        .clip(RoundedCornerShape(topEnd = 48.dp, bottomEnd = 48.dp))
+                        .background(
+                            Brush.verticalGradient(listOf(page.gradientStart(), page.gradientEnd()))
+                        ),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Box(
+                        modifier = Modifier
+                            .size(100.dp)
+                            .background(page.gradientEnd().copy(alpha = 0.3f), CircleShape),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Icon(
+                            imageVector = page.icon,
+                            contentDescription = null,
+                            tint = page.gradientStart(),
+                            modifier = Modifier.size(56.dp)
+                        )
+                    }
+                }
+
+                Column(
+                    modifier = Modifier
+                        .weight(0.6f)
+                        .fillMaxHeight()
+                        .verticalScroll(rememberScrollState())
+                        .padding(horizontal = 32.dp, vertical = 24.dp)
+                        .navigationBarsPadding(),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Center
+                ) {
+                    Text(
+                        text = page.title,
+                        style = MaterialTheme.typography.headlineMedium.copy(
+                            fontFamily = FontFamily.Serif,
+                            fontWeight = FontWeight.Bold,
+                            lineHeight = 34.sp
+                        ),
+                        textAlign = TextAlign.Center,
+                        color = MaterialTheme.colorScheme.onBackground
+                    )
+                    Spacer(modifier = Modifier.height(16.dp))
+                    Text(
+                        text = page.description,
+                        style = MaterialTheme.typography.bodyLarge,
+                        textAlign = TextAlign.Center,
+                        color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.7f),
+                        lineHeight = 26.sp
+                    )
+                }
+            }
+        } else {
+            Column(
+                modifier = Modifier.fillMaxSize(),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .weight(0.45f)
+                        .clip(RoundedCornerShape(bottomStart = 48.dp, bottomEnd = 48.dp))
+                        .background(
+                            Brush.verticalGradient(listOf(page.gradientStart(), page.gradientEnd()))
+                        ),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Box(
+                        modifier = Modifier
+                            .size(140.dp)
+                            .background(page.gradientEnd().copy(alpha = 0.3f), CircleShape),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Icon(
+                            imageVector = page.icon,
+                            contentDescription = null,
+                            tint = page.gradientStart(),
+                            modifier = Modifier.size(72.dp)
+                        )
+                    }
+                }
+
+                Column(
+                    modifier = Modifier
+                        .weight(0.55f)
+                        .padding(horizontal = 36.dp)
+                        .padding(top = 32.dp, bottom = 160.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Top
+                ) {
+                    Text(
+                        text = page.title,
+                        style = MaterialTheme.typography.headlineMedium.copy(
+                            fontFamily = FontFamily.Serif,
+                            fontWeight = FontWeight.Bold,
+                            lineHeight = 34.sp
+                        ),
+                        textAlign = TextAlign.Center,
+                        color = MaterialTheme.colorScheme.onBackground
+                    )
+                    Spacer(modifier = Modifier.height(16.dp))
+                    Text(
+                        text = page.description,
+                        style = MaterialTheme.typography.bodyLarge,
+                        textAlign = TextAlign.Center,
+                        color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.7f),
+                        lineHeight = 26.sp
+                    )
+                }
+            }
         }
     }
 }
