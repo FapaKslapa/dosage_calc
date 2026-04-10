@@ -6,6 +6,13 @@ versioning follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ---
 
+## [1.1.1] — 2026-04-10
+
+### Fixed
+- Release APK is now signed with the debug key so it can be installed directly on any Android device.
+
+---
+
 ## [1.1.0] — 2026-04-10
 
 ### Added
@@ -61,5 +68,6 @@ versioning follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ---
 
+[1.1.1]: https://github.com/FapaKslapa/dispositivi_mobile_marocco/releases/tag/v1.1.1
 [1.1.0]: https://github.com/FapaKslapa/dispositivi_mobile_marocco/releases/tag/v1.1.0
 [1.0.0]: https://github.com/FapaKslapa/dispositivi_mobile_marocco/releases/tag/v1.0.0

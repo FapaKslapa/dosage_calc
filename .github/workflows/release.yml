@@ -33,18 +33,15 @@ jobs:
         run: ./gradlew :app:test --no-daemon
 
       # ── Build ───────────────────────────────────────────────────────────────
-      # Builds an unsigned release APK.
-      # To distribute on the Play Store you will need to sign it:
-      # store your keystore as a base64 GitHub Secret and add a signing step.
-      - name: Build release APK (unsigned)
-        run: ./gradlew :app:assembleRelease --no-daemon
+      - name: Build debug APK
+        run: ./gradlew :app:assembleDebug --no-daemon
 
       # ── Rename artifact with version tag ───────────────────────────────────
       - name: Rename APK
         run: |
-          TAG=${GITHUB_REF_NAME}   # e.g. v1.0.0
-          mv app/build/outputs/apk/release/app-release-unsigned.apk \
-             app/build/outputs/apk/release/DosageCalc-${TAG}.apk
+          TAG=${GITHUB_REF_NAME}
+          mv app/build/outputs/apk/debug/app-debug.apk \
+             app/build/outputs/apk/debug/DosageCalc-${TAG}.apk
 
       # ── GitHub Release ──────────────────────────────────────────────────────
       - name: Extract changelog for this version
@@ -63,7 +60,7 @@ jobs:
         with:
           name: "DosageCalc ${{ github.ref_name }}"
           body_path: ${{ steps.changelog.outputs.notes_file }}
-          files: app/build/outputs/apk/release/DosageCalc-${{ github.ref_name }}.apk
+          files: app/build/outputs/apk/debug/DosageCalc-${{ github.ref_name }}.apk
           draft: false
           prerelease: false
         env:
