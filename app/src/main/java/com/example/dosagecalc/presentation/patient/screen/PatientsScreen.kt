@@ -207,15 +207,21 @@ fun PatientsScreen(
                                     title = { Text("Elimina Paziente") },
                                     text = { Text("Sei sicuro di voler eliminare ${patient.name} ${patient.surname}? L'operazione non può essere annullata.") },
                                     confirmButton = {
-                                        TextButton(onClick = {
-                                            viewModel.deletePatient(patient.id)
-                                            showDeleteDialog = false
-                                        }) {
+                                        TextButton(
+                                            onClick = {
+                                                viewModel.deletePatient(patient.id)
+                                                showDeleteDialog = false
+                                            },
+                                            shape = RoundedCornerShape(50)
+                                        ) {
                                             Text("Elimina", color = MaterialTheme.colorScheme.error)
                                         }
                                     },
                                     dismissButton = {
-                                        TextButton(onClick = { showDeleteDialog = false }) {
+                                        TextButton(
+                                            onClick = { showDeleteDialog = false },
+                                            shape = RoundedCornerShape(50)
+                                        ) {
                                             Text("Annulla")
                                         }
                                     }

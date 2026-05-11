@@ -329,7 +329,7 @@ fun AddDataScreen(
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(56.dp),
-                shape = RoundedCornerShape(28.dp)
+                shape = RoundedCornerShape(50)
             ) {
                 Text("Salva", style = MaterialTheme.typography.titleMedium)
             }

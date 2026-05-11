@@ -216,15 +216,21 @@ fun HistoryScreen(
                                     title = { Text("Elimina Record") },
                                     text = { Text("Sei sicuro di voler eliminare traccia di questo calcolo?") },
                                     confirmButton = {
-                                        TextButton(onClick = {
-                                            viewModel.deleteRecord(record.id)
-                                            showDeleteDialog = false
-                                        }) {
+                                        TextButton(
+                                            onClick = {
+                                                viewModel.deleteRecord(record.id)
+                                                showDeleteDialog = false
+                                            },
+                                            shape = RoundedCornerShape(50)
+                                        ) {
                                             Text("Elimina", color = MaterialTheme.colorScheme.error)
                                         }
                                     },
                                     dismissButton = {
-                                        TextButton(onClick = { showDeleteDialog = false }) {
+                                        TextButton(
+                                            onClick = { showDeleteDialog = false },
+                                            shape = RoundedCornerShape(50)
+                                        ) {
                                             Text("Annulla")
                                         }
                                     }

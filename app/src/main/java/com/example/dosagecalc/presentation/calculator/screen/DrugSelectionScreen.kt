@@ -314,18 +314,24 @@ fun DrugSelectionScreen(
                 title = { Text("Eliminare ${drugToDelete?.name}?") },
                 text = { Text("Sei sicuro di voler eliminare definitivamente questo farmaco personalizzato?") },
                 confirmButton = {
-                    TextButton(onClick = {
-                        val id = drugToDelete?.id
-                        if (id != null) {
-                            viewModel.deleteCustomDrug(id)
-                        }
-                        drugToDelete = null
-                    }) {
+                    TextButton(
+                        onClick = {
+                            val id = drugToDelete?.id
+                            if (id != null) {
+                                viewModel.deleteCustomDrug(id)
+                            }
+                            drugToDelete = null
+                        },
+                        shape = RoundedCornerShape(50)
+                    ) {
                         Text("Elimina", color = MaterialTheme.colorScheme.error)
                     }
                 },
                 dismissButton = {
-                    TextButton(onClick = { drugToDelete = null }) {
+                    TextButton(
+                        onClick = { drugToDelete = null },
+                        shape = RoundedCornerShape(50)
+                    ) {
                         Text("Annulla")
                     }
                 }
