@@ -141,7 +141,7 @@ fun DrugSelectionScreen(
 
             if (!isCompact) {
                 DashboardShortcuts(
-                    modifier = Modifier.offset(y = (-30).dp),
+                    modifier = Modifier.offset(y = (-12).dp),
                     onNavigateToPatients = onNavigateToPatients,
                     onNavigateToHistory = onNavigateToHistory,
                     onNavigateToReminders = onNavigateToReminders,
