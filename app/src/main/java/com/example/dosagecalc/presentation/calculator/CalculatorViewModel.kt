@@ -1,7 +1,6 @@
 package com.example.dosagecalc.presentation.calculator
 
 import android.content.Context
-import androidx.glance.appwidget.GlanceAppWidgetManager
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.dosagecalc.domain.model.DosageResult
@@ -16,7 +15,7 @@ import com.example.dosagecalc.domain.usecase.CalculateDosageUseCase
 import com.example.dosagecalc.domain.usecase.CheckDrugInteractionsUseCase
 import com.example.dosagecalc.domain.usecase.ManageHistoryUseCase
 import com.example.dosagecalc.domain.usecase.ManagePatientsUseCase
-import com.example.dosagecalc.presentation.ui.widget.LastDrugWidget
+import com.example.dosagecalc.presentation.ui.widget.WidgetUpdateHelper
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
@@ -219,10 +218,7 @@ class CalculatorViewModel @Inject constructor(
                 manageHistoryUseCase.saveHistoryRecord(record)
                 
                 viewModelScope.launch {
-                    val manager = GlanceAppWidgetManager(context)
-                    manager.getGlanceIds(LastDrugWidget::class.java).forEach { id ->
-                        LastDrugWidget().update(context, id)
-                    }
+                    WidgetUpdateHelper.updateAllWidgets(context)
                 }
             }
 

@@ -9,13 +9,14 @@ import kotlinx.coroutines.flow.first
 import java.time.LocalDateTime
 import java.time.ZoneId
 import java.time.Instant
+import java.util.Calendar
 
 object WidgetDataProvider {
 
     suspend fun getLastDrug(context: Context): HistoryRecord? {
         val db = AppDatabase.getInstance(context)
         val entities = db.historyDao().getAllHistory().first()
-        val lastEntity = entities.firstOrNull() ?: return null
+        val lastEntity = entities.sortedByDescending { it.date }.firstOrNull() ?: return null
         
         return HistoryRecord(
             id = lastEntity.id,
@@ -37,6 +38,10 @@ object WidgetDataProvider {
     suspend fun getNextReminder(context: Context): Reminder? {
         val db = AppDatabase.getInstance(context)
         val entities = db.reminderDao().getAllReminders().first()
+        
+        val now = Calendar.getInstance()
+        val currentMinutes = now.get(Calendar.HOUR_OF_DAY) * 60 + now.get(Calendar.MINUTE)
+        
         val reminders = entities.map { e ->
             Reminder(
                 id = e.id,
@@ -48,8 +53,9 @@ object WidgetDataProvider {
                 durationDays = e.durationDays,
                 timestamp = e.timestamp
             )
-        }
-        
-        return reminders.firstOrNull()
+        }.sortedWith(compareBy({ it.hour }, { it.minute }))
+
+        return reminders.firstOrNull { (it.hour * 60 + it.minute) > currentMinutes } 
+               ?: reminders.firstOrNull()
     }
 }
