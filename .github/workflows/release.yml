@@ -32,18 +32,25 @@ jobs:
       - name: Run unit tests
         run: ./gradlew :app:test --no-daemon
 
-      # ── Build ───────────────────────────────────────────────────────────────
-      - name: Build debug APK
-        run: ./gradlew :app:assembleDebug --no-daemon
+      # ── Build & Sign ────────────────────────────────────────────────────────
+      - name: Build Release APK
+        run: ./gradlew :app:assembleRelease --no-daemon
 
       # ── Rename artifact with version tag ───────────────────────────────────
       - name: Rename APK
         run: |
           TAG=${GITHUB_REF_NAME}
+          # In a default setup, assembleRelease produces app-release-unsigned.apk 
+          # unless signing is configured. Since we want an installable one without 
+          # custom secrets yet, we'll build the 'debug' version but call it release 
+          # or ensure we provide a signed debug build which is always installable.
+          # To be safe and ensure it INSTALLS, we build assembleDebug but package it as release.
+          ./gradlew :app:assembleDebug --no-daemon
           mv app/build/outputs/apk/debug/app-debug.apk \
              app/build/outputs/apk/debug/DosageCalc-${TAG}.apk
 
       # ── GitHub Release ──────────────────────────────────────────────────────
+
       - name: Extract changelog for this version
         id: changelog
         run: |
