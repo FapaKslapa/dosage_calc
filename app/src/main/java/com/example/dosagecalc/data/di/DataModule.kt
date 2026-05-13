@@ -5,7 +5,7 @@ import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.preferencesDataStore
 import androidx.room.Room
-import com.example.dosagecalc.data.AppDatabase
+import com.example.dosagecalc.data.database.AppDatabase
 import com.example.dosagecalc.data.datasource.CustomDrugDao
 import com.example.dosagecalc.data.datasource.HistoryDao
 import com.example.dosagecalc.data.datasource.PatientDao

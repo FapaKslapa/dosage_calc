@@ -1,4 +1,4 @@
-package com.example.dosagecalc.data
+package com.example.dosagecalc.data.database
 
 import android.content.Context
 import androidx.room.Database

@@ -1,7 +1,7 @@
 package com.example.dosagecalc.presentation.ui.widget
 
 import android.content.Context
-import com.example.dosagecalc.data.AppDatabase
+import com.example.dosagecalc.data.database.AppDatabase
 import com.example.dosagecalc.domain.model.HistoryRecord
 import com.example.dosagecalc.domain.model.Reminder
 import com.example.dosagecalc.domain.model.ReminderInterval
