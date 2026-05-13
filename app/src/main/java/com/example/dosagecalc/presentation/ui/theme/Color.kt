@@ -27,3 +27,6 @@ val DarkSurfaceVariant = Color(0xFF2D2D2D)
 val DarkInk   = Color(0xFF1C1B1F)
 val MediumInk = Color(0xFF49454F)
 val LightInk  = Color(0xFF6B6560)
+
+val WidgetLastDrugBackground    = Purple40
+val WidgetNextReminderBackground = Teal40
