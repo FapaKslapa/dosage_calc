@@ -90,7 +90,8 @@ fun PatientAddSheet(
                         onValueChange = { name = it },
                         label = { Text("Nome") },
                         singleLine = true,
-                        modifier = Modifier.fillMaxWidth()
+                        modifier = Modifier.fillMaxWidth(),
+                        shape = shapes.card
                     )
                     Spacer(modifier = Modifier.height(sp.md))
                     RoundedTextField(
@@ -98,7 +99,8 @@ fun PatientAddSheet(
                         onValueChange = { surname = it },
                         label = { Text("Cognome") },
                         singleLine = true,
-                        modifier = Modifier.fillMaxWidth()
+                        modifier = Modifier.fillMaxWidth(),
+                        shape = shapes.card
                     )
                 }
                 Spacer(modifier = Modifier.width(sp.base))
@@ -138,7 +140,8 @@ fun PatientAddSheet(
                 onValueChange = { name = it },
                 label = { Text("Nome") },
                 singleLine = true,
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier.fillMaxWidth(),
+                shape = shapes.card
             )
             Spacer(modifier = Modifier.height(sp.md))
             RoundedTextField(
@@ -146,7 +149,8 @@ fun PatientAddSheet(
                 onValueChange = { surname = it },
                 label = { Text("Cognome") },
                 singleLine = true,
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier.fillMaxWidth(),
+                shape = shapes.card
             )
             Spacer(modifier = Modifier.height(sp.md))
             AnthropometricInputsGroup(

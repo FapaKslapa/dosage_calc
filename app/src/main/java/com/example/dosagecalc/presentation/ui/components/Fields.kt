@@ -5,6 +5,7 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Shape
 import com.example.dosagecalc.presentation.ui.theme.LocalDosageShapes
 
 @Composable
@@ -24,7 +25,10 @@ fun RoundedTextField(
     isError: Boolean = false,
     keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
     keyboardActions: KeyboardActions = KeyboardActions.Default,
+    shape: Shape? = null,
 ) {
+    val fieldShape = shape ?: LocalDosageShapes.current.field
+
     OutlinedTextField(
         value           = value,
         onValueChange   = onValueChange,
@@ -41,6 +45,6 @@ fun RoundedTextField(
         isError         = isError,
         keyboardOptions = keyboardOptions,
         keyboardActions = keyboardActions,
-        shape           = LocalDosageShapes.current.field
+        shape           = fieldShape
     )
 }
