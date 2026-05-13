@@ -143,7 +143,7 @@ fun PatientInputScreen(
                             trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
                             colors = OutlinedTextFieldDefaults.colors(),
                             modifier = Modifier.menuAnchor(androidx.compose.material3.ExposedDropdownMenuAnchorType.PrimaryNotEditable).fillMaxWidth(),
-                            shape = shapes.field
+                            shape = shapes.card
                         )
                         ExposedDropdownMenu(
                             expanded = expanded,

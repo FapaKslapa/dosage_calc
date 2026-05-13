@@ -20,7 +20,7 @@ val DosageMaterialShapes = Shapes(
 data class DosageShapes(
     val pill:             Shape = RoundedCornerShape(50),
     val field:            Shape = RoundedCornerShape(16.dp),
-    val chip:             Shape = RoundedCornerShape(8.dp),
+    val chip:             Shape = RoundedCornerShape(50),
     val tile:             Shape = RoundedCornerShape(16.dp),
     val card:             Shape = RoundedCornerShape(24.dp),
     val cardLarge:        Shape = RoundedCornerShape(28.dp),
