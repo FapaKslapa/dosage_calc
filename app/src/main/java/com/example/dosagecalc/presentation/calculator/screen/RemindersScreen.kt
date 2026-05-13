@@ -14,18 +14,17 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.lazy.grid.itemsIndexed
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Alarm
 import androidx.compose.material.icons.filled.AlarmOff
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -44,11 +43,11 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.dosagecalc.domain.model.ReminderInterval
 import com.example.dosagecalc.presentation.calculator.RemindersViewModel
 import com.example.dosagecalc.presentation.ui.components.EmptyStateView
+import com.example.dosagecalc.presentation.ui.components.ExpressiveCard
 import com.example.dosagecalc.presentation.ui.components.GradientScreenHeader
 import com.example.dosagecalc.presentation.ui.theme.LocalDosageShapes
 import com.example.dosagecalc.presentation.ui.theme.spacing
@@ -138,7 +137,7 @@ fun RemindersScreen(
                             Spacer(modifier = Modifier.height(sp.xs))
                         }
                     }
-                    items(reminders, key = { it.id }) { reminder ->
+                    itemsIndexed(reminders, key = { _, item -> item.id }) { index, reminder ->
                         var showDeleteDialog by remember { mutableStateOf(false) }
                         val timeString = String.format("%02d:%02d", reminder.hour, reminder.minute)
                         val frequencyText = when (reminder.interval) {
@@ -170,16 +169,12 @@ fun RemindersScreen(
                             )
                         }
 
-                        Card(
+                        ExpressiveCard(
                             modifier = Modifier
                                 .aspectRatio(1f)
                                 .animateItem(),
-                            shape = shapes.expressive,
-                            colors = CardDefaults.cardColors(
-                                containerColor = MaterialTheme.colorScheme.primaryContainer,
-                                contentColor = MaterialTheme.colorScheme.onPrimaryContainer
-                            ),
-                            elevation = CardDefaults.cardElevation(defaultElevation = 0.dp)
+                            mirrored = index % 2 == 1,
+                            containerAlpha = 0.9f
                         ) {
                             Box(
                                 modifier = Modifier
@@ -192,24 +187,29 @@ fun RemindersScreen(
                                     modifier = Modifier
                                         .size(72.dp)
                                         .align(Alignment.TopEnd),
-                                    tint = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.07f)
+                                    tint = MaterialTheme.colorScheme.primary.copy(alpha = 0.08f)
                                 )
                                 Column(modifier = Modifier.fillMaxSize()) {
                                     Spacer(modifier = Modifier.height(2.dp))
-                                    Text(
-                                        text = timeString,
-                                        style = MaterialTheme.typography.displaySmall.copy(
-                                            fontFamily = FontFamily.Serif,
-                                            fontWeight = FontWeight.Medium,
-                                            fontSize = 38.sp
-                                        ),
-                                        color = MaterialTheme.colorScheme.onPrimaryContainer
-                                    )
-                                    Spacer(modifier = Modifier.height(2.dp))
+                                    Surface(
+                                        shape = shapes.pill,
+                                        color = MaterialTheme.colorScheme.primary.copy(alpha = 0.12f)
+                                    ) {
+                                        Text(
+                                            text = timeString,
+                                            style = MaterialTheme.typography.titleLarge.copy(
+                                                fontFamily = FontFamily.Serif,
+                                                fontWeight = FontWeight.Medium
+                                            ),
+                                            color = MaterialTheme.colorScheme.primary,
+                                            modifier = Modifier.padding(horizontal = sp.md, vertical = sp.xs)
+                                        )
+                                    }
+                                    Spacer(modifier = Modifier.height(sp.xs))
                                     Text(
                                         text = reminder.drugName,
                                         style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.SemiBold),
-                                        color = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.8f),
+                                        color = MaterialTheme.colorScheme.onSurface,
                                         maxLines = 1,
                                         overflow = TextOverflow.Ellipsis
                                     )
@@ -220,27 +220,34 @@ fun RemindersScreen(
                                         horizontalArrangement = Arrangement.SpaceBetween
                                     ) {
                                         Surface(
-                                            shape = shapes.chip,
-                                            color = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.12f)
+                                            shape = shapes.pill,
+                                            color = MaterialTheme.colorScheme.surface
                                         ) {
                                             Text(
                                                 text = frequencyText,
                                                 style = MaterialTheme.typography.labelSmall,
-                                                color = MaterialTheme.colorScheme.onPrimaryContainer,
+                                                color = MaterialTheme.colorScheme.onSurfaceVariant,
                                                 modifier = Modifier.padding(horizontal = sp.sm, vertical = sp.xs),
                                                 maxLines = 1,
                                                 overflow = TextOverflow.Ellipsis
                                             )
                                         }
-                                        IconButton(
-                                            onClick = { showDeleteDialog = true }
+                                        Surface(
+                                            shape = shapes.pill,
+                                            color = MaterialTheme.colorScheme.surface,
+                                            border = BorderStroke(1.dp, MaterialTheme.colorScheme.error)
                                         ) {
-                                            Icon(
-                                                Icons.Default.Delete,
-                                                contentDescription = "Elimina Promemoria",
-                                                tint = MaterialTheme.colorScheme.onPrimaryContainer,
-                                                modifier = Modifier.size(20.dp)
-                                            )
+                                            IconButton(
+                                                onClick = { showDeleteDialog = true },
+                                                modifier = Modifier.size(32.dp)
+                                            ) {
+                                                Icon(
+                                                    Icons.Default.Delete,
+                                                    contentDescription = "Elimina Promemoria",
+                                                    tint = MaterialTheme.colorScheme.error,
+                                                    modifier = Modifier.size(18.dp)
+                                                )
+                                            }
                                         }
                                     }
                                 }
