@@ -23,6 +23,7 @@ import androidx.glance.text.TextStyle
 import androidx.glance.unit.ColorProvider
 import com.example.dosagecalc.MainActivity
 import com.example.dosagecalc.domain.model.HistoryRecord
+import com.example.dosagecalc.presentation.ui.theme.WidgetLastDrugBackground
 import java.time.format.DateTimeFormatter
 
 class LastDrugWidget : GlanceAppWidget() {
@@ -38,7 +39,7 @@ class LastDrugWidget : GlanceAppWidget() {
         Box(
             modifier = GlanceModifier
                 .fillMaxSize()
-                .background(Color(0xFF6760F6))
+                .background(WidgetLastDrugBackground)
                 .cornerRadius(20.dp)
                 .clickable(actionStartActivity<MainActivity>()),
             contentAlignment = Alignment.TopStart

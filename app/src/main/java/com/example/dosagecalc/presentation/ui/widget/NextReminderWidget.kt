@@ -23,6 +23,7 @@ import androidx.glance.text.TextStyle
 import androidx.glance.unit.ColorProvider
 import com.example.dosagecalc.MainActivity
 import com.example.dosagecalc.domain.model.Reminder
+import com.example.dosagecalc.presentation.ui.theme.WidgetNextReminderBackground
 
 class NextReminderWidget : GlanceAppWidget() {
 
@@ -34,7 +35,7 @@ class NextReminderWidget : GlanceAppWidget() {
     @SuppressLint("RestrictedApi")
     @Composable
     private fun WidgetContent(reminder: Reminder?) {
-        val bgColor = Color(0xFF148F84)
+        val bgColor = WidgetNextReminderBackground
 
         Box(
             modifier = GlanceModifier
