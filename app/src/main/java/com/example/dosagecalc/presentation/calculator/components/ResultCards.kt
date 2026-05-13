@@ -4,6 +4,7 @@ import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -13,6 +14,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -21,8 +23,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.Warning
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -31,15 +31,16 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontFamily
-import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.dosagecalc.domain.model.DosageResult
+import com.example.dosagecalc.presentation.ui.components.CardTone
 import com.example.dosagecalc.presentation.ui.components.GradientScreenHeader
+import com.example.dosagecalc.presentation.ui.components.OutlinedTintCard
 import com.example.dosagecalc.presentation.ui.theme.LocalDosageShapes
-import com.example.dosagecalc.presentation.ui.theme.LocalElevation
 import com.example.dosagecalc.presentation.ui.theme.spacing
 import com.example.dosagecalc.presentation.ui.util.isCompactHeight
 import java.util.Locale
@@ -167,129 +168,71 @@ fun ErrorHeader(title: String, message: String) {
 fun DetailsCard(result: DosageResult.Success) {
     val sp = MaterialTheme.spacing
     val shapes = LocalDosageShapes.current
-    val elev = LocalElevation.current
-    Card(
-        modifier  = Modifier.fillMaxWidth(),
-        shape     = shapes.card,
-        elevation = CardDefaults.cardElevation(defaultElevation = elev.level2),
-        colors    = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
-    ) {
+    val cs = MaterialTheme.colorScheme
+
+    OutlinedTintCard(modifier = Modifier.fillMaxWidth(), tone = CardTone.Primary) {
         Column(modifier = Modifier.padding(sp.lg)) {
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                Box(
-                    modifier = Modifier
-                        .size(48.dp)
-                        .background(MaterialTheme.colorScheme.primary, shapes.field),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Text(
-                        text = "fx",
-                        fontSize = 18.sp,
-                        fontFamily = FontFamily.Serif,
-                        fontWeight = FontWeight.Bold,
-                        color = MaterialTheme.colorScheme.onPrimary
-                    )
-                }
-                Spacer(modifier = Modifier.width(sp.base))
-                Column {
-                    Text(
-                        text  = "Formula applicata",
-                        style = MaterialTheme.typography.titleLarge,
-                        color = MaterialTheme.colorScheme.onSurface
-                    )
-                    Spacer(modifier = Modifier.height(sp.xs))
-                    Text(
-                        text  = result.formula,
-                        style = MaterialTheme.typography.bodyLarge,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
-                    )
-                }
+
+            Text(
+                text  = "Formula applicata",
+                style = MaterialTheme.typography.labelMedium,
+                color = cs.primary.copy(alpha = 0.75f)
+            )
+
+            Spacer(modifier = Modifier.height(sp.sm))
+
+            Surface(
+                shape = shapes.tile,
+                color = cs.primary.copy(alpha = 0.07f),
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Text(
+                    text = result.formula,
+                    style = MaterialTheme.typography.bodyMedium.copy(
+                        fontFamily = FontFamily.Monospace
+                    ),
+                    color = cs.primary,
+                    modifier = Modifier.padding(sp.base)
+                )
             }
 
             if (result.totalCycleDose != null || result.totalTherapyDose != null) {
                 Spacer(modifier = Modifier.height(sp.lg))
-                HorizontalDivider(
-                    color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.2f)
-                )
-                Spacer(modifier = Modifier.height(sp.lg))
+                HorizontalDivider(color = cs.primary.copy(alpha = 0.15f))
+                Spacer(modifier = Modifier.height(sp.base))
 
-                Column {
+                Column(verticalArrangement = Arrangement.spacedBy(sp.sm)) {
                     result.totalCycleDose?.let { cycleDose ->
-                        Row(verticalAlignment = Alignment.CenterVertically) {
-                            Icon(
-                                imageVector = Icons.Filled.CheckCircle,
-                                contentDescription = null,
-                                tint = MaterialTheme.colorScheme.primary.copy(alpha = 0.6f),
-                                modifier = Modifier.size(20.dp)
-                            )
-                            Spacer(modifier = Modifier.width(sp.md))
-                            Column {
-                                Text(
-                                    text = "Dose Totale per Ciclo",
-                                    style = MaterialTheme.typography.titleMedium,
-                                    color = MaterialTheme.colorScheme.onSurface
-                                )
-                                Text(
-                                    text = "${formatDose(cycleDose)} ${result.unit}",
-                                    style = MaterialTheme.typography.bodyLarge,
-                                    fontWeight = FontWeight.Bold,
-                                    color = MaterialTheme.colorScheme.primary
-                                )
-                            }
-                        }
+                        DoseRow(
+                            label = "Dose per ciclo",
+                            value = "${formatDose(cycleDose)} ${result.unit}",
+                            color = cs.primary
+                        )
                     }
-
-                    if (result.totalCycleDose != null && result.totalTherapyDose != null) {
-                        Spacer(modifier = Modifier.height(sp.base))
-                    }
-
                     result.totalTherapyDose?.let { therapyDose ->
-                        Row(verticalAlignment = Alignment.CenterVertically) {
-                            Icon(
-                                imageVector = Icons.Filled.CheckCircle,
-                                contentDescription = null,
-                                tint = MaterialTheme.colorScheme.tertiary.copy(alpha = 0.6f),
-                                modifier = Modifier.size(20.dp)
-                            )
-                            Spacer(modifier = Modifier.width(sp.md))
-                            Column {
-                                Text(
-                                    text = "Dose Totale Terapia",
-                                    style = MaterialTheme.typography.titleMedium,
-                                    color = MaterialTheme.colorScheme.onSurface
-                                )
-                                Text(
-                                    text = "${formatDose(therapyDose)} ${result.unit}",
-                                    style = MaterialTheme.typography.bodyLarge,
-                                    fontWeight = FontWeight.Bold,
-                                    color = MaterialTheme.colorScheme.tertiary
-                                )
-                            }
-                        }
+                        DoseRow(
+                            label = "Dose totale terapia",
+                            value = "${formatDose(therapyDose)} ${result.unit}",
+                            color = cs.tertiary
+                        )
                     }
                 }
             }
 
             if (result.source.isNotBlank()) {
-                Spacer(modifier = Modifier.height(sp.lg))
-                HorizontalDivider(
-                    color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.2f)
-                )
-                Spacer(modifier = Modifier.height(sp.lg))
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    Icon(
-                        imageVector = Icons.Filled.CheckCircle,
-                        contentDescription = null,
-                        tint = MaterialTheme.colorScheme.primary.copy(alpha = 0.6f),
-                        modifier = Modifier.size(16.dp)
-                    )
-                    Spacer(modifier = Modifier.width(sp.sm))
-                    Text(
-                        text      = result.source,
-                        style     = MaterialTheme.typography.bodyMedium,
-                        color     = MaterialTheme.colorScheme.onSurfaceVariant,
-                        fontStyle = FontStyle.Italic
-                    )
+                Spacer(modifier = Modifier.height(sp.base))
+                Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
+                    Surface(
+                        shape = shapes.chip,
+                        color = cs.primary.copy(alpha = 0.10f)
+                    ) {
+                        Text(
+                            text = result.source,
+                            style = MaterialTheme.typography.labelSmall,
+                            color = cs.primary.copy(alpha = 0.8f),
+                            modifier = Modifier.padding(horizontal = sp.sm, vertical = 4.dp)
+                        )
+                    }
                 }
             }
         }
@@ -297,35 +240,61 @@ fun DetailsCard(result: DosageResult.Success) {
 }
 
 @Composable
+private fun DoseRow(label: String, value: String, color: Color) {
+    val sp = MaterialTheme.spacing
+    val cs = MaterialTheme.colorScheme
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        modifier = Modifier.fillMaxWidth()
+    ) {
+        Box(
+            modifier = Modifier
+                .size(7.dp)
+                .background(color, CircleShape)
+        )
+        Spacer(modifier = Modifier.width(sp.sm))
+        Text(
+            text = label,
+            style = MaterialTheme.typography.bodyMedium,
+            color = cs.onSurface,
+            modifier = Modifier.weight(1f)
+        )
+        Text(
+            text = value,
+            style = MaterialTheme.typography.titleSmall.copy(fontWeight = FontWeight.Bold),
+            color = color
+        )
+    }
+}
+
+@Composable
 fun AlertCard(alert: String) {
     val sp = MaterialTheme.spacing
-    Card(
-        modifier  = Modifier.fillMaxWidth(),
-        shape     = LocalDosageShapes.current.card,
-        elevation = CardDefaults.cardElevation(defaultElevation = LocalElevation.current.level2),
-        colors    = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.errorContainer)
-    ) {
+    val cs = MaterialTheme.colorScheme
+
+    OutlinedTintCard(modifier = Modifier.fillMaxWidth(), tone = CardTone.Error) {
         Row(
             modifier          = Modifier.padding(sp.lg),
             verticalAlignment = Alignment.Top
         ) {
-            Text(
-                text     = "⚠",
-                fontSize = 18.sp,
-                modifier = Modifier.padding(top = 2.dp)
+            Icon(
+                imageVector        = Icons.Filled.Warning,
+                contentDescription = null,
+                tint               = cs.error,
+                modifier           = Modifier.size(20.dp).padding(top = 2.dp)
             )
-            Spacer(modifier = Modifier.width(10.dp))
+            Spacer(modifier = Modifier.width(sp.md))
             Column {
                 Text(
                     text  = "Avviso clinico",
-                    style = MaterialTheme.typography.titleLarge,
-                    color = MaterialTheme.colorScheme.onErrorContainer
+                    style = MaterialTheme.typography.titleMedium,
+                    color = cs.error
                 )
                 Spacer(modifier = Modifier.height(sp.xs))
                 Text(
                     text  = alert,
-                    style = MaterialTheme.typography.bodyLarge,
-                    color = MaterialTheme.colorScheme.onErrorContainer
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = cs.onSurface
                 )
             }
         }
@@ -335,26 +304,40 @@ fun AlertCard(alert: String) {
 @Composable
 fun DisclaimerCard() {
     val sp = MaterialTheme.spacing
-    Card(
-        modifier  = Modifier.fillMaxWidth(),
-        shape     = LocalDosageShapes.current.card,
-        elevation = CardDefaults.cardElevation(defaultElevation = LocalElevation.current.level2),
-        colors    = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant)
+    val cs = MaterialTheme.colorScheme
+    val shapes = LocalDosageShapes.current
+
+    Surface(
+        shape    = shapes.card,
+        color    = cs.onSurface.copy(alpha = 0.04f),
+        modifier = Modifier.fillMaxWidth()
     ) {
-        Column(modifier = Modifier.padding(sp.lg)) {
-            Text(
-                text  = "DISCLAIMER",
-                style = MaterialTheme.typography.titleMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
+        Row(
+            modifier          = Modifier.padding(sp.lg),
+            verticalAlignment = Alignment.Top
+        ) {
+            Box(
+                modifier = Modifier
+                    .padding(top = 4.dp)
+                    .size(4.dp)
+                    .background(cs.onSurfaceVariant.copy(alpha = 0.4f), CircleShape)
             )
-            Spacer(modifier = Modifier.height(sp.xs + 2.dp))
-            Text(
-                text  = "Strumento a finalità esclusivamente didattiche. " +
-                        "Non sostituisce la valutazione clinica del medico. " +
-                        "Verificare sempre il dosaggio sulla scheda tecnica ufficiale (RCP/AIFA).",
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
-            )
+            Spacer(modifier = Modifier.width(sp.md))
+            Column {
+                Text(
+                    text  = "Disclaimer",
+                    style = MaterialTheme.typography.labelMedium,
+                    color = cs.onSurfaceVariant.copy(alpha = 0.7f)
+                )
+                Spacer(modifier = Modifier.height(sp.xs))
+                Text(
+                    text  = "Strumento a finalità esclusivamente didattiche. " +
+                            "Non sostituisce la valutazione clinica del medico. " +
+                            "Verificare sempre il dosaggio sulla scheda tecnica ufficiale (RCP/AIFA).",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = cs.onSurfaceVariant.copy(alpha = 0.65f)
+                )
+            }
         }
     }
 }
