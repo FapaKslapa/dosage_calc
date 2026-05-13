@@ -23,7 +23,6 @@ import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Share
@@ -47,6 +46,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.dosagecalc.presentation.ui.theme.LocalDosageShapes
+import com.example.dosagecalc.presentation.ui.theme.spacing
 import kotlinx.coroutines.launch
 
 private data class OnboardingPage(
@@ -90,6 +91,8 @@ fun OnboardingScreen(onFinish: () -> Unit) {
 
     val pagerState = rememberPagerState(pageCount = { pages.size })
     val scope = rememberCoroutineScope()
+    val sp = MaterialTheme.spacing
+    val shapes = LocalDosageShapes.current
 
     Box(modifier = Modifier.fillMaxSize().background(MaterialTheme.colorScheme.background)) {
         HorizontalPager(
@@ -103,8 +106,8 @@ fun OnboardingScreen(onFinish: () -> Unit) {
             modifier = Modifier
                 .align(Alignment.BottomCenter)
                 .navigationBarsPadding()
-                .padding(bottom = 100.dp),
-            horizontalArrangement = Arrangement.spacedBy(8.dp)
+                .padding(bottom = sp.bottomBarClearance - 8.dp),
+            horizontalArrangement = Arrangement.spacedBy(sp.sm)
         ) {
             repeat(pages.size) { index ->
                 val isSelected = pagerState.currentPage == index
@@ -117,7 +120,7 @@ fun OnboardingScreen(onFinish: () -> Unit) {
                 Box(
                     modifier = Modifier
                         .size(if (isSelected) 24.dp else 8.dp, 8.dp)
-                        .clip(RoundedCornerShape(50))
+                        .clip(shapes.pill)
                         .background(color)
                 )
             }
@@ -128,7 +131,7 @@ fun OnboardingScreen(onFinish: () -> Unit) {
                 .align(Alignment.BottomCenter)
                 .navigationBarsPadding()
                 .fillMaxWidth()
-                .padding(horizontal = 24.dp, vertical = 24.dp),
+                .padding(horizontal = sp.xl, vertical = sp.xl),
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
@@ -148,7 +151,7 @@ fun OnboardingScreen(onFinish: () -> Unit) {
                         onFinish()
                     }
                 },
-                shape = RoundedCornerShape(50),
+                shape = shapes.pill,
                 modifier = Modifier.height(52.dp).width(140.dp),
                 colors = ButtonDefaults.buttonColors(
                     containerColor = MaterialTheme.colorScheme.primary
@@ -165,6 +168,7 @@ fun OnboardingScreen(onFinish: () -> Unit) {
 
 @Composable
 private fun OnboardingPageContent(page: OnboardingPage) {
+    val shapes = LocalDosageShapes.current
     BoxWithConstraints(
         modifier = Modifier.fillMaxSize().statusBarsPadding()
     ) {
@@ -176,7 +180,7 @@ private fun OnboardingPageContent(page: OnboardingPage) {
                     modifier = Modifier
                         .fillMaxHeight()
                         .weight(0.4f)
-                        .clip(RoundedCornerShape(topEnd = 48.dp, bottomEnd = 48.dp))
+                        .clip(androidx.compose.foundation.shape.RoundedCornerShape(topEnd = 48.dp, bottomEnd = 48.dp))
                         .background(
                             Brush.verticalGradient(listOf(page.gradientStart(), page.gradientEnd()))
                         ),
@@ -236,7 +240,7 @@ private fun OnboardingPageContent(page: OnboardingPage) {
                     modifier = Modifier
                         .fillMaxWidth()
                         .weight(0.45f)
-                        .clip(RoundedCornerShape(bottomStart = 48.dp, bottomEnd = 48.dp))
+                        .clip(shapes.heroLanding)
                         .background(
                             Brush.verticalGradient(listOf(page.gradientStart(), page.gradientEnd()))
                         ),

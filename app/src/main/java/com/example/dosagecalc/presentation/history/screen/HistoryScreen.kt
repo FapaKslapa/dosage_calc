@@ -14,8 +14,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.ui.unit.dp
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Analytics
@@ -51,6 +49,8 @@ import com.example.dosagecalc.presentation.history.components.HistoryCard
 import com.example.dosagecalc.presentation.ui.util.isCompactHeight
 import com.example.dosagecalc.presentation.ui.components.EmptyStateView
 import com.example.dosagecalc.presentation.ui.components.GradientScreenHeader
+import com.example.dosagecalc.presentation.ui.theme.LocalDosageShapes
+import com.example.dosagecalc.presentation.ui.theme.spacing
 import com.example.dosagecalc.presentation.utils.ExportManager
 
 @Composable
@@ -63,6 +63,8 @@ fun HistoryScreen(
     val context = LocalContext.current
     val exportManager = remember { ExportManager(context) }
     val isCompact = isCompactHeight()
+    val sp = MaterialTheme.spacing
+    val shapes = LocalDosageShapes.current
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val searchQuery by viewModel.searchQuery.collectAsStateWithLifecycle()
     val filteredPatientName by viewModel.filteredPatientName.collectAsStateWithLifecycle()
@@ -90,7 +92,7 @@ fun HistoryScreen(
                 Column {
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
-                        modifier = Modifier.padding(top = 8.dp)
+                        modifier = Modifier.padding(top = sp.sm)
                     ) {
                         IconButton(onClick = onNavigateBack) {
                             Icon(
@@ -127,7 +129,7 @@ fun HistoryScreen(
                         }
                     }
 
-                    Column(modifier = Modifier.padding(start = 24.dp, end = 24.dp, top = 4.dp)) {
+                    Column(modifier = Modifier.padding(start = sp.xl, end = sp.xl, top = sp.xs)) {
                         Text(
                             text  = filteredPatientName ?: "Storico Calcoli",
                             style = MaterialTheme.typography.headlineMedium.copy(fontFamily = FontFamily.Serif),
@@ -152,7 +154,7 @@ fun HistoryScreen(
                                 }
                             }
                         }
-                        Spacer(modifier = Modifier.height(if (isCompact) 8.dp else 16.dp))
+                        Spacer(modifier = Modifier.height(if (isCompact) sp.sm else sp.base))
                         OutlinedTextField(
                             value = searchQuery,
                             onValueChange = viewModel::updateSearchQuery,
@@ -164,7 +166,7 @@ fun HistoryScreen(
                                 focusedBorderColor = Color.Transparent,
                                 unfocusedBorderColor = Color.Transparent
                             ),
-                            shape = RoundedCornerShape(24.dp),
+                            shape = shapes.card,
                             modifier = Modifier.fillMaxWidth().height(52.dp),
                             singleLine = true
                         )
@@ -196,9 +198,9 @@ fun HistoryScreen(
                 LazyVerticalGrid(
                     columns = GridCells.Adaptive(minSize = 320.dp),
                     modifier = Modifier.fillMaxSize(),
-                    contentPadding = PaddingValues(top = 16.dp, bottom = 40.dp, start = 20.dp, end = 20.dp),
-                    horizontalArrangement = Arrangement.spacedBy(16.dp),
-                    verticalArrangement = Arrangement.spacedBy(16.dp)
+                    contentPadding = PaddingValues(top = sp.base, bottom = sp.xxxl, start = sp.lg, end = sp.lg),
+                    horizontalArrangement = Arrangement.spacedBy(sp.base),
+                    verticalArrangement = Arrangement.spacedBy(sp.base)
                 ) {
                     items(count = pagedHistory.itemCount) { index ->
                         val record = pagedHistory[index]
@@ -221,7 +223,7 @@ fun HistoryScreen(
                                                 viewModel.deleteRecord(record.id)
                                                 showDeleteDialog = false
                                             },
-                                            shape = RoundedCornerShape(50)
+                                            shape = shapes.pill
                                         ) {
                                             Text("Elimina", color = MaterialTheme.colorScheme.error)
                                         }
@@ -229,7 +231,7 @@ fun HistoryScreen(
                                     dismissButton = {
                                         TextButton(
                                             onClick = { showDeleteDialog = false },
-                                            shape = RoundedCornerShape(50)
+                                            shape = shapes.pill
                                         ) {
                                             Text("Annulla")
                                         }

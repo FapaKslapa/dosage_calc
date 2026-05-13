@@ -18,7 +18,6 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Alarm
@@ -51,6 +50,8 @@ import com.example.dosagecalc.domain.model.ReminderInterval
 import com.example.dosagecalc.presentation.calculator.RemindersViewModel
 import com.example.dosagecalc.presentation.ui.components.EmptyStateView
 import com.example.dosagecalc.presentation.ui.components.GradientScreenHeader
+import com.example.dosagecalc.presentation.ui.theme.LocalDosageShapes
+import com.example.dosagecalc.presentation.ui.theme.spacing
 import com.example.dosagecalc.presentation.utils.ReminderManager
 
 @Composable
@@ -60,6 +61,8 @@ fun RemindersScreen(
 ) {
     val reminders by viewModel.reminders.collectAsStateWithLifecycle()
     val context = LocalContext.current
+    val sp = MaterialTheme.spacing
+    val shapes = LocalDosageShapes.current
 
     Box(
         modifier = Modifier
@@ -77,7 +80,7 @@ fun RemindersScreen(
                 Column {
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
-                        modifier = Modifier.padding(top = 8.dp)
+                        modifier = Modifier.padding(top = sp.sm)
                     ) {
                         IconButton(onClick = onNavigateBack) {
                             Icon(
@@ -92,19 +95,19 @@ fun RemindersScreen(
                             color = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.8f)
                         )
                     }
-                    Column(modifier = Modifier.padding(start = 24.dp, end = 24.dp, top = 4.dp)) {
+                    Column(modifier = Modifier.padding(start = sp.xl, end = sp.xl, top = sp.xs)) {
                         Text(
                             text  = "Promemoria",
                             style = MaterialTheme.typography.headlineMedium.copy(fontFamily = FontFamily.Serif),
                             color = MaterialTheme.colorScheme.onPrimary
                         )
-                        Spacer(modifier = Modifier.height(8.dp))
+                        Spacer(modifier = Modifier.height(sp.sm))
                         Text(
                             text  = "Gestisci i tuoi allarmi attivi",
                             style = MaterialTheme.typography.bodyMedium,
                             color = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.9f)
                         )
-                        Spacer(modifier = Modifier.height(24.dp))
+                        Spacer(modifier = Modifier.height(sp.xl))
                     }
                 }
             }
@@ -121,9 +124,9 @@ fun RemindersScreen(
                 LazyVerticalGrid(
                     columns = GridCells.Adaptive(minSize = 180.dp),
                     modifier = Modifier.fillMaxSize(),
-                    contentPadding = PaddingValues(horizontal = 16.dp, vertical = 24.dp),
-                    horizontalArrangement = Arrangement.spacedBy(12.dp),
-                    verticalArrangement = Arrangement.spacedBy(12.dp)
+                    contentPadding = PaddingValues(horizontal = sp.base, vertical = sp.xl),
+                    horizontalArrangement = Arrangement.spacedBy(sp.md),
+                    verticalArrangement = Arrangement.spacedBy(sp.md)
                 ) {
                     item(span = { GridItemSpan(maxLineSpan) }) {
                         Column {
@@ -132,15 +135,15 @@ fun RemindersScreen(
                                 style = MaterialTheme.typography.titleLarge.copy(fontFamily = FontFamily.Serif),
                                 color = MaterialTheme.colorScheme.onBackground
                             )
-                            Spacer(modifier = Modifier.height(4.dp))
+                            Spacer(modifier = Modifier.height(sp.xs))
                         }
                     }
                     items(reminders, key = { it.id }) { reminder ->
                         var showDeleteDialog by remember { mutableStateOf(false) }
                         val timeString = String.format("%02d:%02d", reminder.hour, reminder.minute)
                         val frequencyText = when (reminder.interval) {
-                            ReminderInterval.DAILY  -> "Giornaliero"
-                            ReminderInterval.WEEKLY -> "Sett. G.${reminder.daySelection}"
+                            ReminderInterval.DAILY   -> "Giornaliero"
+                            ReminderInterval.WEEKLY  -> "Sett. G.${reminder.daySelection}"
                             ReminderInterval.MONTHLY -> "Mens. G.${reminder.daySelection}"
                         }
 
@@ -171,7 +174,7 @@ fun RemindersScreen(
                             modifier = Modifier
                                 .aspectRatio(1f)
                                 .animateItem(),
-                            shape = RoundedCornerShape(20.dp),
+                            shape = shapes.expressive,
                             colors = CardDefaults.cardColors(
                                 containerColor = MaterialTheme.colorScheme.primaryContainer,
                                 contentColor = MaterialTheme.colorScheme.onPrimaryContainer
@@ -181,7 +184,7 @@ fun RemindersScreen(
                             Box(
                                 modifier = Modifier
                                     .fillMaxSize()
-                                    .padding(14.dp)
+                                    .padding(sp.md)
                             ) {
                                 Icon(
                                     imageVector = Icons.Filled.Alarm,
@@ -217,14 +220,14 @@ fun RemindersScreen(
                                         horizontalArrangement = Arrangement.SpaceBetween
                                     ) {
                                         Surface(
-                                            shape = RoundedCornerShape(8.dp),
+                                            shape = shapes.chip,
                                             color = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.12f)
                                         ) {
                                             Text(
                                                 text = frequencyText,
                                                 style = MaterialTheme.typography.labelSmall,
                                                 color = MaterialTheme.colorScheme.onPrimaryContainer,
-                                                modifier = Modifier.padding(horizontal = 6.dp, vertical = 3.dp),
+                                                modifier = Modifier.padding(horizontal = sp.sm, vertical = sp.xs),
                                                 maxLines = 1,
                                                 overflow = TextOverflow.Ellipsis
                                             )

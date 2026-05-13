@@ -12,7 +12,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
@@ -26,7 +25,6 @@ import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -38,6 +36,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.dosagecalc.presentation.ui.util.responsiveContentWidth
@@ -47,6 +46,9 @@ import com.example.dosagecalc.presentation.calculator.components.AnthropometricI
 import com.example.dosagecalc.presentation.ui.components.GradientBottomBar
 import com.example.dosagecalc.presentation.ui.components.GradientScreenHeader
 import com.example.dosagecalc.presentation.ui.components.ImpairmentChipsRow
+import com.example.dosagecalc.presentation.ui.theme.LocalDosageShapes
+import com.example.dosagecalc.presentation.ui.theme.LocalElevation
+import com.example.dosagecalc.presentation.ui.theme.spacing
 
 @Composable
 fun PatientInputScreen(
@@ -60,14 +62,17 @@ fun PatientInputScreen(
         if (uiState.dosageResult != null) onNavigateToResult()
     }
 
+    val sp = MaterialTheme.spacing
+    val shapes = LocalDosageShapes.current
+    val elev = LocalElevation.current
+
     Box(
         modifier = Modifier
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.background)
     ) {
         Column(
-            modifier = Modifier
-                .fillMaxSize()
+            modifier = Modifier.fillMaxSize()
         ) {
             GradientScreenHeader(
                 colors = listOf(
@@ -78,7 +83,7 @@ fun PatientInputScreen(
                 Column {
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
-                        modifier = Modifier.padding(top = 8.dp)
+                        modifier = Modifier.padding(top = sp.sm)
                     ) {
                         IconButton(onClick = onNavigateBack) {
                             Icon(
@@ -95,10 +100,10 @@ fun PatientInputScreen(
                     }
 
                     uiState.selectedDrug?.let { drug ->
-                        Column(modifier = Modifier.padding(start = 24.dp, end = 24.dp, top = 4.dp)) {
+                        Column(modifier = Modifier.padding(start = sp.xl, end = sp.xl, top = sp.xs)) {
                             Text(
                                 text  = drug.name,
-                                style = MaterialTheme.typography.headlineMedium.copy(fontFamily = androidx.compose.ui.text.font.FontFamily.Serif),
+                                style = MaterialTheme.typography.headlineMedium.copy(fontFamily = FontFamily.Serif),
                                 color = MaterialTheme.colorScheme.onPrimary
                             )
                             Text(
@@ -115,12 +120,12 @@ fun PatientInputScreen(
                 modifier = Modifier
                     .weight(1f)
                     .verticalScroll(rememberScrollState())
-                    .padding(horizontal = 20.dp)
-                    .padding(bottom = 100.dp),
+                    .padding(horizontal = sp.lg)
+                    .padding(bottom = sp.bottomBarClearance),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Column(modifier = Modifier.responsiveContentWidth()) {
-                Spacer(modifier = Modifier.height(20.dp))
+                Spacer(modifier = Modifier.height(sp.lg))
 
                 if (uiState.savedPatients.isNotEmpty()) {
                     var expanded by remember { mutableStateOf(false) }
@@ -130,7 +135,7 @@ fun PatientInputScreen(
                         onExpandedChange = { expanded = it },
                         modifier = Modifier.fillMaxWidth()
                     ) {
-                        OutlinedTextField(
+                        androidx.compose.material3.OutlinedTextField(
                             value = uiState.selectedPatient?.let { "${it.name} ${it.surname}" } ?: "Calcolo Anonimo",
                             onValueChange = {},
                             readOnly = true,
@@ -138,7 +143,7 @@ fun PatientInputScreen(
                             trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
                             colors = OutlinedTextFieldDefaults.colors(),
                             modifier = Modifier.menuAnchor(androidx.compose.material3.ExposedDropdownMenuAnchorType.PrimaryNotEditable).fillMaxWidth(),
-                            shape = RoundedCornerShape(16.dp)
+                            shape = shapes.field
                         )
                         ExposedDropdownMenu(
                             expanded = expanded,
@@ -162,30 +167,28 @@ fun PatientInputScreen(
                             }
                         }
                     }
-                    Spacer(modifier = Modifier.height(16.dp))
+                    Spacer(modifier = Modifier.height(sp.base))
                 }
 
                 Card(
                     modifier  = Modifier.fillMaxWidth(),
-                    shape     = RoundedCornerShape(24.dp),
-                    elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
-                    colors    = CardDefaults.cardColors(
-                        containerColor = MaterialTheme.colorScheme.surface
-                    )
+                    shape     = shapes.card,
+                    elevation = CardDefaults.cardElevation(defaultElevation = elev.level2),
+                    colors    = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
                 ) {
-                    Column(modifier = Modifier.padding(20.dp)) {
+                    Column(modifier = Modifier.padding(sp.lg)) {
                         Text(
                             text  = "Dati Antropometrici",
                             style = MaterialTheme.typography.titleLarge,
                             color = MaterialTheme.colorScheme.onSurface
                         )
-                        Spacer(modifier = Modifier.height(4.dp))
+                        Spacer(modifier = Modifier.height(sp.xs))
                         Text(
                             text  = "Valori validati in tempo reale",
                             style = MaterialTheme.typography.bodyMedium,
                             color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
-                        Spacer(modifier = Modifier.height(20.dp))
+                        Spacer(modifier = Modifier.height(sp.lg))
 
                         AnthropometricInputsGroup(
                             weightValue = uiState.weightInput,
@@ -204,22 +207,23 @@ fun PatientInputScreen(
                         )
 
                         if (uiState.selectedDrug?.formulaType == FormulaType.PER_M2) {
-                            Spacer(modifier = Modifier.height(24.dp))
+                            Spacer(modifier = Modifier.height(sp.xl))
                             Text(
                                 text  = "Formula BSA Preferita",
                                 style = MaterialTheme.typography.titleMedium,
                                 color = MaterialTheme.colorScheme.onSurface
                             )
-                            Spacer(modifier = Modifier.height(8.dp))
+                            Spacer(modifier = Modifier.height(sp.sm))
                             Row(
                                 modifier = Modifier.fillMaxWidth(),
-                                horizontalArrangement = Arrangement.spacedBy(8.dp)
+                                horizontalArrangement = Arrangement.spacedBy(sp.sm)
                             ) {
                                 com.example.dosagecalc.domain.repository.BsaFormulaType.entries.forEach { formula ->
                                     androidx.compose.material3.FilterChip(
                                         selected = uiState.bsaFormula == formula,
                                         onClick = { viewModel.onBsaFormulaChanged(formula) },
                                         label = { Text(formula.name.replace("_", " ")) },
+                                        shape = shapes.chip,
                                         colors = androidx.compose.material3.FilterChipDefaults.filterChipColors(
                                             selectedContainerColor = MaterialTheme.colorScheme.primary,
                                             selectedLabelColor = MaterialTheme.colorScheme.onPrimary
@@ -230,13 +234,13 @@ fun PatientInputScreen(
                             }
                         }
 
-                        Spacer(modifier = Modifier.height(24.dp))
+                        Spacer(modifier = Modifier.height(sp.xl))
                         Text(
                             text  = "Patologie Concomitanti",
                             style = MaterialTheme.typography.titleMedium,
                             color = MaterialTheme.colorScheme.onSurface
                         )
-                        Spacer(modifier = Modifier.height(12.dp))
+                        Spacer(modifier = Modifier.height(sp.md))
 
                         ImpairmentChipsRow(
                             renalStage = uiState.renalStage,
@@ -244,7 +248,6 @@ fun PatientInputScreen(
                             onRenalStageChanged = viewModel::onRenalStageChanged,
                             onHepaticStageChanged = viewModel::onHepaticStageChanged
                         )
-
                     }
                 }
                 }
@@ -257,22 +260,17 @@ fun PatientInputScreen(
             Button(
                 onClick  = viewModel::calculateDosage,
                 enabled  = uiState.canCalculate && !uiState.isCalculating,
-                shape    = RoundedCornerShape(50),
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(56.dp)
+                shape    = shapes.pill,
+                modifier = Modifier.fillMaxWidth().height(56.dp)
             ) {
                 if (uiState.isCalculating) {
                     CircularProgressIndicator(
-                        modifier  = Modifier.size(24.dp),
-                        color     = Color.White,
+                        modifier    = Modifier.size(24.dp),
+                        color       = Color.White,
                         strokeWidth = 2.dp
                     )
                 } else {
-                    Text(
-                        text  = "Calcola Dose",
-                        style = MaterialTheme.typography.titleMedium
-                    )
+                    Text(text = "Calcola Dose", style = MaterialTheme.typography.titleMedium)
                 }
             }
         }

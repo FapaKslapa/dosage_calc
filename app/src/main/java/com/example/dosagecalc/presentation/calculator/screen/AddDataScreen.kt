@@ -11,12 +11,10 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material3.Button
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.ExposedDropdownMenuDefaults
@@ -41,7 +39,13 @@ import com.example.dosagecalc.presentation.ui.util.responsiveContentWidth
 import com.example.dosagecalc.presentation.ui.util.isCompactHeight
 import com.example.dosagecalc.domain.model.FormulaType
 import com.example.dosagecalc.presentation.calculator.AddDataViewModel
+import com.example.dosagecalc.presentation.ui.components.ExpressiveCard
+import com.example.dosagecalc.presentation.ui.components.GradientBottomBar
 import com.example.dosagecalc.presentation.ui.components.GradientScreenHeader
+import com.example.dosagecalc.presentation.ui.components.PillButton
+import com.example.dosagecalc.presentation.ui.components.RoundedTextField
+import com.example.dosagecalc.presentation.ui.theme.LocalDosageShapes
+import com.example.dosagecalc.presentation.ui.theme.spacing
 
 @Composable
 fun AddDataScreen(
@@ -87,6 +91,8 @@ fun AddDataScreen(
     }
 
     val isCompact = isCompactHeight()
+    val sp = MaterialTheme.spacing
+    val shapes = LocalDosageShapes.current
 
     Box(
         modifier = Modifier
@@ -94,8 +100,7 @@ fun AddDataScreen(
             .background(MaterialTheme.colorScheme.background)
     ) {
         Column(
-            modifier = Modifier
-                .fillMaxSize()
+            modifier = Modifier.fillMaxSize()
         ) {
             GradientScreenHeader(
                 colors = listOf(
@@ -107,7 +112,7 @@ fun AddDataScreen(
                 Column {
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
-                        modifier = Modifier.padding(top = 8.dp)
+                        modifier = Modifier.padding(top = sp.sm)
                     ) {
                         IconButton(onClick = onNavigateBack) {
                             Icon(
@@ -123,21 +128,21 @@ fun AddDataScreen(
                         )
                     }
 
-                    Column(modifier = Modifier.padding(start = 24.dp, end = 24.dp, top = 4.dp)) {
+                    Column(modifier = Modifier.padding(start = sp.xl, end = sp.xl, top = sp.xs)) {
                         Text(
                             text  = if (drugId != null) "Modifica Farmaco" else "Aggiungi Farmaco",
                             style = MaterialTheme.typography.headlineMedium.copy(fontFamily = FontFamily.Serif),
                             color = MaterialTheme.colorScheme.onError
                         )
                         if (!isCompact) {
-                            Spacer(modifier = Modifier.height(8.dp))
+                            Spacer(modifier = Modifier.height(sp.sm))
                             Text(
                                 text  = if (drugId != null) "Modifica i dati del medicinale" else "Inserisci un nuovo medicinale",
                                 style = MaterialTheme.typography.bodyMedium,
                                 color = MaterialTheme.colorScheme.onError.copy(alpha = 0.9f)
                             )
                         }
-                        Spacer(modifier = Modifier.height(if (isCompact) 4.dp else 24.dp))
+                        Spacer(modifier = Modifier.height(if (isCompact) sp.xs else sp.xl))
                     }
                 }
             }
@@ -147,169 +152,175 @@ fun AddDataScreen(
                     .weight(1f)
                     .fillMaxWidth()
                     .verticalScroll(rememberScrollState())
-                    .padding(horizontal = 20.dp, vertical = 24.dp)
-                    .padding(bottom = 100.dp),
+                    .padding(horizontal = sp.lg, vertical = sp.xl)
+                    .padding(bottom = sp.bottomBarClearance),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-            Column(
-                modifier = Modifier.responsiveContentWidth(),
-                verticalArrangement = Arrangement.spacedBy(16.dp)
-            ) {
-                Text(
-                    text = "Dati Principali",
-                    style = MaterialTheme.typography.titleMedium,
-                    color = MaterialTheme.colorScheme.onBackground
-                )
-
-                OutlinedTextField(
-                    value = name,
-                    onValueChange = { name = it },
-                    label = { Text("Nome Farmaco (es. Paracetamolo)") },
-                    modifier = Modifier.fillMaxWidth(),
-                    shape = RoundedCornerShape(12.dp)
-                )
-
-                OutlinedTextField(
-                    value = indication,
-                    onValueChange = { indication = it },
-                    label = { Text("Indicazione Terapeutica") },
-                    modifier = Modifier.fillMaxWidth(),
-                    shape = RoundedCornerShape(12.dp)
-                )
-
-                ExposedDropdownMenuBox(
-                    expanded = categoryExpanded,
-                    onExpandedChange = { categoryExpanded = it },
+                Column(
+                    modifier = Modifier.responsiveContentWidth(),
+                    verticalArrangement = Arrangement.spacedBy(sp.base)
                 ) {
-                    OutlinedTextField(
-                        value = selectedCategory.label,
-                        onValueChange = {},
-                        readOnly = true,
-                        label = { Text("Categoria Farmaco") },
-                        trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = categoryExpanded) },
-                        modifier = Modifier.fillMaxWidth().menuAnchor(),
-                        shape = RoundedCornerShape(12.dp)
-                    )
-                    ExposedDropdownMenu(
-                        expanded = categoryExpanded,
-                        onDismissRequest = { categoryExpanded = false }
-                    ) {
-                        com.example.dosagecalc.domain.model.DrugCategory.entries.forEach { category ->
-                            DropdownMenuItem(
-                                text = { Text(category.label) },
-                                onClick = {
-                                    selectedCategory = category
-                                    categoryExpanded = false
+                    // Section 1: Dati Principali
+                    ExpressiveCard(modifier = Modifier.fillMaxWidth()) {
+                        Column(
+                            modifier = Modifier.padding(sp.base),
+                            verticalArrangement = Arrangement.spacedBy(sp.base)
+                        ) {
+                            Text(
+                                text = "Dati Principali",
+                                style = MaterialTheme.typography.titleMedium,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant
+                            )
+                            RoundedTextField(
+                                value = name,
+                                onValueChange = { name = it },
+                                label = { Text("Nome Farmaco (es. Paracetamolo)") },
+                                modifier = Modifier.fillMaxWidth()
+                            )
+                            RoundedTextField(
+                                value = indication,
+                                onValueChange = { indication = it },
+                                label = { Text("Indicazione Terapeutica") },
+                                modifier = Modifier.fillMaxWidth()
+                            )
+                            ExposedDropdownMenuBox(
+                                expanded = categoryExpanded,
+                                onExpandedChange = { categoryExpanded = it },
+                            ) {
+                                OutlinedTextField(
+                                    value = selectedCategory.label,
+                                    onValueChange = {},
+                                    readOnly = true,
+                                    label = { Text("Categoria Farmaco") },
+                                    trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = categoryExpanded) },
+                                    modifier = Modifier.fillMaxWidth().menuAnchor(),
+                                    shape = shapes.field
+                                )
+                                ExposedDropdownMenu(
+                                    expanded = categoryExpanded,
+                                    onDismissRequest = { categoryExpanded = false }
+                                ) {
+                                    com.example.dosagecalc.domain.model.DrugCategory.entries.forEach { category ->
+                                        DropdownMenuItem(
+                                            text = { Text(category.label) },
+                                            onClick = {
+                                                selectedCategory = category
+                                                categoryExpanded = false
+                                            }
+                                        )
+                                    }
                                 }
+                            }
+                        }
+                    }
+
+                    // Section 2: Regole di Dosaggio
+                    ExpressiveCard(modifier = Modifier.fillMaxWidth(), mirrored = true) {
+                        Column(
+                            modifier = Modifier.padding(sp.base),
+                            verticalArrangement = Arrangement.spacedBy(sp.base)
+                        ) {
+                            Text(
+                                text = "Regole di Dosaggio",
+                                style = MaterialTheme.typography.titleMedium,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant
+                            )
+                            ExposedDropdownMenuBox(
+                                expanded = expanded,
+                                onExpandedChange = { expanded = it },
+                            ) {
+                                OutlinedTextField(
+                                    value = selectedFormula,
+                                    onValueChange = {},
+                                    readOnly = true,
+                                    label = { Text("Formula di Calcolo") },
+                                    trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
+                                    modifier = Modifier.fillMaxWidth().menuAnchor(),
+                                    shape = shapes.field
+                                )
+                                ExposedDropdownMenu(
+                                    expanded = expanded,
+                                    onDismissRequest = { expanded = false }
+                                ) {
+                                    formulaOptions.forEach { option ->
+                                        DropdownMenuItem(
+                                            text = { Text(option) },
+                                            onClick = {
+                                                selectedFormula = option
+                                                expanded = false
+                                            }
+                                        )
+                                    }
+                                }
+                            }
+                            Row(horizontalArrangement = Arrangement.spacedBy(sp.base)) {
+                                RoundedTextField(
+                                    value = dose,
+                                    onValueChange = { dose = it },
+                                    label = { Text("Dose Base") },
+                                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                                    modifier = Modifier.weight(1f)
+                                )
+                                RoundedTextField(
+                                    value = unit,
+                                    onValueChange = { unit = it },
+                                    label = { Text("Unità (es. mg, ml)") },
+                                    modifier = Modifier.weight(1f)
+                                )
+                            }
+                            RoundedTextField(
+                                value = maxDose,
+                                onValueChange = { maxDose = it },
+                                label = { Text("Dose Massima (Tetto Sicurezza) - Opzionale") },
+                                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                                modifier = Modifier.fillMaxWidth()
+                            )
+                        }
+                    }
+
+                    // Section 3: Note Cliniche
+                    ExpressiveCard(
+                        modifier = Modifier.fillMaxWidth(),
+                        asymmetric = false
+                    ) {
+                        Column(
+                            modifier = Modifier.padding(sp.base),
+                            verticalArrangement = Arrangement.spacedBy(sp.base)
+                        ) {
+                            Text(
+                                text = "Note Cliniche",
+                                style = MaterialTheme.typography.titleMedium,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant
+                            )
+                            RoundedTextField(
+                                value = alert,
+                                onValueChange = { alert = it },
+                                label = { Text("Note Cliniche / Avvertenze (Opzionale)") },
+                                modifier = Modifier.fillMaxWidth().height(100.dp),
+                                maxLines = 3
+                            )
+                            RoundedTextField(
+                                value = contraindications,
+                                onValueChange = { contraindications = it },
+                                label = { Text("Controindicazioni (Opzionale)") },
+                                modifier = Modifier.fillMaxWidth().height(100.dp),
+                                maxLines = 3
+                            )
+                            RoundedTextField(
+                                value = sideEffects,
+                                onValueChange = { sideEffects = it },
+                                label = { Text("Effetti Collaterali (Opzionale)") },
+                                modifier = Modifier.fillMaxWidth().height(100.dp),
+                                maxLines = 3
                             )
                         }
                     }
                 }
-
-                Text(
-                    text = "Regole di Dosaggio",
-                    style = MaterialTheme.typography.titleMedium,
-                    color = MaterialTheme.colorScheme.onBackground,
-                    modifier = Modifier.padding(top = 8.dp)
-                )
-
-                ExposedDropdownMenuBox(
-                    expanded = expanded,
-                    onExpandedChange = { expanded = it },
-                ) {
-                    OutlinedTextField(
-                        value = selectedFormula,
-                        onValueChange = {},
-                        readOnly = true,
-                        label = { Text("Formula di Calcolo") },
-                        trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
-                        modifier = Modifier.fillMaxWidth().menuAnchor(),
-                        shape = RoundedCornerShape(12.dp)
-                    )
-                    ExposedDropdownMenu(
-                        expanded = expanded,
-                        onDismissRequest = { expanded = false }
-                    ) {
-                        formulaOptions.forEach { option ->
-                            DropdownMenuItem(
-                                text = { Text(option) },
-                                onClick = {
-                                    selectedFormula = option
-                                    expanded = false
-                                }
-                            )
-                        }
-                    }
-                }
-
-                Row(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
-                    OutlinedTextField(
-                        value = dose,
-                        onValueChange = { dose = it },
-                        label = { Text("Dose Base") },
-                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                        modifier = Modifier.weight(1f),
-                        shape = RoundedCornerShape(12.dp)
-                    )
-
-                    OutlinedTextField(
-                        value = unit,
-                        onValueChange = { unit = it },
-                        label = { Text("Unità (es. mg, ml)") },
-                        modifier = Modifier.weight(1f),
-                        shape = RoundedCornerShape(12.dp)
-                    )
-                }
-
-                OutlinedTextField(
-                    value = maxDose,
-                    onValueChange = { maxDose = it },
-                    label = { Text("Dose Massima (Tetto Sicurezza) - Opzionale") },
-                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                    modifier = Modifier.fillMaxWidth(),
-                    shape = RoundedCornerShape(12.dp)
-                )
-
-                OutlinedTextField(
-                    value = alert,
-                    onValueChange = { alert = it },
-                    label = { Text("Note Cliniche / Avvertenze (Opzionale)") },
-                    modifier = Modifier.fillMaxWidth().height(100.dp),
-                    shape = RoundedCornerShape(12.dp),
-                    maxLines = 3
-                )
-
-                OutlinedTextField(
-                    value = contraindications,
-                    onValueChange = { contraindications = it },
-                    label = { Text("Controindicazioni (Opzionale)") },
-                    modifier = Modifier.fillMaxWidth().height(100.dp),
-                    shape = RoundedCornerShape(12.dp),
-                    maxLines = 3
-                )
-
-                OutlinedTextField(
-                    value = sideEffects,
-                    onValueChange = { sideEffects = it },
-                    label = { Text("Effetti Collaterali (Opzionale)") },
-                    modifier = Modifier.fillMaxWidth().height(100.dp),
-                    shape = RoundedCornerShape(12.dp),
-                    maxLines = 3
-                )
-
-                Spacer(modifier = Modifier.height(24.dp))
-            }
             }
         }
 
-        Box(
-            modifier = Modifier
-                .align(Alignment.BottomCenter)
-                .fillMaxWidth()
-                .background(MaterialTheme.colorScheme.background.copy(alpha = 0.9f))
-                .padding(16.dp)
-        ) {
-            Button(
+        GradientBottomBar(modifier = Modifier.align(Alignment.BottomCenter)) {
+            PillButton(
                 onClick = {
                     viewModel.saveCustomDrug(
                         id = drugId,
@@ -326,13 +337,9 @@ fun AddDataScreen(
                         onSuccess = onNavigateBack
                     )
                 },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(56.dp),
-                shape = RoundedCornerShape(50)
-            ) {
-                Text("Salva", style = MaterialTheme.typography.titleMedium)
-            }
+                label = "Salva",
+                modifier = Modifier.fillMaxWidth()
+            )
         }
     }
 }

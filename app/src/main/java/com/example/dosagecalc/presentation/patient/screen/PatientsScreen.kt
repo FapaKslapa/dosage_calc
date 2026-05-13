@@ -19,7 +19,6 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Add
@@ -57,6 +56,8 @@ import com.example.dosagecalc.presentation.patient.components.PatientAddSheet
 import com.example.dosagecalc.presentation.patient.components.PatientCard
 import com.example.dosagecalc.presentation.ui.components.EmptyStateView
 import com.example.dosagecalc.presentation.ui.components.GradientScreenHeader
+import com.example.dosagecalc.presentation.ui.theme.LocalDosageShapes
+import com.example.dosagecalc.presentation.ui.theme.spacing
 import com.example.dosagecalc.presentation.utils.ExportManager
 
 @Composable
@@ -74,6 +75,8 @@ fun PatientsScreen(
     var showAddSheet by remember { mutableStateOf(false) }
     var patientBeingEdited by remember { mutableStateOf<Patient?>(null) }
     val gridState = rememberLazyGridState()
+    val sp = MaterialTheme.spacing
+    val shapes = LocalDosageShapes.current
     val fabExpanded by remember { derivedStateOf { gridState.firstVisibleItemIndex == 0 } }
 
     Box(
@@ -101,7 +104,7 @@ fun PatientsScreen(
                 Column {
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
-                        modifier = Modifier.padding(top = 8.dp)
+                        modifier = Modifier.padding(top = sp.sm)
                     ) {
                         IconButton(onClick = onNavigateBack) {
                             Icon(
@@ -129,7 +132,7 @@ fun PatientsScreen(
                         }
                     }
 
-                    Column(modifier = Modifier.padding(start = 24.dp, end = 24.dp, top = 4.dp)) {
+                    Column(modifier = Modifier.padding(start = sp.xl, end = sp.xl, top = sp.xs)) {
                         Text(
                             text  = "Pazienti",
                             style = MaterialTheme.typography.headlineMedium.copy(fontFamily = FontFamily.Serif),
@@ -140,7 +143,7 @@ fun PatientsScreen(
                             style = MaterialTheme.typography.bodyLarge,
                             color = MaterialTheme.colorScheme.onSecondary.copy(alpha = 0.9f)
                         )
-                        Spacer(modifier = Modifier.height(16.dp))
+                        Spacer(modifier = Modifier.height(sp.base))
                         OutlinedTextField(
                             value = searchQuery,
                             onValueChange = viewModel::updateSearchQuery,
@@ -152,7 +155,7 @@ fun PatientsScreen(
                                 focusedBorderColor = Color.Transparent,
                                 unfocusedBorderColor = Color.Transparent
                             ),
-                            shape = RoundedCornerShape(24.dp),
+                            shape = shapes.card,
                             modifier = Modifier.fillMaxWidth().height(52.dp),
                             singleLine = true
                         )
@@ -185,9 +188,9 @@ fun PatientsScreen(
                     columns = GridCells.Adaptive(minSize = 320.dp),
                     state = gridState,
                     modifier = Modifier.fillMaxSize(),
-                    contentPadding = PaddingValues(top = 16.dp, bottom = 100.dp, start = 20.dp, end = 20.dp),
-                    horizontalArrangement = Arrangement.spacedBy(16.dp),
-                    verticalArrangement = Arrangement.spacedBy(16.dp)
+                    contentPadding = PaddingValues(top = sp.base, bottom = sp.bottomBarClearance, start = sp.lg, end = sp.lg),
+                    horizontalArrangement = Arrangement.spacedBy(sp.base),
+                    verticalArrangement = Arrangement.spacedBy(sp.base)
                 ) {
                     items(count = pagedPatients.itemCount) { index ->
                         val patient = pagedPatients[index]
@@ -212,7 +215,7 @@ fun PatientsScreen(
                                                 viewModel.deletePatient(patient.id)
                                                 showDeleteDialog = false
                                             },
-                                            shape = RoundedCornerShape(50)
+                                            shape = shapes.pill
                                         ) {
                                             Text("Elimina", color = MaterialTheme.colorScheme.error)
                                         }
@@ -220,7 +223,7 @@ fun PatientsScreen(
                                     dismissButton = {
                                         TextButton(
                                             onClick = { showDeleteDialog = false },
-                                            shape = RoundedCornerShape(50)
+                                            shape = shapes.pill
                                         ) {
                                             Text("Annulla")
                                         }
@@ -241,7 +244,7 @@ fun PatientsScreen(
             modifier = Modifier
                 .align(Alignment.BottomEnd)
                 .navigationBarsPadding()
-                .padding(24.dp),
+                .padding(sp.xl),
             containerColor = MaterialTheme.colorScheme.primary,
             contentColor = MaterialTheme.colorScheme.onPrimary
         )

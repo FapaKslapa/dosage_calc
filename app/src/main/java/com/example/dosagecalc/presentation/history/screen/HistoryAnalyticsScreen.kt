@@ -12,8 +12,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
@@ -46,6 +44,9 @@ import com.example.dosagecalc.presentation.history.components.FilterSection
 import com.example.dosagecalc.presentation.history.components.InfoNote
 import com.example.dosagecalc.presentation.history.components.StatsSummaryCard
 import com.example.dosagecalc.presentation.ui.components.GradientScreenHeader
+import com.example.dosagecalc.presentation.ui.theme.LocalDosageShapes
+import com.example.dosagecalc.presentation.ui.theme.LocalElevation
+import com.example.dosagecalc.presentation.ui.theme.spacing
 
 @Composable
 fun HistoryAnalyticsScreen(
@@ -75,6 +76,9 @@ fun HistoryAnalyticsScreen(
     }
 
     val isCompact = isCompactHeight()
+    val sp = MaterialTheme.spacing
+    val shapes = LocalDosageShapes.current
+    val elev = LocalElevation.current
 
     val categoryDist = remember(history, drugsState.availableDrugs) {
         historyViewModel.getCategoryDistribution(history, drugsState.availableDrugs)
@@ -100,7 +104,7 @@ fun HistoryAnalyticsScreen(
                 Column {
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
-                        modifier = Modifier.padding(top = 8.dp)
+                        modifier = Modifier.padding(top = sp.sm)
                     ) {
                         IconButton(onClick = onNavigateBack) {
                             Icon(
@@ -117,9 +121,9 @@ fun HistoryAnalyticsScreen(
                     }
 
                     Column(modifier = Modifier.padding(
-                        start = 24.dp, end = 24.dp,
-                        top = if (isCompact) 8.dp else 16.dp,
-                        bottom = if (isCompact) 8.dp else 24.dp
+                        start = sp.xl, end = sp.xl,
+                        top = if (isCompact) sp.sm else sp.base,
+                        bottom = if (isCompact) sp.sm else sp.xl
                     )) {
                         Text(
                             text = "Statistiche",
@@ -144,14 +148,14 @@ fun HistoryAnalyticsScreen(
                 Row(
                     modifier = Modifier
                         .fillMaxSize()
-                        .padding(horizontal = 20.dp, vertical = 16.dp),
-                    horizontalArrangement = Arrangement.spacedBy(20.dp)
+                        .padding(horizontal = sp.lg, vertical = sp.base),
+                    horizontalArrangement = Arrangement.spacedBy(sp.lg)
                 ) {
                     Column(
                         modifier = Modifier
                             .weight(1f)
                             .verticalScroll(rememberScrollState()),
-                        verticalArrangement = Arrangement.spacedBy(20.dp)
+                        verticalArrangement = Arrangement.spacedBy(sp.lg)
                     ) {
                         StatsSummaryCard(filteredHistory.size, categoryDist.size)
                         FilterSection(
@@ -165,9 +169,9 @@ fun HistoryAnalyticsScreen(
                         if (selectedDrugName != null && filteredHistory.size >= 2) {
                             Card(
                                 modifier = Modifier.fillMaxWidth(),
-                                shape = RoundedCornerShape(28.dp),
+                                shape = shapes.cardLarge,
                                 colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
-                                elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+                                elevation = CardDefaults.cardElevation(defaultElevation = elev.level1)
                             ) {
                                 DoseTrendChart(records = filteredHistory)
                             }
@@ -176,7 +180,7 @@ fun HistoryAnalyticsScreen(
                         } else {
                             InfoNote(text = "Dati insufficienti per generare un grafico di trend per questo farmaco.")
                         }
-                        Spacer(modifier = Modifier.height(40.dp))
+                        Spacer(modifier = Modifier.height(sp.xxxl))
                     }
                     Column(
                         modifier = Modifier
@@ -187,7 +191,7 @@ fun HistoryAnalyticsScreen(
                         if (selectedDrugName == null && categoryDist.isNotEmpty()) {
                             CategoryDistributionCard(categoryDist)
                         }
-                        Spacer(modifier = Modifier.height(40.dp))
+                        Spacer(modifier = Modifier.height(sp.xxxl))
                     }
                 }
             } else {
@@ -195,8 +199,8 @@ fun HistoryAnalyticsScreen(
                     modifier = Modifier
                         .fillMaxSize()
                         .verticalScroll(rememberScrollState())
-                        .padding(20.dp),
-                    verticalArrangement = Arrangement.spacedBy(20.dp)
+                        .padding(sp.lg),
+                    verticalArrangement = Arrangement.spacedBy(sp.lg)
                 ) {
                     StatsSummaryCard(filteredHistory.size, categoryDist.size)
 
@@ -212,9 +216,9 @@ fun HistoryAnalyticsScreen(
                     if (selectedDrugName != null && filteredHistory.size >= 2) {
                         Card(
                             modifier = Modifier.fillMaxWidth(),
-                            shape = RoundedCornerShape(28.dp),
+                            shape = shapes.cardLarge,
                             colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
-                            elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+                            elevation = CardDefaults.cardElevation(defaultElevation = elev.level1)
                         ) {
                             DoseTrendChart(records = filteredHistory)
                         }
@@ -228,7 +232,7 @@ fun HistoryAnalyticsScreen(
                         CategoryDistributionCard(categoryDist)
                     }
 
-                    Spacer(modifier = Modifier.height(40.dp))
+                    Spacer(modifier = Modifier.height(sp.xxxl))
                 }
             }
         }

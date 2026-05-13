@@ -12,6 +12,7 @@ import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.slideInVertically
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -23,18 +24,12 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Share
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
@@ -62,6 +57,10 @@ import com.example.dosagecalc.presentation.calculator.components.InteractionsCar
 import com.example.dosagecalc.presentation.calculator.components.RemindersSheet
 import com.example.dosagecalc.presentation.calculator.components.SuccessHeader
 import com.example.dosagecalc.presentation.ui.components.GradientBottomBar
+import com.example.dosagecalc.presentation.ui.components.OutlinedPillButton
+import com.example.dosagecalc.presentation.ui.components.PillButton
+import com.example.dosagecalc.presentation.ui.theme.LocalDosageShapes
+import com.example.dosagecalc.presentation.ui.theme.spacing
 import com.example.dosagecalc.presentation.utils.PdfManager
 
 @Composable
@@ -71,7 +70,7 @@ fun DosageResultScreen(
     onNavigateBackToInput: () -> Unit = {}
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
-    val result  = uiState.dosageResult ?: return   
+    val result  = uiState.dosageResult ?: return
 
     val context = LocalContext.current
     val canExportPdf = result is DosageResult.Success && uiState.selectedDrug != null
@@ -95,6 +94,9 @@ fun DosageResultScreen(
             Toast.makeText(context, "Permesso notifiche negato", Toast.LENGTH_SHORT).show()
         }
     }
+
+    val sp = MaterialTheme.spacing
+    val shapes = LocalDosageShapes.current
 
     Column(modifier = Modifier.fillMaxSize()) {
         Box(
@@ -121,21 +123,21 @@ fun DosageResultScreen(
                 Column(
                     modifier = Modifier
                         .responsiveContentWidth(maxWidth = 720.dp)
-                        .padding(horizontal = 20.dp)
-                        .padding(bottom = 108.dp)
+                        .padding(horizontal = sp.lg)
+                        .padding(bottom = sp.bottomBarClearance)
                 ) {
-                    Spacer(modifier = Modifier.height(20.dp))
+                    Spacer(modifier = Modifier.height(sp.lg))
 
                     if (result is DosageResult.Success) {
 
-                        val context = LocalContext.current
-                        
+                        val ctx = LocalContext.current
+
                         if (uiState.interactions.isNotEmpty()) {
                             InteractionsCard(interactions = uiState.interactions)
-                            Spacer(modifier = Modifier.height(16.dp))
+                            Spacer(modifier = Modifier.height(sp.base))
                         }
 
-                        Row(modifier = Modifier.fillMaxWidth().padding(bottom = 16.dp)) {
+                        Row(modifier = Modifier.fillMaxWidth().padding(bottom = sp.base)) {
                             if (uiState.selectedPatient != null) {
                                 OutlinedButton(
                                     onClick = {
@@ -146,27 +148,27 @@ fun DosageResultScreen(
                                         }
                                     },
                                     modifier = Modifier.weight(1f),
-                                    shape = RoundedCornerShape(12.dp)
+                                    shape = shapes.tile
                                 ) {
                                     Icon(Icons.Default.DateRange, contentDescription = "Promemoria")
-                                    Spacer(modifier = Modifier.width(8.dp))
+                                    Spacer(modifier = Modifier.width(sp.sm))
                                     Text("Promemoria")
                                 }
                             }
-                            
+
                             if (canExportPdf) {
                                 if (uiState.selectedPatient != null) {
-                                    Spacer(modifier = Modifier.width(12.dp))
+                                    Spacer(modifier = Modifier.width(sp.md))
                                 }
                                 OutlinedButton(
                                     onClick = {
-                                         PdfManager.generateAndSharePdf(context, uiState.selectedDrug!!, uiState.selectedPatient, result)
+                                        PdfManager.generateAndSharePdf(ctx, uiState.selectedDrug!!, uiState.selectedPatient, result)
                                     },
                                     modifier = Modifier.weight(1f),
-                                    shape = RoundedCornerShape(12.dp)
+                                    shape = shapes.tile
                                 ) {
                                     Icon(Icons.Filled.Share, contentDescription = "PDF")
-                                    Spacer(modifier = Modifier.width(8.dp))
+                                    Spacer(modifier = Modifier.width(sp.sm))
                                     Text("Esporta PDF")
                                 }
                             }
@@ -181,7 +183,7 @@ fun DosageResultScreen(
                         ) { DetailsCard(result) }
 
                         if (result.alert.isNotBlank()) {
-                            Spacer(modifier = Modifier.height(16.dp))
+                            Spacer(modifier = Modifier.height(sp.base))
                             AnimatedVisibility(
                                 visible = alertVisible,
                                 enter = fadeIn(tween(250)) + slideInVertically(
@@ -190,7 +192,7 @@ fun DosageResultScreen(
                                 )
                             ) { AlertCard(result.alert) }
                         }
-                        Spacer(modifier = Modifier.height(16.dp))
+                        Spacer(modifier = Modifier.height(sp.base))
                     }
 
                     AnimatedVisibility(
@@ -217,39 +219,24 @@ fun DosageResultScreen(
             ) {
                 Row(
                     modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.spacedBy(12.dp)
+                    horizontalArrangement = Arrangement.spacedBy(sp.md)
                 ) {
-                    OutlinedButton(
+                    OutlinedPillButton(
                         onClick = {
                             viewModel.clearResult()
                             onNavigateBackToInput()
                         },
-                        shape = RoundedCornerShape(50),
-                        modifier = Modifier
-                            .weight(1f)
-                            .height(56.dp),
-                        border = BorderStroke(1.dp, MaterialTheme.colorScheme.primary.copy(alpha = 0.4f))
-                    ) {
-                        Icon(Icons.Default.Edit, contentDescription = null, modifier = Modifier.size(20.dp))
-                        Spacer(modifier = Modifier.width(8.dp))
-                        Text("Modifica")
-                    }
+                        label = "Modifica",
+                        leadingIcon = Icons.Default.Edit,
+                        modifier = Modifier.weight(1f)
+                    )
 
-                    Button(
+                    PillButton(
                         onClick  = onNewCalculation,
-                        shape    = RoundedCornerShape(50),
-                        modifier = Modifier
-                            .weight(1.3f)
-                            .height(56.dp),
-                        elevation = ButtonDefaults.buttonElevation(defaultElevation = 4.dp)
-                    ) {
-                        Icon(Icons.Default.Home, contentDescription = null, modifier = Modifier.size(20.dp))
-                        Spacer(modifier = Modifier.width(8.dp))
-                        Text(
-                            text  = "Torna alla Home",
-                            style = MaterialTheme.typography.titleMedium
-                        )
-                    }
+                        label    = "Torna alla Home",
+                        leadingIcon = Icons.Default.Home,
+                        modifier = Modifier.weight(1.3f)
+                    )
                 }
             }
         }
