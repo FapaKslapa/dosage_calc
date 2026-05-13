@@ -148,7 +148,7 @@ fun DosageResultScreen(
                                         }
                                     },
                                     modifier = Modifier.weight(1f),
-                                    shape = shapes.tile
+                                    shape = shapes.pill
                                 ) {
                                     Icon(Icons.Default.DateRange, contentDescription = "Promemoria")
                                     Spacer(modifier = Modifier.width(sp.sm))
@@ -165,7 +165,7 @@ fun DosageResultScreen(
                                         PdfManager.generateAndSharePdf(ctx, uiState.selectedDrug!!, uiState.selectedPatient, result)
                                     },
                                     modifier = Modifier.weight(1f),
-                                    shape = shapes.tile
+                                    shape = shapes.pill
                                 ) {
                                     Icon(Icons.Filled.Share, contentDescription = "PDF")
                                     Spacer(modifier = Modifier.width(sp.sm))

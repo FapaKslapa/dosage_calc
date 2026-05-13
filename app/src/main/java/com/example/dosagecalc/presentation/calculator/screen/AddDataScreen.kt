@@ -175,13 +175,15 @@ fun AddDataScreen(
                                 value = name,
                                 onValueChange = { name = it },
                                 label = { Text("Nome Farmaco (es. Paracetamolo)") },
-                                modifier = Modifier.fillMaxWidth()
+                                modifier = Modifier.fillMaxWidth(),
+                                shape = shapes.card
                             )
                             RoundedTextField(
                                 value = indication,
                                 onValueChange = { indication = it },
                                 label = { Text("Indicazione Terapeutica") },
-                                modifier = Modifier.fillMaxWidth()
+                                modifier = Modifier.fillMaxWidth(),
+                                shape = shapes.card
                             )
                             ExposedDropdownMenuBox(
                                 expanded = categoryExpanded,
@@ -194,7 +196,7 @@ fun AddDataScreen(
                                     label = { Text("Categoria Farmaco") },
                                     trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = categoryExpanded) },
                                     modifier = Modifier.fillMaxWidth().menuAnchor(),
-                                    shape = shapes.field
+                                    shape = shapes.card
                                 )
                                 ExposedDropdownMenu(
                                     expanded = categoryExpanded,
@@ -236,7 +238,7 @@ fun AddDataScreen(
                                     label = { Text("Formula di Calcolo") },
                                     trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
                                     modifier = Modifier.fillMaxWidth().menuAnchor(),
-                                    shape = shapes.field
+                                    shape = shapes.card
                                 )
                                 ExposedDropdownMenu(
                                     expanded = expanded,
@@ -259,13 +261,15 @@ fun AddDataScreen(
                                     onValueChange = { dose = it },
                                     label = { Text("Dose Base") },
                                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                                    modifier = Modifier.weight(1f)
+                                    modifier = Modifier.weight(1f),
+                                    shape = shapes.card
                                 )
                                 RoundedTextField(
                                     value = unit,
                                     onValueChange = { unit = it },
                                     label = { Text("Unità (es. mg, ml)") },
-                                    modifier = Modifier.weight(1f)
+                                    modifier = Modifier.weight(1f),
+                                    shape = shapes.card
                                 )
                             }
                             RoundedTextField(
@@ -273,7 +277,8 @@ fun AddDataScreen(
                                 onValueChange = { maxDose = it },
                                 label = { Text("Dose Massima (Tetto Sicurezza) - Opzionale") },
                                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                                modifier = Modifier.fillMaxWidth()
+                                modifier = Modifier.fillMaxWidth(),
+                                shape = shapes.card
                             )
                         }
                     }
@@ -297,21 +302,24 @@ fun AddDataScreen(
                                 onValueChange = { alert = it },
                                 label = { Text("Note Cliniche / Avvertenze (Opzionale)") },
                                 modifier = Modifier.fillMaxWidth().height(100.dp),
-                                maxLines = 3
+                                maxLines = 3,
+                                shape = shapes.card
                             )
                             RoundedTextField(
                                 value = contraindications,
                                 onValueChange = { contraindications = it },
                                 label = { Text("Controindicazioni (Opzionale)") },
                                 modifier = Modifier.fillMaxWidth().height(100.dp),
-                                maxLines = 3
+                                maxLines = 3,
+                                shape = shapes.card
                             )
                             RoundedTextField(
                                 value = sideEffects,
                                 onValueChange = { sideEffects = it },
                                 label = { Text("Effetti Collaterali (Opzionale)") },
                                 modifier = Modifier.fillMaxWidth().height(100.dp),
-                                maxLines = 3
+                                maxLines = 3,
+                                shape = shapes.card
                             )
                         }
                     }
