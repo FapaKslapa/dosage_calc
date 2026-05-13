@@ -11,10 +11,6 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import java.util.Locale
 
-/**
- * Reusable group of anthropometric input fields (weight, height, age) with integrated wavy sliders.
- * Used in both PatientInputScreen (dose calculation) and the patient addition form.
- */
 @Composable
 fun AnthropometricInputsGroup(
     weightValue: String,

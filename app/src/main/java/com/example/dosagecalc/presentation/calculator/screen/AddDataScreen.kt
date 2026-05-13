@@ -160,7 +160,6 @@ fun AddDataScreen(
                     modifier = Modifier.responsiveContentWidth(),
                     verticalArrangement = Arrangement.spacedBy(sp.base)
                 ) {
-                    // Section 1: Dati Principali
                     ExpressiveCard(modifier = Modifier.fillMaxWidth()) {
                         Column(
                             modifier = Modifier.padding(sp.base),
@@ -216,7 +215,6 @@ fun AddDataScreen(
                         }
                     }
 
-                    // Section 2: Regole di Dosaggio
                     ExpressiveCard(modifier = Modifier.fillMaxWidth(), mirrored = true) {
                         Column(
                             modifier = Modifier.padding(sp.base),
@@ -283,7 +281,6 @@ fun AddDataScreen(
                         }
                     }
 
-                    // Section 3: Note Cliniche
                     ExpressiveCard(
                         modifier = Modifier.fillMaxWidth(),
                         asymmetric = false

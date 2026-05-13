@@ -11,7 +11,7 @@ DosageCalc guides the clinician through a three-step flow — drug selection, pa
 The calculator supports three formula types:
 
 - **Per kilogram** (mg/kg or mcg/kg): dose multiplied by patient weight.
-- **Per square metre** (mg/m2): dose multiplied by body surface area, calculated with the Mosteller, Du Bois, or Haycock formula depending on the drug configuration.
+- **Per square metre** (mg/m2): dose multiplied by body surface area, calculated with the Mosteller or Du Bois formula (selectable in settings).
 - **Fixed dose**: a predetermined dose independent of patient anthropometrics.
 
 If the computed dose exceeds the drug's configured safety ceiling, it is automatically capped and the user is notified before the result is accepted.

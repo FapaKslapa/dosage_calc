@@ -63,7 +63,7 @@ class AddDataViewModel @Inject constructor(
             minWeightKg = null,
             maxWeightKg = null,
             minAgeYears = null,
-            maxSingleDoseMcg = parsedMaxDose, // using parsedMaxDose as maxSingleDoseMcg as well to support capping
+            maxSingleDoseMcg = parsedMaxDose,
             contraindications = contraindications.ifBlank { null },
             sideEffects = sideEffects.ifBlank { null }
         )

@@ -14,7 +14,6 @@ class OnboardingViewModel @Inject constructor(
     private val repository: OnboardingRepository
 ) : ViewModel() {
 
-    /** null = loading, false = not done, true = completed */
     val isCompleted = repository.isCompleted.stateIn(
         scope = viewModelScope,
         started = SharingStarted.Eagerly,

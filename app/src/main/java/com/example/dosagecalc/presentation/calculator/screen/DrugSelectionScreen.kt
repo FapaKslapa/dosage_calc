@@ -332,8 +332,8 @@ fun DrugSelectionScreen(
                         }
                     }
                 }
-                } // Column
-                } // AnimatedVisibility listVisible
+                }
+                }
 
                 AnimatedVisibility(
                     visible = uiState.selectedDrug != null,
