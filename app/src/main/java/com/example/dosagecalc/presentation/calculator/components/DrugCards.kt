@@ -143,33 +143,53 @@ fun DrugSelectionCard(
                 }
 
                 if (onEditClick != null) {
-                    IconButton(onClick = onEditClick, modifier = Modifier.size(32.dp)) {
+                    Surface(
+                        shape = shapes.pill,
+                        color = MaterialTheme.colorScheme.surface,
+                        border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant)
+                    ) {
+                        IconButton(onClick = onEditClick, modifier = Modifier.size(32.dp)) {
+                            Icon(
+                                Icons.Default.Edit,
+                                contentDescription = "Edit",
+                                tint = MaterialTheme.colorScheme.primary,
+                                modifier = Modifier.size(18.dp)
+                            )
+                        }
+                    }
+                    Spacer(modifier = Modifier.width(sp.xs))
+                }
+
+                Surface(
+                    shape = shapes.pill,
+                    color = MaterialTheme.colorScheme.surface,
+                    border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant)
+                ) {
+                    IconButton(onClick = onInfoClick, modifier = Modifier.size(32.dp)) {
                         Icon(
-                            Icons.Default.Edit,
-                            contentDescription = "Edit",
+                            Icons.Rounded.Info,
+                            contentDescription = "Details",
                             tint = MaterialTheme.colorScheme.primary,
-                            modifier = Modifier.size(20.dp)
+                            modifier = Modifier.size(18.dp)
                         )
                     }
                 }
 
-                IconButton(onClick = onInfoClick, modifier = Modifier.size(32.dp)) {
-                    Icon(
-                        Icons.Rounded.Info,
-                        contentDescription = "Details",
-                        tint = MaterialTheme.colorScheme.primary,
-                        modifier = Modifier.size(20.dp)
-                    )
-                }
-
                 if (onDeleteClick != null) {
-                    IconButton(onClick = onDeleteClick, modifier = Modifier.size(32.dp)) {
-                        Icon(
-                            Icons.Default.Delete,
-                            contentDescription = "Delete",
-                            tint = MaterialTheme.colorScheme.error,
-                            modifier = Modifier.size(20.dp)
-                        )
+                    Spacer(modifier = Modifier.width(sp.xs))
+                    Surface(
+                        shape = shapes.pill,
+                        color = MaterialTheme.colorScheme.surface,
+                        border = BorderStroke(1.dp, MaterialTheme.colorScheme.error)
+                    ) {
+                        IconButton(onClick = onDeleteClick, modifier = Modifier.size(32.dp)) {
+                            Icon(
+                                Icons.Default.Delete,
+                                contentDescription = "Delete",
+                                tint = MaterialTheme.colorScheme.error,
+                                modifier = Modifier.size(18.dp)
+                            )
+                        }
                     }
                 }
             }
