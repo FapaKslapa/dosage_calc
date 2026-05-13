@@ -12,7 +12,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.FilterList
 import androidx.compose.material3.Card
@@ -37,6 +36,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.example.dosagecalc.domain.model.Patient
+import com.example.dosagecalc.presentation.ui.theme.LocalDosageShapes
+import com.example.dosagecalc.presentation.ui.theme.LocalElevation
+import com.example.dosagecalc.presentation.ui.theme.spacing
 
 @Composable
 fun FilterSection(
@@ -47,7 +49,9 @@ fun FilterSection(
     onDrugSelected: (String?) -> Unit,
     onPatientSelected: (Patient?) -> Unit
 ) {
-    Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
+    val sp = MaterialTheme.spacing
+    val shapes = LocalDosageShapes.current
+    Column(verticalArrangement = Arrangement.spacedBy(sp.md)) {
         Row(verticalAlignment = Alignment.CenterVertically) {
             Icon(
                 Icons.Default.FilterList,
@@ -55,7 +59,7 @@ fun FilterSection(
                 tint = MaterialTheme.colorScheme.tertiary,
                 modifier = Modifier.size(20.dp)
             )
-            Spacer(modifier = Modifier.width(8.dp))
+            Spacer(modifier = Modifier.width(sp.sm))
             Text(
                 text = "Filtra Risultati",
                 style = MaterialTheme.typography.titleSmall,
@@ -63,7 +67,7 @@ fun FilterSection(
             )
         }
 
-        Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+        Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(sp.sm)) {
             var drugExpanded by remember { mutableStateOf(false) }
             var patientExpanded by remember { mutableStateOf(false) }
 
@@ -71,8 +75,8 @@ fun FilterSection(
                 OutlinedButton(
                     onClick = { drugExpanded = true },
                     modifier = Modifier.fillMaxWidth(),
-                    shape = RoundedCornerShape(50),
-                    contentPadding = PaddingValues(horizontal = 12.dp, vertical = 8.dp)
+                    shape = shapes.pill,
+                    contentPadding = PaddingValues(horizontal = sp.md, vertical = sp.sm)
                 ) {
                     Text(
                         text = selectedDrug ?: "Tutti i Farmaci",
@@ -99,8 +103,8 @@ fun FilterSection(
                 OutlinedButton(
                     onClick = { patientExpanded = true },
                     modifier = Modifier.fillMaxWidth(),
-                    shape = RoundedCornerShape(50),
-                    contentPadding = PaddingValues(horizontal = 12.dp, vertical = 8.dp)
+                    shape = shapes.pill,
+                    contentPadding = PaddingValues(horizontal = sp.md, vertical = sp.sm)
                 ) {
                     Text(
                         text = selectedPatient?.let { "${it.name} ${it.surname}" } ?: "Tutti i Pazienti",
@@ -128,9 +132,11 @@ fun FilterSection(
 
 @Composable
 fun StatsSummaryCard(totalCalculations: Int, totalCategories: Int) {
+    val sp = MaterialTheme.spacing
+    val shapes = LocalDosageShapes.current
     Card(
         modifier = Modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(28.dp),
+        shape = shapes.cardLarge,
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.tertiaryContainer.copy(alpha = 0.3f)
         ),
@@ -138,7 +144,7 @@ fun StatsSummaryCard(totalCalculations: Int, totalCategories: Int) {
         elevation = CardDefaults.cardElevation(defaultElevation = 0.dp)
     ) {
         Row(
-            modifier = Modifier.padding(24.dp).fillMaxWidth(),
+            modifier = Modifier.padding(sp.xl).fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceAround
         ) {
             Column(horizontalAlignment = Alignment.CenterHorizontally) {
@@ -177,20 +183,21 @@ fun StatsSummaryCard(totalCalculations: Int, totalCategories: Int) {
 
 @Composable
 fun CategoryDistributionCard(dist: Map<String, Int>) {
+    val sp = MaterialTheme.spacing
     Card(
         modifier = Modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(28.dp),
+        shape = LocalDosageShapes.current.cardLarge,
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
-        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+        elevation = CardDefaults.cardElevation(defaultElevation = LocalElevation.current.level1)
     ) {
-        Column(modifier = Modifier.padding(24.dp)) {
+        Column(modifier = Modifier.padding(sp.xl)) {
             Text(text = "Distribuzione per Categoria", style = MaterialTheme.typography.titleMedium)
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(sp.base))
 
             val total = dist.values.sum().toFloat()
             dist.forEach { (cat, count) ->
                 val progress = count / total
-                Column(modifier = Modifier.padding(vertical = 8.dp)) {
+                Column(modifier = Modifier.padding(vertical = sp.sm)) {
                     Row(
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.SpaceBetween
@@ -202,7 +209,7 @@ fun CategoryDistributionCard(dist: Map<String, Int>) {
                             fontWeight = FontWeight.Bold
                         )
                     }
-                    Spacer(modifier = Modifier.height(4.dp))
+                    Spacer(modifier = Modifier.height(sp.xs))
                     LinearProgressIndicator(
                         progress = { progress },
                         modifier = Modifier.fillMaxWidth().height(8.dp),
@@ -220,12 +227,12 @@ fun CategoryDistributionCard(dist: Map<String, Int>) {
 fun InfoNote(text: String) {
     Surface(
         color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f),
-        shape = RoundedCornerShape(16.dp),
+        shape = LocalDosageShapes.current.tile,
         modifier = Modifier.fillMaxWidth()
     ) {
         Text(
             text = text,
-            modifier = Modifier.padding(16.dp),
+            modifier = Modifier.padding(MaterialTheme.spacing.base),
             style = MaterialTheme.typography.bodyMedium,
             color = MaterialTheme.colorScheme.onSurfaceVariant
         )

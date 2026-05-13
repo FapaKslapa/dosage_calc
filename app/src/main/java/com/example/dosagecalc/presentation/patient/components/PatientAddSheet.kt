@@ -9,14 +9,11 @@ import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
@@ -34,6 +31,10 @@ import com.example.dosagecalc.domain.model.Patient
 import com.example.dosagecalc.domain.model.RenalStage
 import com.example.dosagecalc.presentation.calculator.components.AnthropometricInputsGroup
 import com.example.dosagecalc.presentation.ui.components.ImpairmentChipsRow
+import com.example.dosagecalc.presentation.ui.components.PillButton
+import com.example.dosagecalc.presentation.ui.components.RoundedTextField
+import com.example.dosagecalc.presentation.ui.theme.LocalDosageShapes
+import com.example.dosagecalc.presentation.ui.theme.spacing
 import com.example.dosagecalc.presentation.ui.util.isCompactHeight
 
 @Composable
@@ -62,6 +63,8 @@ fun PatientAddSheet(
     val canSave = name.isNotBlank() && surname.isNotBlank() && weight.isNotBlank()
         && weightError == null && heightError == null
     val isCompact = isCompactHeight()
+    val sp = MaterialTheme.spacing
+    val shapes = LocalDosageShapes.current
 
     @Composable
     fun FormContent() {
@@ -70,37 +73,35 @@ fun PatientAddSheet(
             style = MaterialTheme.typography.headlineSmall.copy(fontFamily = FontFamily.Serif),
             color = MaterialTheme.colorScheme.onSurface
         )
-        Spacer(modifier = Modifier.height(4.dp))
+        Spacer(modifier = Modifier.height(sp.xs))
         Text(
             text = if (isEditMode) "Aggiorna i dati di ${patientToEdit?.name} ${patientToEdit?.surname}"
                    else "Inserisci i dati per velocizzare i futuri calcoli",
             style = MaterialTheme.typography.bodyMedium,
             color = MaterialTheme.colorScheme.onSurfaceVariant
         )
-        Spacer(modifier = Modifier.height(16.dp))
+        Spacer(modifier = Modifier.height(sp.base))
 
         if (isCompact) {
             Row(modifier = Modifier.fillMaxWidth()) {
                 Column(modifier = Modifier.weight(1f)) {
-                    OutlinedTextField(
+                    RoundedTextField(
                         value = name,
                         onValueChange = { name = it },
                         label = { Text("Nome") },
                         singleLine = true,
-                        modifier = Modifier.fillMaxWidth(),
-                        shape = RoundedCornerShape(16.dp)
+                        modifier = Modifier.fillMaxWidth()
                     )
-                    Spacer(modifier = Modifier.height(12.dp))
-                    OutlinedTextField(
+                    Spacer(modifier = Modifier.height(sp.md))
+                    RoundedTextField(
                         value = surname,
                         onValueChange = { surname = it },
                         label = { Text("Cognome") },
                         singleLine = true,
-                        modifier = Modifier.fillMaxWidth(),
-                        shape = RoundedCornerShape(16.dp)
+                        modifier = Modifier.fillMaxWidth()
                     )
                 }
-                Spacer(modifier = Modifier.width(16.dp))
+                Spacer(modifier = Modifier.width(sp.base))
                 Column(modifier = Modifier.weight(1f)) {
                     AnthropometricInputsGroup(
                         weightValue = weight,
@@ -116,15 +117,15 @@ fun PatientAddSheet(
                         },
                         onAgeChanged = { age = it },
                         heightLabel = "Altezza (opz)",
-                        verticalSpacing = 12.dp,
+                        verticalSpacing = sp.md,
                         weightError = weightError,
                         heightError = heightError
                     )
                 }
             }
-            Spacer(modifier = Modifier.height(12.dp))
+            Spacer(modifier = Modifier.height(sp.md))
             Text("Patologie Concomitanti", style = MaterialTheme.typography.titleMedium)
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(sp.sm))
             ImpairmentChipsRow(
                 renalStage = renalStage,
                 hepaticStage = hepaticStage,
@@ -132,24 +133,22 @@ fun PatientAddSheet(
                 onHepaticStageChanged = { hepaticStage = it }
             )
         } else {
-            OutlinedTextField(
+            RoundedTextField(
                 value = name,
                 onValueChange = { name = it },
                 label = { Text("Nome") },
                 singleLine = true,
-                modifier = Modifier.fillMaxWidth(),
-                shape = RoundedCornerShape(16.dp)
+                modifier = Modifier.fillMaxWidth()
             )
-            Spacer(modifier = Modifier.height(12.dp))
-            OutlinedTextField(
+            Spacer(modifier = Modifier.height(sp.md))
+            RoundedTextField(
                 value = surname,
                 onValueChange = { surname = it },
                 label = { Text("Cognome") },
                 singleLine = true,
-                modifier = Modifier.fillMaxWidth(),
-                shape = RoundedCornerShape(16.dp)
+                modifier = Modifier.fillMaxWidth()
             )
-            Spacer(modifier = Modifier.height(12.dp))
+            Spacer(modifier = Modifier.height(sp.md))
             AnthropometricInputsGroup(
                 weightValue = weight,
                 heightValue = height,
@@ -164,20 +163,20 @@ fun PatientAddSheet(
                 },
                 onAgeChanged = { age = it },
                 heightLabel = "Altezza (opz)",
-                verticalSpacing = 12.dp,
+                verticalSpacing = sp.md,
                 weightError = weightError,
                 heightError = heightError
             )
-            Spacer(modifier = Modifier.height(24.dp))
+            Spacer(modifier = Modifier.height(sp.xl))
             Text("Patologie Concomitanti", style = MaterialTheme.typography.titleMedium)
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(sp.sm))
             ImpairmentChipsRow(
                 renalStage = renalStage,
                 hepaticStage = hepaticStage,
                 onRenalStageChanged = { renalStage = it },
                 onHepaticStageChanged = { hepaticStage = it }
             )
-            Spacer(modifier = Modifier.height(24.dp))
+            Spacer(modifier = Modifier.height(sp.xl))
         }
     }
 
@@ -187,20 +186,20 @@ fun PatientAddSheet(
             properties = DialogProperties(usePlatformDefaultWidth = false)
         ) {
             Card(
-                shape = RoundedCornerShape(28.dp),
+                shape = shapes.cardLarge,
                 colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
                 modifier = Modifier
                     .fillMaxWidth(0.92f)
-                    .padding(vertical = 16.dp)
+                    .padding(vertical = sp.base)
             ) {
                 Column(
                     modifier = Modifier
-                        .padding(24.dp)
+                        .padding(sp.xl)
                         .verticalScroll(rememberScrollState())
                 ) {
                     FormContent()
-                    Spacer(modifier = Modifier.height(16.dp))
-                    Button(
+                    Spacer(modifier = Modifier.height(sp.base))
+                    PillButton(
                         onClick = {
                             if (canSave) {
                                 val hasRenal = renalStage != RenalStage.NONE
@@ -208,12 +207,10 @@ fun PatientAddSheet(
                                 onSave(name, surname, weight, height.ifBlank { null }, age, hasRenal, hasHepatic)
                             }
                         },
+                        label = if (isEditMode) "Aggiorna" else "Salva Paziente",
                         enabled = canSave,
-                        modifier = Modifier.fillMaxWidth().height(52.dp),
-                        shape = RoundedCornerShape(50)
-                    ) {
-                        Text(if (isEditMode) "Aggiorna" else "Salva Paziente", style = MaterialTheme.typography.titleMedium)
-                    }
+                        modifier = Modifier.fillMaxWidth()
+                    )
                 }
             }
         }
@@ -222,13 +219,13 @@ fun PatientAddSheet(
             onDismissRequest = onDismiss,
             sheetState = sheetState,
             containerColor = MaterialTheme.colorScheme.surface,
-            shape = RoundedCornerShape(topStart = 32.dp, topEnd = 32.dp)
+            shape = shapes.sheet
         ) {
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = 24.dp)
-                    .padding(top = 8.dp)
+                    .padding(horizontal = sp.xl)
+                    .padding(top = sp.sm)
             ) {
                 Column(
                     modifier = Modifier
@@ -237,7 +234,7 @@ fun PatientAddSheet(
                 ) {
                     FormContent()
                 }
-                Button(
+                PillButton(
                     onClick = {
                         if (canSave) {
                             val hasRenal = renalStage != RenalStage.NONE
@@ -245,16 +242,13 @@ fun PatientAddSheet(
                             onSave(name, surname, weight, height.ifBlank { null }, age, hasRenal, hasHepatic)
                         }
                     },
+                    label = if (isEditMode) "Aggiorna" else "Salva Paziente",
                     enabled = canSave,
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(vertical = 16.dp)
+                        .padding(vertical = sp.base)
                         .navigationBarsPadding()
-                        .height(56.dp),
-                    shape = RoundedCornerShape(50)
-                ) {
-                    Text(if (isEditMode) "Aggiorna" else "Salva Paziente", style = MaterialTheme.typography.titleMedium)
-                }
+                )
             }
         }
     }

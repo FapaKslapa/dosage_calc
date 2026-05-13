@@ -15,12 +15,9 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -36,6 +33,9 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.example.dosagecalc.domain.model.Patient
+import com.example.dosagecalc.presentation.ui.components.ExpressiveCard
+import com.example.dosagecalc.presentation.ui.theme.LocalDosageShapes
+import com.example.dosagecalc.presentation.ui.theme.spacing
 
 @Composable
 fun PatientCard(
@@ -51,17 +51,16 @@ fun PatientCard(
         animationSpec = spring(dampingRatio = Spring.DampingRatioMediumBouncy, stiffness = Spring.StiffnessMediumLow),
         label = "patient_card_scale"
     )
+    val sp = MaterialTheme.spacing
+    val shapes = LocalDosageShapes.current
 
-    Card(
+    ExpressiveCard(
         modifier = Modifier
             .fillMaxWidth()
             .scale(scale)
             .clickable(interactionSource = interactionSource, indication = androidx.compose.foundation.LocalIndication.current, onClick = onClick),
-        shape = RoundedCornerShape(topStart = 32.dp, topEnd = 8.dp, bottomEnd = 32.dp, bottomStart = 8.dp),
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.8f)),
-        elevation = CardDefaults.cardElevation(defaultElevation = 0.dp)
     ) {
-        Column(modifier = Modifier.padding(horizontal = 20.dp, vertical = 16.dp)) {
+        Column(modifier = Modifier.padding(horizontal = sp.lg, vertical = sp.base)) {
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically
@@ -92,33 +91,33 @@ fun PatientCard(
                     )
                 }
             }
-            Spacer(modifier = Modifier.height(12.dp))
+            Spacer(modifier = Modifier.height(sp.md))
             HorizontalDivider(
                 color = MaterialTheme.colorScheme.outlineVariant,
                 thickness = 0.5.dp
             )
-            Spacer(modifier = Modifier.height(10.dp))
-            Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+            Spacer(modifier = Modifier.height(sp.sm + 2.dp))
+            Row(horizontalArrangement = Arrangement.spacedBy(sp.xs + 2.dp)) {
                 Surface(
-                    shape = RoundedCornerShape(6.dp),
+                    shape = shapes.chip,
                     color = MaterialTheme.colorScheme.secondaryContainer
                 ) {
                     Text(
                         text = "${patient.weightKg} kg",
                         style = MaterialTheme.typography.labelMedium.copy(fontWeight = FontWeight.Medium),
-                        modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp),
+                        modifier = Modifier.padding(horizontal = sp.sm, vertical = sp.xs),
                         color = MaterialTheme.colorScheme.onSecondaryContainer
                     )
                 }
                 if (patient.heightCm != null) {
                     Surface(
-                        shape = RoundedCornerShape(6.dp),
+                        shape = shapes.chip,
                         color = MaterialTheme.colorScheme.tertiaryContainer
                     ) {
                         Text(
                             text = "${patient.heightCm} cm",
                             style = MaterialTheme.typography.labelMedium.copy(fontWeight = FontWeight.Medium),
-                            modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp),
+                            modifier = Modifier.padding(horizontal = sp.sm, vertical = sp.xs),
                             color = MaterialTheme.colorScheme.onTertiaryContainer
                         )
                     }

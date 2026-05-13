@@ -1,4 +1,4 @@
-﻿package com.example.dosagecalc.presentation.calculator.components
+package com.example.dosagecalc.presentation.calculator.components
 
 import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.animateFloatAsState
@@ -13,7 +13,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -39,6 +38,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.dosagecalc.domain.model.DosageResult
 import com.example.dosagecalc.presentation.ui.components.GradientScreenHeader
+import com.example.dosagecalc.presentation.ui.theme.LocalDosageShapes
+import com.example.dosagecalc.presentation.ui.theme.LocalElevation
+import com.example.dosagecalc.presentation.ui.theme.spacing
 import com.example.dosagecalc.presentation.ui.util.isCompactHeight
 import java.util.Locale
 
@@ -56,7 +58,9 @@ fun SuccessHeader(result: DosageResult.Success, drugLabel: String?) {
     val displayDoseMax = result.totalDoseMax?.let { it * animatedFraction.toDouble() }
 
     val compact = isCompactHeight()
-    val verticalPad = if (compact) 12.dp else 28.dp
+    val sp = MaterialTheme.spacing
+    val shapes = LocalDosageShapes.current
+    val verticalPad = if (compact) sp.md else sp.xl
     val doseFontSize = if (compact) 36.sp else 54.sp
     val doseFontLineHeight = if (compact) 42.sp else 60.sp
 
@@ -67,7 +71,7 @@ fun SuccessHeader(result: DosageResult.Success, drugLabel: String?) {
         ),
         modifier = Modifier.padding(bottom = 0.dp)
     ) {
-        Column(modifier = Modifier.padding(horizontal = 24.dp, vertical = verticalPad)) {
+        Column(modifier = Modifier.padding(horizontal = sp.xl, vertical = verticalPad)) {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Icon(
                     imageVector        = Icons.Filled.CheckCircle,
@@ -75,7 +79,7 @@ fun SuccessHeader(result: DosageResult.Success, drugLabel: String?) {
                     tint               = MaterialTheme.colorScheme.onPrimary,
                     modifier           = Modifier.size(20.dp)
                 )
-                Spacer(modifier = Modifier.width(8.dp))
+                Spacer(modifier = Modifier.width(sp.sm))
                 Text(
                     text  = drugLabel ?: "Dose Calcolata",
                     style = MaterialTheme.typography.titleMedium,
@@ -83,7 +87,7 @@ fun SuccessHeader(result: DosageResult.Success, drugLabel: String?) {
                 )
             }
 
-            Spacer(modifier = Modifier.height(if (compact) 8.dp else 16.dp))
+            Spacer(modifier = Modifier.height(if (compact) sp.sm else sp.base))
 
             val rangeText = if (displayDoseMax != null) {
                 "${formatDose(displayDose)} - ${formatDose(displayDoseMax)}"
@@ -107,16 +111,16 @@ fun SuccessHeader(result: DosageResult.Success, drugLabel: String?) {
             )
 
             if (result.cappedToMaxDose) {
-                Spacer(modifier = Modifier.height(if (compact) 8.dp else 16.dp))
+                Spacer(modifier = Modifier.height(if (compact) sp.sm else sp.base))
                 Surface(
-                    shape = RoundedCornerShape(50),
+                    shape = shapes.pill,
                     color = MaterialTheme.colorScheme.errorContainer
                 ) {
                     Text(
                         text     = "⚠ Ridotta al massimo consentito",
                         style    = MaterialTheme.typography.labelLarge,
                         color    = MaterialTheme.colorScheme.onErrorContainer,
-                        modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
+                        modifier = Modifier.padding(horizontal = sp.base, vertical = sp.sm)
                     )
                 }
             }
@@ -127,13 +131,14 @@ fun SuccessHeader(result: DosageResult.Success, drugLabel: String?) {
 @Composable
 fun ErrorHeader(title: String, message: String) {
     val compact = isCompactHeight()
+    val sp = MaterialTheme.spacing
     GradientScreenHeader(
         colors = listOf(
             MaterialTheme.colorScheme.error,
             MaterialTheme.colorScheme.errorContainer
         )
     ) {
-        Column(modifier = Modifier.padding(horizontal = 24.dp, vertical = if (compact) 12.dp else 28.dp)) {
+        Column(modifier = Modifier.padding(horizontal = sp.xl, vertical = if (compact) sp.md else sp.xl)) {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Icon(
                     imageVector        = Icons.Filled.Warning,
@@ -141,14 +146,14 @@ fun ErrorHeader(title: String, message: String) {
                     tint               = MaterialTheme.colorScheme.onError,
                     modifier           = Modifier.size(32.dp)
                 )
-                Spacer(modifier = Modifier.width(12.dp))
+                Spacer(modifier = Modifier.width(sp.md))
                 Text(
                     text  = title,
                     style = MaterialTheme.typography.headlineMedium,
                     color = MaterialTheme.colorScheme.onError
                 )
             }
-            Spacer(modifier = Modifier.height(12.dp))
+            Spacer(modifier = Modifier.height(sp.md))
             Text(
                 text  = message,
                 style = MaterialTheme.typography.bodyLarge,
@@ -160,20 +165,21 @@ fun ErrorHeader(title: String, message: String) {
 
 @Composable
 fun DetailsCard(result: DosageResult.Success) {
+    val sp = MaterialTheme.spacing
+    val shapes = LocalDosageShapes.current
+    val elev = LocalElevation.current
     Card(
         modifier  = Modifier.fillMaxWidth(),
-        shape     = RoundedCornerShape(24.dp),
-        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
-        colors    = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.surface
-        )
+        shape     = shapes.card,
+        elevation = CardDefaults.cardElevation(defaultElevation = elev.level2),
+        colors    = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
     ) {
-        Column(modifier = Modifier.padding(20.dp)) {
+        Column(modifier = Modifier.padding(sp.lg)) {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Box(
                     modifier = Modifier
                         .size(48.dp)
-                        .background(MaterialTheme.colorScheme.primary, RoundedCornerShape(12.dp)),
+                        .background(MaterialTheme.colorScheme.primary, shapes.field),
                     contentAlignment = Alignment.Center
                 ) {
                     Text(
@@ -184,14 +190,14 @@ fun DetailsCard(result: DosageResult.Success) {
                         color = MaterialTheme.colorScheme.onPrimary
                     )
                 }
-                Spacer(modifier = Modifier.width(16.dp))
+                Spacer(modifier = Modifier.width(sp.base))
                 Column {
                     Text(
                         text  = "Formula applicata",
                         style = MaterialTheme.typography.titleLarge,
                         color = MaterialTheme.colorScheme.onSurface
                     )
-                    Spacer(modifier = Modifier.height(4.dp))
+                    Spacer(modifier = Modifier.height(sp.xs))
                     Text(
                         text  = result.formula,
                         style = MaterialTheme.typography.bodyLarge,
@@ -201,11 +207,11 @@ fun DetailsCard(result: DosageResult.Success) {
             }
 
             if (result.totalCycleDose != null || result.totalTherapyDose != null) {
-                Spacer(modifier = Modifier.height(20.dp))
+                Spacer(modifier = Modifier.height(sp.lg))
                 HorizontalDivider(
                     color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.2f)
                 )
-                Spacer(modifier = Modifier.height(20.dp))
+                Spacer(modifier = Modifier.height(sp.lg))
 
                 Column {
                     result.totalCycleDose?.let { cycleDose ->
@@ -216,7 +222,7 @@ fun DetailsCard(result: DosageResult.Success) {
                                 tint = MaterialTheme.colorScheme.primary.copy(alpha = 0.6f),
                                 modifier = Modifier.size(20.dp)
                             )
-                            Spacer(modifier = Modifier.width(12.dp))
+                            Spacer(modifier = Modifier.width(sp.md))
                             Column {
                                 Text(
                                     text = "Dose Totale per Ciclo",
@@ -234,7 +240,7 @@ fun DetailsCard(result: DosageResult.Success) {
                     }
 
                     if (result.totalCycleDose != null && result.totalTherapyDose != null) {
-                        Spacer(modifier = Modifier.height(16.dp))
+                        Spacer(modifier = Modifier.height(sp.base))
                     }
 
                     result.totalTherapyDose?.let { therapyDose ->
@@ -245,7 +251,7 @@ fun DetailsCard(result: DosageResult.Success) {
                                 tint = MaterialTheme.colorScheme.tertiary.copy(alpha = 0.6f),
                                 modifier = Modifier.size(20.dp)
                             )
-                            Spacer(modifier = Modifier.width(12.dp))
+                            Spacer(modifier = Modifier.width(sp.md))
                             Column {
                                 Text(
                                     text = "Dose Totale Terapia",
@@ -265,11 +271,11 @@ fun DetailsCard(result: DosageResult.Success) {
             }
 
             if (result.source.isNotBlank()) {
-                Spacer(modifier = Modifier.height(20.dp))
+                Spacer(modifier = Modifier.height(sp.lg))
                 HorizontalDivider(
                     color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.2f)
                 )
-                Spacer(modifier = Modifier.height(20.dp))
+                Spacer(modifier = Modifier.height(sp.lg))
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Icon(
                         imageVector = Icons.Filled.CheckCircle,
@@ -277,7 +283,7 @@ fun DetailsCard(result: DosageResult.Success) {
                         tint = MaterialTheme.colorScheme.primary.copy(alpha = 0.6f),
                         modifier = Modifier.size(16.dp)
                     )
-                    Spacer(modifier = Modifier.width(8.dp))
+                    Spacer(modifier = Modifier.width(sp.sm))
                     Text(
                         text      = result.source,
                         style     = MaterialTheme.typography.bodyMedium,
@@ -292,16 +298,15 @@ fun DetailsCard(result: DosageResult.Success) {
 
 @Composable
 fun AlertCard(alert: String) {
+    val sp = MaterialTheme.spacing
     Card(
         modifier  = Modifier.fillMaxWidth(),
-        shape     = RoundedCornerShape(24.dp),
-        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
-        colors    = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.errorContainer
-        )
+        shape     = LocalDosageShapes.current.card,
+        elevation = CardDefaults.cardElevation(defaultElevation = LocalElevation.current.level2),
+        colors    = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.errorContainer)
     ) {
         Row(
-            modifier          = Modifier.padding(20.dp),
+            modifier          = Modifier.padding(sp.lg),
             verticalAlignment = Alignment.Top
         ) {
             Text(
@@ -316,7 +321,7 @@ fun AlertCard(alert: String) {
                     style = MaterialTheme.typography.titleLarge,
                     color = MaterialTheme.colorScheme.onErrorContainer
                 )
-                Spacer(modifier = Modifier.height(4.dp))
+                Spacer(modifier = Modifier.height(sp.xs))
                 Text(
                     text  = alert,
                     style = MaterialTheme.typography.bodyLarge,
@@ -329,21 +334,20 @@ fun AlertCard(alert: String) {
 
 @Composable
 fun DisclaimerCard() {
+    val sp = MaterialTheme.spacing
     Card(
         modifier  = Modifier.fillMaxWidth(),
-        shape     = RoundedCornerShape(24.dp),
-        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
-        colors    = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.surfaceVariant
-        )
+        shape     = LocalDosageShapes.current.card,
+        elevation = CardDefaults.cardElevation(defaultElevation = LocalElevation.current.level2),
+        colors    = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant)
     ) {
-        Column(modifier = Modifier.padding(20.dp)) {
+        Column(modifier = Modifier.padding(sp.lg)) {
             Text(
                 text  = "DISCLAIMER",
                 style = MaterialTheme.typography.titleMedium,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
-            Spacer(modifier = Modifier.height(6.dp))
+            Spacer(modifier = Modifier.height(sp.xs + 2.dp))
             Text(
                 text  = "Strumento a finalità esclusivamente didattiche. " +
                         "Non sostituisce la valutazione clinica del medico. " +

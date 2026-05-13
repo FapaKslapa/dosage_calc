@@ -18,11 +18,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -38,6 +35,9 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.example.dosagecalc.domain.model.HistoryRecord
+import com.example.dosagecalc.presentation.ui.components.ExpressiveCard
+import com.example.dosagecalc.presentation.ui.theme.LocalDosageShapes
+import com.example.dosagecalc.presentation.ui.theme.spacing
 import java.time.format.DateTimeFormatter
 
 @Composable
@@ -53,20 +53,19 @@ fun HistoryCard(
         animationSpec = spring(dampingRatio = Spring.DampingRatioMediumBouncy, stiffness = Spring.StiffnessMediumLow),
         label = "history_card_scale"
     )
+    val sp = MaterialTheme.spacing
+    val shapes = LocalDosageShapes.current
 
-    Card(
+    ExpressiveCard(
         modifier = Modifier
             .fillMaxWidth()
             .scale(scale)
             .clickable(interactionSource = interactionSource, indication = androidx.compose.foundation.LocalIndication.current, onClick = {}),
-        shape = RoundedCornerShape(topStart = 32.dp, topEnd = 8.dp, bottomEnd = 32.dp, bottomStart = 8.dp),
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.8f)),
-        elevation = CardDefaults.cardElevation(defaultElevation = 0.dp)
     ) {
-        Column(modifier = Modifier.padding(20.dp)) {
+        Column(modifier = Modifier.padding(sp.lg)) {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Surface(
-                    shape = RoundedCornerShape(8.dp),
+                    shape = shapes.chip,
                     color = MaterialTheme.colorScheme.primary.copy(alpha = 0.1f)
                 ) {
                     Text(
@@ -81,12 +80,12 @@ fun HistoryCard(
                     Icon(Icons.Filled.Delete, "Elimina", tint = MaterialTheme.colorScheme.error, modifier = Modifier.size(20.dp))
                 }
             }
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(sp.base))
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Box(
                     modifier = Modifier
                         .size(48.dp)
-                        .background(MaterialTheme.colorScheme.tertiaryContainer, RoundedCornerShape(12.dp)),
+                        .background(MaterialTheme.colorScheme.tertiaryContainer, shapes.field),
                     contentAlignment = Alignment.Center
                 ) {
                     Text(
@@ -95,14 +94,14 @@ fun HistoryCard(
                         color = MaterialTheme.colorScheme.onTertiaryContainer
                     )
                 }
-                Spacer(modifier = Modifier.width(16.dp))
+                Spacer(modifier = Modifier.width(sp.base))
                 Column {
                     Text(
                         text = record.drugName,
                         style = MaterialTheme.typography.titleLarge.copy(fontFamily = FontFamily.Serif),
                         color = MaterialTheme.colorScheme.onSurface
                     )
-                    Spacer(modifier = Modifier.height(4.dp))
+                    Spacer(modifier = Modifier.height(sp.xs))
 
                     val doseText = if (record.calculatedDoseMax != null) {
                         "${String.format("%.2f", record.calculatedDose)} - ${String.format("%.2f", record.calculatedDoseMax)} ${record.doseUnit}"
@@ -118,7 +117,7 @@ fun HistoryCard(
                 }
             }
             if (!record.formulaUsed.isNullOrBlank()) {
-                Spacer(modifier = Modifier.height(8.dp))
+                Spacer(modifier = Modifier.height(sp.sm))
                 Text(
                     text = "Formula: ${record.formulaUsed}",
                     style = MaterialTheme.typography.bodySmall,
@@ -126,42 +125,42 @@ fun HistoryCard(
                     modifier = Modifier.padding(start = 64.dp)
                 )
             }
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(sp.base))
             HorizontalDivider(color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.1f))
-            Spacer(modifier = Modifier.height(12.dp))
-            Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+            Spacer(modifier = Modifier.height(sp.md))
+            Row(horizontalArrangement = Arrangement.spacedBy(sp.sm)) {
                 Surface(
-                    shape = RoundedCornerShape(8.dp),
+                    shape = shapes.chip,
                     color = MaterialTheme.colorScheme.secondary.copy(alpha = 0.1f)
                 ) {
                     Text(
                         text = "Peso: ${record.weightKg} kg",
                         style = MaterialTheme.typography.labelSmall.copy(fontWeight = FontWeight.Medium),
                         color = MaterialTheme.colorScheme.secondary,
-                        modifier = Modifier.padding(horizontal = 8.dp, vertical = 6.dp)
+                        modifier = Modifier.padding(horizontal = sp.sm, vertical = 6.dp)
                     )
                 }
                 Surface(
-                    shape = RoundedCornerShape(8.dp),
+                    shape = shapes.chip,
                     color = MaterialTheme.colorScheme.tertiary.copy(alpha = 0.1f)
                 ) {
                     Text(
                         text = "Età: ${record.ageYears} anni",
                         style = MaterialTheme.typography.labelSmall.copy(fontWeight = FontWeight.Medium),
                         color = MaterialTheme.colorScheme.tertiary,
-                        modifier = Modifier.padding(horizontal = 8.dp, vertical = 6.dp)
+                        modifier = Modifier.padding(horizontal = sp.sm, vertical = 6.dp)
                     )
                 }
                 if (record.heightCm != null) {
                     Surface(
-                        shape = RoundedCornerShape(8.dp),
+                        shape = shapes.chip,
                         color = MaterialTheme.colorScheme.primary.copy(alpha = 0.1f)
                     ) {
                         Text(
                             text = "H: ${record.heightCm} cm",
                             style = MaterialTheme.typography.labelSmall.copy(fontWeight = FontWeight.Medium),
                             color = MaterialTheme.colorScheme.primary,
-                            modifier = Modifier.padding(horizontal = 8.dp, vertical = 6.dp)
+                            modifier = Modifier.padding(horizontal = sp.sm, vertical = 6.dp)
                         )
                     }
                 }
