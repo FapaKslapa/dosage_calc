@@ -23,6 +23,7 @@ import androidx.glance.text.TextStyle
 import androidx.glance.unit.ColorProvider
 import com.example.dosagecalc.MainActivity
 import com.example.dosagecalc.domain.model.Reminder
+import com.example.dosagecalc.domain.model.ReminderInterval
 import com.example.dosagecalc.presentation.ui.theme.WidgetNextReminderBackground
 
 class NextReminderWidget : GlanceAppWidget() {
@@ -79,7 +80,7 @@ class NextReminderWidget : GlanceAppWidget() {
                     verticalAlignment = Alignment.Vertical.CenterVertically
                 ) {
                     Text(
-                        text = "PROSSIMO REMINDER",
+                        text = "PROSSIMO PROMEMORIA",
                         modifier = GlanceModifier.defaultWeight(),
                         style = TextStyle(
                             color = ColorProvider(Color.White.copy(alpha = 0.70f)),
@@ -87,22 +88,6 @@ class NextReminderWidget : GlanceAppWidget() {
                             fontWeight = FontWeight.Bold
                         )
                     )
-                    Box(
-                        modifier = GlanceModifier
-                            .size(28.dp)
-                            .background(Color.White.copy(alpha = 0.14f))
-                            .cornerRadius(14.dp),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        Text(
-                            text = "R",
-                            style = TextStyle(
-                                color = ColorProvider(Color.White.copy(alpha = 0.80f)),
-                                fontSize = 11.sp,
-                                fontWeight = FontWeight.Bold
-                            )
-                        )
-                    }
                 }
 
                 Spacer(modifier = GlanceModifier.height(10.dp))
@@ -129,7 +114,7 @@ class NextReminderWidget : GlanceAppWidget() {
                     )
                     Spacer(modifier = GlanceModifier.defaultWeight())
                     Text(
-                        text = reminder.interval.name.lowercase().replaceFirstChar { it.uppercase() },
+                        text = intervalLabel(reminder),
                         style = TextStyle(
                             color = ColorProvider(Color.White.copy(alpha = 0.55f)),
                             fontSize = 10.sp
@@ -148,6 +133,12 @@ class NextReminderWidget : GlanceAppWidget() {
                 }
             }
         }
+    }
+
+    private fun intervalLabel(reminder: Reminder): String = when (reminder.interval) {
+        ReminderInterval.DAILY -> "Giornaliero"
+        ReminderInterval.WEEKLY -> "Settimanale · G${reminder.daySelection}"
+        ReminderInterval.MONTHLY -> "Mensile · G${reminder.daySelection}"
     }
 }
 

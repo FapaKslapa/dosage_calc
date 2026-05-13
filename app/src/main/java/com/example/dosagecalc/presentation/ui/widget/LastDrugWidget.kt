@@ -88,22 +88,6 @@ class LastDrugWidget : GlanceAppWidget() {
                             fontWeight = FontWeight.Bold
                         )
                     )
-                    Box(
-                        modifier = GlanceModifier
-                            .size(28.dp)
-                            .background(Color.White.copy(alpha = 0.14f))
-                            .cornerRadius(14.dp),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        Text(
-                            text = "Rx",
-                            style = TextStyle(
-                                color = ColorProvider(Color.White.copy(alpha = 0.80f)),
-                                fontSize = 9.sp,
-                                fontWeight = FontWeight.Bold
-                            )
-                        )
-                    }
                 }
 
                 Spacer(modifier = GlanceModifier.height(10.dp))
