@@ -5,7 +5,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
@@ -28,6 +27,8 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.example.dosagecalc.presentation.ui.components.WavySlider
+import com.example.dosagecalc.presentation.ui.theme.LocalDosageShapes
+import com.example.dosagecalc.presentation.ui.theme.spacing
 
 @Composable
 fun PatientInputField(
@@ -47,16 +48,18 @@ fun PatientInputField(
 ) {
     val haptic = LocalHapticFeedback.current
     var lastHapticValue by remember { mutableFloatStateOf(sliderValue) }
+    val sp = MaterialTheme.spacing
+    val shapes = LocalDosageShapes.current
 
     Card(
-        shape = RoundedCornerShape(16.dp),
+        shape = shapes.tile,
         colors = CardDefaults.cardColors(containerColor = inactiveColor.copy(alpha = 0.3f)),
         elevation = CardDefaults.cardElevation(defaultElevation = 0.dp)
     ) {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(start = 16.dp, end = 16.dp, top = 12.dp, bottom = 8.dp)
+                .padding(start = sp.base, end = sp.base, top = sp.md, bottom = sp.sm)
         ) {
             Row(
                 modifier = Modifier.fillMaxWidth(),
@@ -81,7 +84,7 @@ fun PatientInputField(
                     ),
                     singleLine = true,
                     suffix = { Text(suffix, color = activeColor) },
-                    shape = RoundedCornerShape(12.dp),
+                    shape = shapes.field,
                     colors = TextFieldDefaults.colors(
                         focusedContainerColor = Color.Transparent,
                         unfocusedContainerColor = Color.Transparent,
@@ -112,14 +115,14 @@ fun PatientInputField(
             errorMessage,
             color = MaterialTheme.colorScheme.error,
             style = MaterialTheme.typography.bodySmall,
-            modifier = Modifier.padding(start = 4.dp, top = 2.dp)
+            modifier = Modifier.padding(start = sp.xs, top = 2.dp)
         )
     } else if (hintMessage != null) {
         Text(
             hintMessage,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
             style = MaterialTheme.typography.bodySmall,
-            modifier = Modifier.padding(start = 4.dp, top = 2.dp)
+            modifier = Modifier.padding(start = sp.xs, top = 2.dp)
         )
     }
 }

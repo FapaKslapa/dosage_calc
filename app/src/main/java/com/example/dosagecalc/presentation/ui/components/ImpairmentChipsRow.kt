@@ -18,6 +18,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.example.dosagecalc.domain.model.HepaticStage
 import com.example.dosagecalc.domain.model.RenalStage
+import com.example.dosagecalc.presentation.ui.theme.LocalDosageShapes
 
 @Composable
 fun ImpairmentChipsRow(
@@ -43,6 +44,7 @@ fun ImpairmentChipsRow(
                     selected = renalStage == stage,
                     onClick = { onRenalStageChanged(stage) },
                     label = { Text(stage.label) },
+                    shape = LocalDosageShapes.current.chip,
                     leadingIcon = if (renalStage == stage && isDanger) {
                         { Icon(Icons.Filled.Warning, contentDescription = null, modifier = Modifier.size(16.dp)) }
                     } else null,
@@ -74,6 +76,7 @@ fun ImpairmentChipsRow(
                     selected = hepaticStage == stage,
                     onClick = { onHepaticStageChanged(stage) },
                     label = { Text(stage.label) },
+                    shape = LocalDosageShapes.current.chip,
                     leadingIcon = if (hepaticStage == stage && isDanger) {
                         { Icon(Icons.Filled.Warning, contentDescription = null, modifier = Modifier.size(16.dp)) }
                     } else null,

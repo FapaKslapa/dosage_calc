@@ -14,13 +14,11 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.ui.draw.scale
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.List
@@ -42,6 +40,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
+import com.example.dosagecalc.presentation.ui.theme.LocalDosageShapes
+import com.example.dosagecalc.presentation.ui.theme.LocalElevation
+import com.example.dosagecalc.presentation.ui.theme.spacing
 
 private enum class ShortcutColorVariant { PRIMARY, SECONDARY, TERTIARY, ERROR }
 
@@ -77,22 +78,23 @@ fun DashboardShortcuts(
     onNavigateToReminders: () -> Unit = {},
     onNavigateToAddData: () -> Unit = {}
 ) {
+    val shapes = LocalDosageShapes.current
     val items = listOf(
-        ShortcutItem(Icons.Filled.Person,              "Pazienti",   "Pazienti",   "Anagrafica",        ShortcutColorVariant.SECONDARY, RoundedCornerShape(topStart = 8.dp,  topEnd = 32.dp, bottomEnd = 8.dp,  bottomStart = 32.dp), onNavigateToPatients),
-        ShortcutItem(Icons.AutoMirrored.Filled.List,   "Storico",    "Storico",    "Calcoli Passati",   ShortcutColorVariant.TERTIARY,  RoundedCornerShape(16.dp),                                                                    onNavigateToHistory),
-        ShortcutItem(Icons.Filled.DateRange,           "Calendario", "Calendario", "Promemoria Attivi", ShortcutColorVariant.PRIMARY,   RoundedCornerShape(16.dp),                                                                    onNavigateToReminders),
-        ShortcutItem(Icons.Rounded.Add,                "Nuovo",      "Nuovo",      "Aggiungi Farmaco",  ShortcutColorVariant.ERROR,     RoundedCornerShape(topStart = 32.dp, topEnd = 8.dp,  bottomEnd = 32.dp, bottomStart = 8.dp),  onNavigateToAddData)
+        ShortcutItem(Icons.Filled.Person,            "Pazienti",   "Pazienti",   "Anagrafica",        ShortcutColorVariant.SECONDARY, shapes.expressiveMirror, onNavigateToPatients),
+        ShortcutItem(Icons.AutoMirrored.Filled.List, "Storico",    "Storico",    "Calcoli Passati",   ShortcutColorVariant.TERTIARY,  shapes.tile,             onNavigateToHistory),
+        ShortcutItem(Icons.Filled.DateRange,         "Calendario", "Calendario", "Promemoria Attivi", ShortcutColorVariant.PRIMARY,   shapes.tile,             onNavigateToReminders),
+        ShortcutItem(Icons.Rounded.Add,              "Nuovo",      "Nuovo",      "Aggiungi Farmaco",  ShortcutColorVariant.ERROR,     shapes.expressive,       onNavigateToAddData)
     )
 
     Row(
         modifier = modifier
             .fillMaxWidth()
             .horizontalScroll(rememberScrollState())
-            .padding(horizontal = 20.dp)
+            .padding(horizontal = MaterialTheme.spacing.lg)
     ) {
         items.forEachIndexed { index, item ->
             ShortcutCard(item)
-            Spacer(modifier = Modifier.width(if (index < items.lastIndex) 16.dp else 4.dp))
+            Spacer(modifier = Modifier.width(if (index < items.lastIndex) MaterialTheme.spacing.base else MaterialTheme.spacing.xs))
         }
     }
 }
@@ -117,14 +119,14 @@ private fun ShortcutCard(item: ShortcutItem) {
         interactionSource = interactionSource,
         shape = item.shape,
         colors = CardDefaults.cardColors(containerColor = colors.container),
-        elevation = CardDefaults.cardElevation(defaultElevation = 8.dp)
+        elevation = CardDefaults.cardElevation(defaultElevation = LocalElevation.current.level3)
     ) {
         Column(
-            modifier = Modifier.fillMaxSize().padding(16.dp),
+            modifier = Modifier.fillMaxSize().padding(MaterialTheme.spacing.base),
             horizontalAlignment = Alignment.Start
         ) {
             Box(
-                modifier = Modifier.background(colors.iconBg, CircleShape).padding(8.dp)
+                modifier = Modifier.background(colors.iconBg, CircleShape).padding(MaterialTheme.spacing.sm)
             ) {
                 Icon(
                     imageVector = item.icon,

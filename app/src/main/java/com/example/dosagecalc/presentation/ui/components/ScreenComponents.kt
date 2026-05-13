@@ -20,7 +20,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -39,6 +38,8 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import com.example.dosagecalc.presentation.ui.theme.LocalDosageShapes
+import com.example.dosagecalc.presentation.ui.theme.LocalSpacing
 import com.example.dosagecalc.presentation.ui.util.isCompactHeight
 
 @Composable
@@ -48,13 +49,14 @@ fun GradientScreenHeader(
     content: @Composable BoxScope.() -> Unit
 ) {
     val compact = isCompactHeight()
+    val spacing = LocalSpacing.current
     Box(
         modifier = modifier
             .fillMaxWidth()
-            .clip(RoundedCornerShape(bottomStart = 40.dp, bottomEnd = 40.dp))
+            .clip(LocalDosageShapes.current.heroBottom)
             .background(Brush.verticalGradient(colors = colors))
             .statusBarsPadding()
-            .padding(bottom = if (compact) 12.dp else 28.dp)
+            .padding(bottom = if (compact) spacing.md else spacing.xl)
     ) {
         Box(
             modifier = Modifier
@@ -105,20 +107,20 @@ fun EmptyStateView(
                     modifier = Modifier.size(40.dp)
                 )
             }
-            Spacer(modifier = Modifier.height(20.dp))
+            Spacer(modifier = Modifier.height(LocalSpacing.current.lg))
             Text(
                 text = title,
                 style = MaterialTheme.typography.titleLarge.copy(fontFamily = FontFamily.Serif),
                 color = MaterialTheme.colorScheme.onBackground,
                 textAlign = TextAlign.Center
             )
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(LocalSpacing.current.sm))
             Text(
                 text = subtitle,
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 textAlign = TextAlign.Center,
-                modifier = Modifier.padding(horizontal = 40.dp)
+                modifier = Modifier.padding(horizontal = LocalSpacing.current.xxxl)
             )
         }
     }
@@ -141,7 +143,7 @@ fun GradientBottomBar(
                 )
             )
             .navigationBarsPadding()
-            .padding(horizontal = 20.dp, vertical = 16.dp),
+            .padding(horizontal = LocalSpacing.current.lg, vertical = LocalSpacing.current.base),
         contentAlignment = Alignment.Center
     ) {
         content()

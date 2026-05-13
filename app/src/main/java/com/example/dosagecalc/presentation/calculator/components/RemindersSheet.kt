@@ -13,12 +13,10 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
-import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.FilterChip
@@ -54,6 +52,8 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.dosagecalc.domain.model.Reminder
 import com.example.dosagecalc.domain.model.ReminderInterval
 import com.example.dosagecalc.presentation.calculator.RemindersViewModel
+import com.example.dosagecalc.presentation.ui.components.PillButton
+import com.example.dosagecalc.presentation.ui.theme.LocalDosageShapes
 import com.example.dosagecalc.presentation.utils.ReminderManager
 import java.util.UUID
 
@@ -67,11 +67,13 @@ fun RemindersSheet(
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     val reminders by viewModel.reminders.collectAsStateWithLifecycle()
     val isCompact = isCompactHeight()
+    val shapes = LocalDosageShapes.current
+
     ModalBottomSheet(
         onDismissRequest = onDismissRequest,
         sheetState = sheetState,
         containerColor = MaterialTheme.colorScheme.surface,
-        shape = RoundedCornerShape(topStart = 32.dp, topEnd = 32.dp)
+        shape = shapes.sheet
     ) {
         val scrollState = rememberScrollState()
         Column(
@@ -100,6 +102,7 @@ fun RemindersSheet(
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .padding(vertical = 4.dp),
+                            shape = shapes.tile,
                             colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant)
                         ) {
                             Row(
@@ -223,7 +226,8 @@ fun RemindersSheet(
                         },
                         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                         modifier = Modifier.weight(1f),
-                        singleLine = true
+                        singleLine = true,
+                        shape = shapes.field
                     )
 
                     if (selectedInterval == ReminderInterval.MONTHLY) {
@@ -233,7 +237,8 @@ fun RemindersSheet(
                             label = { Text("Giorno (1-31)") },
                             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                             modifier = Modifier.weight(1f),
-                            singleLine = true
+                            singleLine = true,
+                            shape = shapes.field
                         )
                     }
                 }
@@ -258,6 +263,7 @@ fun RemindersSheet(
                                 selected = isSelected,
                                 onClick = { daySelection = dayNumber.toString() },
                                 label = { Text(day, style = MaterialTheme.typography.bodyMedium) },
+                                shape = shapes.chip,
                                 colors = FilterChipDefaults.filterChipColors(
                                     selectedContainerColor = MaterialTheme.colorScheme.primaryContainer,
                                     selectedLabelColor = MaterialTheme.colorScheme.onPrimaryContainer
@@ -268,7 +274,7 @@ fun RemindersSheet(
                 }
 
                 Spacer(modifier = Modifier.height(24.dp))
-                Button(
+                PillButton(
                     onClick = {
                         val seriesId = UUID.randomUUID().toString()
                         val dur = durationDays.toIntOrNull() ?: 1
@@ -297,11 +303,9 @@ fun RemindersSheet(
                         Toast.makeText(context, "Promemoria impostato!", Toast.LENGTH_SHORT).show()
                         onDismissRequest()
                     },
-                    modifier = Modifier.fillMaxWidth().height(56.dp),
-                    shape = RoundedCornerShape(50)
-                ) {
-                    Text("Salva Promemoria", style = MaterialTheme.typography.titleMedium)
-                }
+                    label = "Salva Promemoria",
+                    modifier = Modifier.fillMaxWidth()
+                )
             }
         }
     }
