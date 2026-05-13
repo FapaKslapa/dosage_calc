@@ -1,5 +1,11 @@
 package com.example.dosagecalc.presentation.calculator.screen
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.spring
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.slideInVertically
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -12,7 +18,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
@@ -32,6 +37,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import kotlinx.coroutines.delay
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -44,6 +50,9 @@ import com.example.dosagecalc.presentation.ui.util.responsiveContentWidth
 import com.example.dosagecalc.domain.model.Drug
 import com.example.dosagecalc.presentation.calculator.AddDataViewModel
 import com.example.dosagecalc.presentation.ui.components.GradientScreenHeader
+import com.example.dosagecalc.presentation.ui.theme.LocalDosageShapes
+import com.example.dosagecalc.presentation.ui.theme.LocalElevation
+import com.example.dosagecalc.presentation.ui.theme.spacing
 
 @Composable
 fun DrugDetailScreen(
@@ -52,12 +61,29 @@ fun DrugDetailScreen(
     onNavigateBack: () -> Unit
 ) {
     var drug by remember { mutableStateOf<Drug?>(null) }
+    var card1Visible by remember { mutableStateOf(false) }
+    var card2Visible by remember { mutableStateOf(false) }
+    var card3Visible by remember { mutableStateOf(false) }
 
     LaunchedEffect(drugId) {
         viewModel.loadDrug(drugId) { loadedDrug ->
             drug = loadedDrug
         }
     }
+    LaunchedEffect(drug) {
+        if (drug != null) {
+            card1Visible = true
+            delay(80); card2Visible = true
+            delay(80); card3Visible = true
+        }
+    }
+
+    val sp = MaterialTheme.spacing
+    val shapes = LocalDosageShapes.current
+    val cardEnter = fadeIn(tween(250)) + slideInVertically(
+        initialOffsetY = { it / 4 },
+        animationSpec = spring(Spring.DampingRatioMediumBouncy, Spring.StiffnessMediumLow)
+    )
 
     Box(
         modifier = Modifier
@@ -75,7 +101,7 @@ fun DrugDetailScreen(
                 Column {
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
-                        modifier = Modifier.padding(top = 8.dp)
+                        modifier = Modifier.padding(top = sp.sm)
                     ) {
                         IconButton(onClick = onNavigateBack) {
                             Icon(
@@ -91,7 +117,7 @@ fun DrugDetailScreen(
                         )
                     }
 
-                    Column(modifier = Modifier.padding(start = 24.dp, end = 24.dp, top = 4.dp)) {
+                    Column(modifier = Modifier.padding(start = sp.xl, end = sp.xl, top = sp.xs)) {
                         Text(
                             text  = drug?.name ?: "Caricamento...",
                             style = MaterialTheme.typography.displayMedium.copy(fontFamily = FontFamily.Serif),
@@ -100,18 +126,18 @@ fun DrugDetailScreen(
                         drug?.category?.let { category ->
                             Surface(
                                 color = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.2f),
-                                shape = RoundedCornerShape(50),
-                                modifier = Modifier.padding(top = 8.dp)
+                                shape = shapes.pill,
+                                modifier = Modifier.padding(top = sp.sm)
                             ) {
                                 Text(
                                     text = category.label,
-                                    modifier = Modifier.padding(horizontal = 12.dp, vertical = 4.dp),
+                                    modifier = Modifier.padding(horizontal = sp.md, vertical = sp.xs),
                                     style = MaterialTheme.typography.labelMedium,
                                     color = MaterialTheme.colorScheme.onPrimary
                                 )
                             }
                         }
-                        Spacer(modifier = Modifier.height(24.dp))
+                        Spacer(modifier = Modifier.height(sp.xl))
                     }
                 }
             }
@@ -121,44 +147,54 @@ fun DrugDetailScreen(
                     modifier = Modifier
                         .fillMaxWidth()
                         .verticalScroll(rememberScrollState())
-                        .padding(20.dp),
+                        .padding(sp.lg),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                 Column(modifier = Modifier.responsiveContentWidth(maxWidth = 720.dp)) {
-                    InfoSection(
-                        title = "Indicazione",
-                        content = drug!!.indication,
-                        icon = Icons.Default.Info
-                    )
+                    AnimatedVisibility(visible = card1Visible, enter = cardEnter) {
+                        InfoSection(
+                            title = "Indicazione",
+                            content = drug!!.indication,
+                            icon = Icons.Default.Info
+                        )
+                    }
 
-                    Spacer(modifier = Modifier.height(16.dp))
+                    Spacer(modifier = Modifier.height(sp.base))
 
-                    DetailCard(drug = drug!!)
+                    AnimatedVisibility(visible = card2Visible, enter = cardEnter) {
+                        DetailCard(drug = drug!!)
+                    }
 
                     drug!!.alert.let { alert ->
                         if (alert.isNotBlank()) {
-                            Spacer(modifier = Modifier.height(16.dp))
-                            WarningSection(title = "Avvertenze", content = alert)
+                            Spacer(modifier = Modifier.height(sp.base))
+                            AnimatedVisibility(visible = card3Visible, enter = cardEnter) {
+                                WarningSection(title = "Avvertenze", content = alert)
+                            }
                         }
                     }
 
                     drug!!.contraindications?.let { contra ->
-                        Spacer(modifier = Modifier.height(16.dp))
-                        WarningSection(title = "Controindicazioni", content = contra)
+                        Spacer(modifier = Modifier.height(sp.base))
+                        AnimatedVisibility(visible = card3Visible, enter = cardEnter) {
+                            WarningSection(title = "Controindicazioni", content = contra)
+                        }
                     }
 
                     drug!!.sideEffects?.let { side ->
-                        Spacer(modifier = Modifier.height(16.dp))
-                        InfoSection(
-                            title = "Effetti Collaterali",
-                            content = side,
-                            icon = Icons.Default.Warning,
-                            color = MaterialTheme.colorScheme.tertiary
-                        )
+                        Spacer(modifier = Modifier.height(sp.base))
+                        AnimatedVisibility(visible = card3Visible, enter = cardEnter) {
+                            InfoSection(
+                                title = "Effetti Collaterali",
+                                content = side,
+                                icon = Icons.Default.Warning,
+                                color = MaterialTheme.colorScheme.tertiary
+                            )
+                        }
                     }
 
-                    Spacer(modifier = Modifier.height(32.dp))
-                    
+                    Spacer(modifier = Modifier.height(sp.xxl))
+
                     Text(
                         text = "Fonte: ${drug!!.source}",
                         style = MaterialTheme.typography.bodySmall,
@@ -166,8 +202,8 @@ fun DrugDetailScreen(
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                         modifier = Modifier.align(Alignment.CenterHorizontally)
                     )
-                    
-                    Spacer(modifier = Modifier.height(40.dp))
+
+                    Spacer(modifier = Modifier.height(sp.xxxl))
                 }
                 }
             }
@@ -182,19 +218,20 @@ fun InfoSection(
     icon: ImageVector,
     color: androidx.compose.ui.graphics.Color = MaterialTheme.colorScheme.primary
 ) {
+    val sp = MaterialTheme.spacing
     Card(
         modifier = Modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(24.dp),
+        shape = LocalDosageShapes.current.card,
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
-        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+        elevation = CardDefaults.cardElevation(defaultElevation = LocalElevation.current.level2)
     ) {
-        Column(modifier = Modifier.padding(20.dp)) {
+        Column(modifier = Modifier.padding(sp.lg)) {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Icon(icon, contentDescription = null, tint = color, modifier = Modifier.size(20.dp))
-                Spacer(modifier = Modifier.width(8.dp))
+                Spacer(modifier = Modifier.width(sp.sm))
                 Text(text = title, style = MaterialTheme.typography.titleMedium, color = color)
             }
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(sp.sm))
             Text(text = content, style = MaterialTheme.typography.bodyLarge, color = MaterialTheme.colorScheme.onSurfaceVariant)
         }
     }
@@ -202,19 +239,20 @@ fun InfoSection(
 
 @Composable
 fun WarningSection(title: String, content: String) {
+    val sp = MaterialTheme.spacing
     Card(
         modifier = Modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(24.dp),
+        shape = LocalDosageShapes.current.card,
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.errorContainer),
-        elevation = CardDefaults.cardElevation(defaultElevation = 0.dp)
+        elevation = CardDefaults.cardElevation(defaultElevation = LocalElevation.current.level2)
     ) {
-        Column(modifier = Modifier.padding(20.dp)) {
+        Column(modifier = Modifier.padding(sp.lg)) {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Icon(Icons.Default.Warning, contentDescription = null, tint = MaterialTheme.colorScheme.error)
-                Spacer(modifier = Modifier.width(8.dp))
+                Spacer(modifier = Modifier.width(sp.sm))
                 Text(text = title, style = MaterialTheme.typography.titleMedium, color = MaterialTheme.colorScheme.error)
             }
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(sp.sm))
             Text(text = content, style = MaterialTheme.typography.bodyLarge, color = MaterialTheme.colorScheme.onErrorContainer)
         }
     }
@@ -222,27 +260,28 @@ fun WarningSection(title: String, content: String) {
 
 @Composable
 fun DetailCard(drug: Drug) {
+    val sp = MaterialTheme.spacing
     Card(
         modifier = Modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(24.dp),
+        shape = LocalDosageShapes.current.card,
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
-        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
+        elevation = CardDefaults.cardElevation(defaultElevation = LocalElevation.current.level2)
     ) {
-        Column(modifier = Modifier.padding(20.dp)) {
+        Column(modifier = Modifier.padding(sp.lg)) {
             Text(text = "Dosaggio e Formula", style = MaterialTheme.typography.titleMedium)
-            Spacer(modifier = Modifier.height(16.dp))
-            
+            Spacer(modifier = Modifier.height(sp.base))
+
             DetailRow(label = "Dose Unitaria", value = "${drug.unitDose} ${drug.unit}")
-            HorizontalDivider(modifier = Modifier.padding(vertical = 12.dp), color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.1f))
+            HorizontalDivider(modifier = Modifier.padding(vertical = sp.md), color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.1f))
             DetailRow(label = "Tipo Formula", value = drug.formulaType.name.replace("_", " "))
-            
+
             if (drug.daysPerCycle != null) {
-                HorizontalDivider(modifier = Modifier.padding(vertical = 12.dp), color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.1f))
+                HorizontalDivider(modifier = Modifier.padding(vertical = sp.md), color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.1f))
                 DetailRow(label = "Giorni Ciclo", value = drug.daysPerCycle.toString())
             }
-            
+
             if (drug.numberOfCycles != null) {
-                HorizontalDivider(modifier = Modifier.padding(vertical = 12.dp), color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.1f))
+                HorizontalDivider(modifier = Modifier.padding(vertical = sp.md), color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.1f))
                 DetailRow(label = "Numero Cicli", value = drug.numberOfCycles.toString())
             }
         }

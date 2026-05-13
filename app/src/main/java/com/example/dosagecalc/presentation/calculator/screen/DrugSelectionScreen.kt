@@ -27,7 +27,6 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import com.example.dosagecalc.presentation.ui.util.isMediumOrExpandedWidth
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.DarkMode
@@ -41,13 +40,16 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import kotlinx.coroutines.delay
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -61,6 +63,8 @@ import com.example.dosagecalc.presentation.calculator.components.DrugPreviewCard
 import com.example.dosagecalc.presentation.calculator.components.DrugSelectionCard
 import com.example.dosagecalc.presentation.ui.components.GradientBottomBar
 import com.example.dosagecalc.presentation.ui.components.GradientScreenHeader
+import com.example.dosagecalc.presentation.ui.theme.LocalDosageShapes
+import com.example.dosagecalc.presentation.ui.theme.spacing
 import com.example.dosagecalc.presentation.ui.util.isCompactHeight
 
 @Composable
@@ -77,6 +81,19 @@ fun DrugSelectionScreen(
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val isWide = isMediumOrExpandedWidth()
     val isCompact = isCompactHeight()
+    val sp = MaterialTheme.spacing
+    val shapes = LocalDosageShapes.current
+
+    var headerVisible by remember { mutableStateOf(false) }
+    var searchVisible by remember { mutableStateOf(false) }
+    var listVisible by remember { mutableStateOf(false) }
+    LaunchedEffect(Unit) {
+        headerVisible = true
+        delay(80)
+        searchVisible = true
+        delay(80)
+        listVisible = true
+    }
     var drugToDelete by remember { mutableStateOf<com.example.dosagecalc.domain.model.Drug?>(null) }
     val activity = androidx.activity.compose.LocalActivity.current
     val isDark = MaterialTheme.colorScheme.background.luminance() < 0.5f
@@ -118,7 +135,7 @@ fun DrugSelectionScreen(
                     )
                 }
 
-                Column(modifier = Modifier.padding(start = 24.dp, top = if (isCompact) 4.dp else 40.dp)) {
+                Column(modifier = Modifier.padding(start = sp.xl, top = if (isCompact) sp.xs else sp.xxxl)) {
                     Text(
                         text  = if (isCompact) "Bentornato, Dottore." else "Bentornato,\nDottore.",
                         style = MaterialTheme.typography.displayLarge.copy(
@@ -154,7 +171,7 @@ fun DrugSelectionScreen(
                     .weight(1f)
                     .verticalScroll(rememberScrollState())
                     .padding(horizontal = 0.dp)
-                    .padding(bottom = 120.dp)
+                    .padding(bottom = sp.bottomBarClearance)
             ) {
                 if (isCompact) {
                     DashboardShortcuts(
@@ -165,36 +182,62 @@ fun DrugSelectionScreen(
                         onNavigateToAddData = { onNavigateToAddData(null) }
                     )
                 }
-                Text(
-                    text  = "Schede Farmaci",
-                    style = MaterialTheme.typography.titleLarge.copy(fontFamily = androidx.compose.ui.text.font.FontFamily.Serif),
-                    color = MaterialTheme.colorScheme.onBackground,
-                    modifier = Modifier.padding(horizontal = 20.dp)
-                )
-                Spacer(modifier = Modifier.height(8.dp))
+                AnimatedVisibility(
+                    visible = headerVisible,
+                    enter = fadeIn(tween(240)) + slideInVertically(
+                        initialOffsetY = { it / 4 },
+                        animationSpec = spring(Spring.DampingRatioMediumBouncy, Spring.StiffnessMediumLow)
+                    )
+                ) {
+                    Text(
+                        text  = "Schede Farmaci",
+                        style = MaterialTheme.typography.titleLarge.copy(fontFamily = androidx.compose.ui.text.font.FontFamily.Serif),
+                        color = MaterialTheme.colorScheme.onBackground,
+                        modifier = Modifier.padding(horizontal = sp.lg)
+                    )
+                }
+                Spacer(modifier = Modifier.height(sp.sm))
 
-                OutlinedTextField(
-                    value = uiState.searchQuery,
-                    onValueChange = { viewModel.onSearchQueryChanged(it) },
-                    placeholder = { Text("Cerca farmaco...") },
-                    leadingIcon = { Icon(Icons.Default.Search, contentDescription = "Cerca") },
-                    shape = RoundedCornerShape(12.dp),
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 20.dp),
-                    singleLine = true
-                )
-                Spacer(modifier = Modifier.height(12.dp))
+                AnimatedVisibility(
+                    visible = searchVisible,
+                    enter = fadeIn(tween(240)) + slideInVertically(
+                        initialOffsetY = { it / 4 },
+                        animationSpec = spring(Spring.DampingRatioMediumBouncy, Spring.StiffnessMediumLow)
+                    )
+                ) {
+                    Column {
+                        OutlinedTextField(
+                            value = uiState.searchQuery,
+                            onValueChange = { viewModel.onSearchQueryChanged(it) },
+                            placeholder = { Text("Cerca farmaco...") },
+                            leadingIcon = { Icon(Icons.Default.Search, contentDescription = "Cerca") },
+                            colors = OutlinedTextFieldDefaults.colors(
+                                focusedContainerColor = MaterialTheme.colorScheme.surface.copy(alpha = 0.9f),
+                                unfocusedContainerColor = MaterialTheme.colorScheme.surface.copy(alpha = 0.9f),
+                                focusedBorderColor = Color.Transparent,
+                                unfocusedBorderColor = Color.Transparent
+                            ),
+                            shape = shapes.card,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(horizontal = sp.lg)
+                                .height(52.dp),
+                            singleLine = true
+                        )
+                        Spacer(modifier = Modifier.height(sp.md))
+                    }
+                }
 
                 LazyRow(
-                    modifier = Modifier.fillMaxWidth().padding(horizontal = 20.dp),
-                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                    modifier = Modifier.fillMaxWidth().padding(horizontal = sp.lg),
+                    horizontalArrangement = Arrangement.spacedBy(sp.sm)
                 ) {
                     item {
                         androidx.compose.material3.FilterChip(
                             selected = uiState.selectedCategory == null,
                             onClick = { viewModel.onCategorySelected(null) },
                             label = { Text("Tutti") },
+                            shape = shapes.chip,
                             colors = androidx.compose.material3.FilterChipDefaults.filterChipColors(
                                 selectedContainerColor = MaterialTheme.colorScheme.primary,
                                 selectedLabelColor = MaterialTheme.colorScheme.onPrimary
@@ -206,6 +249,7 @@ fun DrugSelectionScreen(
                             selected = uiState.selectedCategory == category,
                             onClick = { viewModel.onCategorySelected(category) },
                             label = { Text(category.label) },
+                            shape = shapes.chip,
                             colors = androidx.compose.material3.FilterChipDefaults.filterChipColors(
                                 selectedContainerColor = MaterialTheme.colorScheme.primary,
                                 selectedLabelColor = MaterialTheme.colorScheme.onPrimary
@@ -213,7 +257,12 @@ fun DrugSelectionScreen(
                         )
                     }
                 }
-                Spacer(modifier = Modifier.height(16.dp))
+                AnimatedVisibility(
+                    visible = listVisible,
+                    enter = fadeIn(tween(280))
+                ) {
+                Column {
+                Spacer(modifier = Modifier.height(sp.base))
 
                 when {
                     uiState.isLoadingDrugs -> {
@@ -241,9 +290,9 @@ fun DrugSelectionScreen(
                             FlowRow(
                                 modifier = Modifier
                                     .fillMaxWidth()
-                                    .padding(horizontal = 20.dp),
-                                horizontalArrangement = Arrangement.spacedBy(16.dp),
-                                verticalArrangement = Arrangement.spacedBy(16.dp)
+                                    .padding(horizontal = sp.lg),
+                                horizontalArrangement = Arrangement.spacedBy(sp.base),
+                                verticalArrangement = Arrangement.spacedBy(sp.base)
                             ) {
                                 filteredDrugs.forEach { drug ->
                                     DrugSelectionCard(
@@ -283,6 +332,8 @@ fun DrugSelectionScreen(
                         }
                     }
                 }
+                } // Column
+                } // AnimatedVisibility listVisible
 
                 AnimatedVisibility(
                     visible = uiState.selectedDrug != null,
@@ -299,8 +350,8 @@ fun DrugSelectionScreen(
                     )
                 ) {
                     Column {
-                        Spacer(modifier = Modifier.height(24.dp))
-                        Box(modifier = Modifier.padding(horizontal = 20.dp)) {
+                        Spacer(modifier = Modifier.height(sp.xl))
+                        Box(modifier = Modifier.padding(horizontal = sp.lg)) {
                             uiState.selectedDrug?.let { DrugPreviewCard(drug = it) }
                         }
                     }
@@ -322,7 +373,7 @@ fun DrugSelectionScreen(
                             }
                             drugToDelete = null
                         },
-                        shape = RoundedCornerShape(50)
+                        shape = shapes.pill
                     ) {
                         Text("Elimina", color = MaterialTheme.colorScheme.error)
                     }
@@ -330,7 +381,7 @@ fun DrugSelectionScreen(
                 dismissButton = {
                     TextButton(
                         onClick = { drugToDelete = null },
-                        shape = RoundedCornerShape(50)
+                        shape = shapes.pill
                     ) {
                         Text("Annulla")
                     }
@@ -344,7 +395,7 @@ fun DrugSelectionScreen(
             Button(
                 onClick  = onNavigateToInput,
                 enabled  = uiState.selectedDrug != null && !uiState.isLoadingDrugs,
-                shape    = RoundedCornerShape(50),
+                shape    = shapes.pill,
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(56.dp),
