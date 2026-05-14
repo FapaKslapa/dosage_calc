@@ -175,17 +175,16 @@ fun PatientCard(
 
             Row(
                 modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(sp.xs)
+                horizontalArrangement = Arrangement.spacedBy(sp.xs, Alignment.End)
             ) {
                 Surface(
                     shape = shapes.chip,
                     color = cs.surface,
                     border = BorderStroke(1.dp, cs.outlineVariant),
-                    modifier = Modifier.weight(1f).clickable { onEditClick() }
+                    modifier = Modifier.clickable { onEditClick() }
                 ) {
                     Row(
-                        modifier = Modifier.padding(horizontal = sp.sm, vertical = 6.dp),
-                        horizontalArrangement = Arrangement.Center,
+                        modifier = Modifier.padding(horizontal = sp.sm, vertical = 5.dp),
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         Icon(Icons.Filled.Edit, contentDescription = "Modifica", tint = cs.primary, modifier = Modifier.size(13.dp))
@@ -197,11 +196,10 @@ fun PatientCard(
                     shape = shapes.chip,
                     color = cs.errorContainer.copy(alpha = 0.45f),
                     border = BorderStroke(1.dp, cs.error.copy(alpha = 0.45f)),
-                    modifier = Modifier.weight(1f).clickable { onDeleteClick() }
+                    modifier = Modifier.clickable { onDeleteClick() }
                 ) {
                     Row(
-                        modifier = Modifier.padding(horizontal = sp.sm, vertical = 6.dp),
-                        horizontalArrangement = Arrangement.Center,
+                        modifier = Modifier.padding(horizontal = sp.sm, vertical = 5.dp),
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         Icon(Icons.Filled.Delete, contentDescription = "Elimina", tint = cs.error, modifier = Modifier.size(13.dp))
