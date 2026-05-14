@@ -92,7 +92,8 @@ fun PatientInputField(
             .fillMaxWidth()
             .onSizeChanged { cardWidthPx = it.width.coerceAtLeast(1) }
             .pointerInput(sliderRange) {
-                detectHorizontalDragGestures { _, dragAmount ->
+                detectHorizontalDragGestures { change, dragAmount ->
+                    change.consume()
                     if (!isEditing) {
                         val range = sliderRange.endInclusive - sliderRange.start
                         val delta = (dragAmount / cardWidthPx.toFloat()) * range

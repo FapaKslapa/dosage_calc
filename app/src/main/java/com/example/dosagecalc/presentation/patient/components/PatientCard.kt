@@ -21,13 +21,11 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.rounded.Warning
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
@@ -175,39 +173,41 @@ fun PatientCard(
                 thickness = 0.5.dp
             )
 
-            Row(modifier = Modifier.fillMaxWidth()) {
-                TextButton(
-                    onClick = onEditClick,
-                    modifier = Modifier.weight(1f),
-                    shape = shapes.chip
-                ) {
-                    Icon(
-                        Icons.Filled.Edit,
-                        contentDescription = "Modifica",
-                        modifier = Modifier.size(15.dp)
-                    )
-                    Spacer(modifier = Modifier.width(4.dp))
-                    Text(
-                        "Modifica",
-                        style = MaterialTheme.typography.labelLarge
-                    )
-                }
-                TextButton(
-                    onClick = onDeleteClick,
-                    modifier = Modifier.weight(1f),
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(sp.xs)
+            ) {
+                Surface(
                     shape = shapes.chip,
-                    colors = ButtonDefaults.textButtonColors(contentColor = cs.error)
+                    color = cs.surface,
+                    border = BorderStroke(1.dp, cs.outlineVariant),
+                    modifier = Modifier.weight(1f).clickable { onEditClick() }
                 ) {
-                    Icon(
-                        Icons.Filled.Delete,
-                        contentDescription = "Elimina",
-                        modifier = Modifier.size(15.dp)
-                    )
-                    Spacer(modifier = Modifier.width(4.dp))
-                    Text(
-                        "Elimina",
-                        style = MaterialTheme.typography.labelLarge
-                    )
+                    Row(
+                        modifier = Modifier.padding(horizontal = sp.sm, vertical = 6.dp),
+                        horizontalArrangement = Arrangement.Center,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Icon(Icons.Filled.Edit, contentDescription = "Modifica", tint = cs.primary, modifier = Modifier.size(13.dp))
+                        Spacer(modifier = Modifier.width(3.dp))
+                        Text("Modifica", style = MaterialTheme.typography.labelSmall, color = cs.primary)
+                    }
+                }
+                Surface(
+                    shape = shapes.chip,
+                    color = cs.errorContainer.copy(alpha = 0.45f),
+                    border = BorderStroke(1.dp, cs.error.copy(alpha = 0.45f)),
+                    modifier = Modifier.weight(1f).clickable { onDeleteClick() }
+                ) {
+                    Row(
+                        modifier = Modifier.padding(horizontal = sp.sm, vertical = 6.dp),
+                        horizontalArrangement = Arrangement.Center,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Icon(Icons.Filled.Delete, contentDescription = "Elimina", tint = cs.error, modifier = Modifier.size(13.dp))
+                        Spacer(modifier = Modifier.width(3.dp))
+                        Text("Elimina", style = MaterialTheme.typography.labelSmall, color = cs.error)
+                    }
                 }
             }
         }
