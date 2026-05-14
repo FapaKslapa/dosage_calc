@@ -6,6 +6,7 @@ import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.spring
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -17,6 +18,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.ui.draw.clip
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
@@ -109,16 +111,17 @@ fun DrugSelectionCard(
     val isCustom = onEditClick != null || onDeleteClick != null
 
     Card(
-        onClick = onClick,
         modifier =
             Modifier
                 .width(268.dp)
                 .wrapContentHeight()
-                .scale(scale),
+                .scale(scale)
+                .clip(shapes.card)
+                .clickable { onClick() },
         shape = shapes.card,
         colors =
             CardDefaults.cardColors(
-                containerColor = if (isSelected) cs.primaryContainer.copy(alpha = 0.55f) else cs.surfaceVariant,
+                containerColor = if (isSelected) cs.primaryContainer else cs.surfaceVariant,
             ),
         elevation =
             CardDefaults.cardElevation(
