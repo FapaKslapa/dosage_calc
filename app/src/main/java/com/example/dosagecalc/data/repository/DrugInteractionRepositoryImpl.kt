@@ -16,7 +16,7 @@ class DrugInteractionRepositoryImpl
         @ApplicationContext private val context: Context,
         private val json: Json,
     ) : DrugInteractionRepository {
-        private val FILE_NAME = "interactions.json"
+        private val fileName = "interactions.json"
 
         override fun getInteractions(): Flow<List<DrugInteraction>> =
             flow {
@@ -37,7 +37,7 @@ class DrugInteractionRepositoryImpl
 
         private fun loadInteractions(): List<DrugInteractionDto> =
             try {
-                val jsonString = context.assets.open(FILE_NAME).use { it.bufferedReader().readText() }
+                val jsonString = context.assets.open(fileName).use { it.bufferedReader().readText() }
                 json.decodeFromString<List<DrugInteractionDto>>(jsonString)
             } catch (e: Exception) {
                 emptyList()

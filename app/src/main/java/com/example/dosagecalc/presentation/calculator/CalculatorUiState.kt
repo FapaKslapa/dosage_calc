@@ -3,9 +3,11 @@ package com.example.dosagecalc.presentation.calculator
 import com.example.dosagecalc.domain.model.DosageResult
 import com.example.dosagecalc.domain.model.Drug
 import com.example.dosagecalc.domain.model.DrugCategory
+import com.example.dosagecalc.domain.model.DrugInteraction
 import com.example.dosagecalc.domain.model.HepaticStage
 import com.example.dosagecalc.domain.model.Patient
 import com.example.dosagecalc.domain.model.RenalStage
+import com.example.dosagecalc.domain.repository.BsaFormulaType
 
 data class CalculatorUiState(
     val isLoadingDrugs: Boolean = true,
@@ -26,8 +28,8 @@ data class CalculatorUiState(
     val isCalculating: Boolean = false,
     val renalStage: RenalStage = RenalStage.NONE,
     val hepaticStage: HepaticStage = HepaticStage.NONE,
-    val bsaFormula: com.example.dosagecalc.domain.repository.BsaFormulaType = com.example.dosagecalc.domain.repository.BsaFormulaType.MOSTELLER,
-    val interactions: List<com.example.dosagecalc.domain.model.DrugInteraction> = emptyList(),
+    val bsaFormula: BsaFormulaType = BsaFormulaType.MOSTELLER,
+    val interactions: List<DrugInteraction> = emptyList(),
 ) {
     val filteredDrugs: List<Drug>
         get() =

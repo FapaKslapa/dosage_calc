@@ -4,8 +4,11 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
+import com.example.dosagecalc.domain.model.Drug
 import com.example.dosagecalc.domain.model.HistoryRecord
+import com.example.dosagecalc.domain.model.Patient
 import com.example.dosagecalc.domain.usecase.ManageHistoryUseCase
+import com.example.dosagecalc.domain.usecase.ManagePatientsUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -28,12 +31,12 @@ class HistoryViewModel
     @Inject
     constructor(
         private val manageHistoryUseCase: ManageHistoryUseCase,
-        private val managePatientsUseCase: com.example.dosagecalc.domain.usecase.ManagePatientsUseCase,
+        private val managePatientsUseCase: ManagePatientsUseCase,
     ) : ViewModel() {
         private val _searchQuery = MutableStateFlow("")
         val searchQuery: StateFlow<String> = _searchQuery.asStateFlow()
 
-        private val _filterByPatientId = MutableStateFlow<String?>(null)
+        private val patientIdFilter = MutableStateFlow<String?>(null)
 
         private val _filteredPatientName = MutableStateFlow<String?>(null)
         val filteredPatientName: StateFlow<String?> = _filteredPatientName.asStateFlow()
@@ -42,7 +45,7 @@ class HistoryViewModel
         val uiState: StateFlow<HistoryUiState> = _uiState.asStateFlow()
 
         val historyPaged: Flow<PagingData<HistoryRecord>> =
-            combine(_searchQuery, _filterByPatientId) { query, patientId ->
+            combine(_searchQuery, patientIdFilter) { query, patientId ->
                 if (patientId != null) {
                     manageHistoryUseCase.getHistoryForPatientPaged(patientId, query)
                 } else {
@@ -56,7 +59,7 @@ class HistoryViewModel
         }
 
         fun setFilterPatientId(patientId: String?) {
-            _filterByPatientId.value = patientId
+            patientIdFilter.value = patientId
             if (patientId != null) {
                 viewModelScope.launch {
                     val patient = managePatientsUseCase.getPatientById(patientId)
@@ -91,7 +94,7 @@ class HistoryViewModel
 
         fun getCategoryDistribution(
             records: List<HistoryRecord>,
-            allDrugs: List<com.example.dosagecalc.domain.model.Drug>,
+            allDrugs: List<Drug>,
         ): Map<String, Int> =
             records
                 .mapNotNull { record ->
@@ -103,8 +106,8 @@ class HistoryViewModel
 
         fun getUniquePatientsInHistory(
             records: List<HistoryRecord>,
-            allPatients: List<com.example.dosagecalc.domain.model.Patient>,
-        ): List<com.example.dosagecalc.domain.model.Patient> {
+            allPatients: List<Patient>,
+        ): List<Patient> {
             val patientIds = records.mapNotNull { it.patientId }.distinct()
             return allPatients.filter { it.id in patientIds }.sortedBy { it.surname }
         }

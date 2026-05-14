@@ -5,9 +5,11 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.dosagecalc.domain.model.DosageResult
 import com.example.dosagecalc.domain.model.Drug
+import com.example.dosagecalc.domain.model.HepaticStage
 import com.example.dosagecalc.domain.model.HistoryRecord
 import com.example.dosagecalc.domain.model.Patient
 import com.example.dosagecalc.domain.model.PatientData
+import com.example.dosagecalc.domain.model.RenalStage
 import com.example.dosagecalc.domain.repository.BsaFormulaType
 import com.example.dosagecalc.domain.repository.DrugRepository
 import com.example.dosagecalc.domain.repository.ThemeRepository
@@ -123,8 +125,8 @@ class CalculatorViewModel
                         weightInput = patient.weightKg.toString(),
                         heightInput = patient.heightCm?.toString() ?: "",
                         ageInput = patient.ageYears.toString(),
-                        renalStage = if (patient.hasRenalImpairment) com.example.dosagecalc.domain.model.RenalStage.G3 else com.example.dosagecalc.domain.model.RenalStage.NONE,
-                        hepaticStage = if (patient.hasHepaticImpairment) com.example.dosagecalc.domain.model.HepaticStage.CHILD_B else com.example.dosagecalc.domain.model.HepaticStage.NONE,
+                        renalStage = if (patient.hasRenalImpairment) RenalStage.G3 else RenalStage.NONE,
+                        hepaticStage = if (patient.hasHepaticImpairment) HepaticStage.CHILD_B else HepaticStage.NONE,
                         weightError = null,
                         heightError = null,
                         ageError = null,

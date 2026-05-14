@@ -14,14 +14,14 @@ class OnboardingRepositoryImpl
     constructor(
         private val dataStore: DataStore<Preferences>,
     ) : OnboardingRepository {
-        private val ONBOARDING_KEY = booleanPreferencesKey("onboarding_completed")
+        private val onboardingKey = booleanPreferencesKey("onboarding_completed")
 
         override val isCompleted: Flow<Boolean> =
             dataStore.data.map { prefs ->
-                prefs[ONBOARDING_KEY] ?: false
+                prefs[onboardingKey] ?: false
             }
 
         override suspend fun markCompleted() {
-            dataStore.edit { it[ONBOARDING_KEY] = true }
+            dataStore.edit { it[onboardingKey] = true }
         }
     }

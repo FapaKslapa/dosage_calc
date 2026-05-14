@@ -30,10 +30,10 @@ abstract class AppDatabase : RoomDatabase() {
 
     companion object {
         @Volatile
-        private var INSTANCE: AppDatabase? = null
+        private var instance: AppDatabase? = null
 
         fun getInstance(context: Context): AppDatabase =
-            INSTANCE ?: synchronized(this) {
+            instance ?: synchronized(this) {
                 val passphrase = "dosage-calc-secure-key".toByteArray()
                 val factory = SupportOpenHelperFactory(passphrase)
 
@@ -46,7 +46,7 @@ abstract class AppDatabase : RoomDatabase() {
                         ).openHelperFactory(factory)
                         .fallbackToDestructiveMigration(true)
                         .build()
-                INSTANCE = instance
+                instance = instance
                 instance
             }
     }
