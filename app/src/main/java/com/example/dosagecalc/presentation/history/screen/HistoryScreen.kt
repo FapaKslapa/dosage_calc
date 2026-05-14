@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
@@ -196,11 +197,11 @@ fun HistoryScreen(
                 }
             } else {
                 LazyVerticalGrid(
-                    columns = GridCells.Adaptive(minSize = 320.dp),
+                    columns = GridCells.Fixed(2),
                     modifier = Modifier.fillMaxSize(),
-                    contentPadding = PaddingValues(top = sp.base, bottom = sp.xxxl, start = sp.lg, end = sp.lg),
-                    horizontalArrangement = Arrangement.spacedBy(sp.base),
-                    verticalArrangement = Arrangement.spacedBy(sp.base)
+                    contentPadding = PaddingValues(top = sp.base, bottom = sp.xxxl, start = sp.base, end = sp.base),
+                    horizontalArrangement = Arrangement.spacedBy(sp.sm),
+                    verticalArrangement = Arrangement.spacedBy(sp.sm)
                 ) {
                     items(count = pagedHistory.itemCount) { index ->
                         val record = pagedHistory[index]
@@ -209,6 +210,7 @@ fun HistoryScreen(
 
                             HistoryCard(
                                 record = record,
+                                mirrored = index % 2 == 1,
                                 onDeleteClick = { showDeleteDialog = true }
                             )
 
