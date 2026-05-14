@@ -1,12 +1,6 @@
 package com.example.dosagecalc.presentation.patient.components
 
-import androidx.compose.animation.core.Spring
-import androidx.compose.animation.core.animateFloatAsState
-import androidx.compose.animation.core.spring
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.interaction.MutableInteractionSource
-import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.FlowRow
@@ -27,11 +21,8 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.scale
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -48,26 +39,13 @@ fun PatientCard(
     onDeleteClick: () -> Unit,
     onEditClick: () -> Unit = {}
 ) {
-    val interactionSource = remember { MutableInteractionSource() }
-    val isPressed by interactionSource.collectIsPressedAsState()
-    val scale by animateFloatAsState(
-        targetValue = if (isPressed) 0.97f else 1f,
-        animationSpec = spring(dampingRatio = Spring.DampingRatioMediumBouncy, stiffness = Spring.StiffnessMediumLow),
-        label = "patient_card_scale"
-    )
     val sp = MaterialTheme.spacing
     val shapes = LocalDosageShapes.current
     val cs = MaterialTheme.colorScheme
 
     ExpressiveCard(
-        modifier = Modifier
-            .fillMaxWidth()
-            .scale(scale)
-            .clickable(
-                interactionSource = interactionSource,
-                indication = androidx.compose.foundation.LocalIndication.current,
-                onClick = onClick
-            )
+        onClick  = onClick,
+        modifier = Modifier.fillMaxWidth()
     ) {
         Column(modifier = Modifier.padding(horizontal = sp.lg, vertical = sp.base)) {
 
@@ -178,10 +156,10 @@ fun PatientCard(
                 horizontalArrangement = Arrangement.spacedBy(sp.xs, Alignment.End)
             ) {
                 Surface(
-                    shape = shapes.chip,
-                    color = cs.surface,
-                    border = BorderStroke(1.dp, cs.outlineVariant),
-                    modifier = Modifier.clickable { onEditClick() }
+                    onClick  = onEditClick,
+                    shape    = shapes.chip,
+                    color    = cs.surface,
+                    border   = BorderStroke(1.dp, cs.outlineVariant)
                 ) {
                     Row(
                         modifier = Modifier.padding(horizontal = sp.sm, vertical = 5.dp),
@@ -193,10 +171,10 @@ fun PatientCard(
                     }
                 }
                 Surface(
-                    shape = shapes.chip,
-                    color = cs.errorContainer.copy(alpha = 0.45f),
-                    border = BorderStroke(1.dp, cs.error.copy(alpha = 0.45f)),
-                    modifier = Modifier.clickable { onDeleteClick() }
+                    onClick  = onDeleteClick,
+                    shape    = shapes.chip,
+                    color    = cs.errorContainer.copy(alpha = 0.45f),
+                    border   = BorderStroke(1.dp, cs.error.copy(alpha = 0.45f))
                 ) {
                     Row(
                         modifier = Modifier.padding(horizontal = sp.sm, vertical = 5.dp),

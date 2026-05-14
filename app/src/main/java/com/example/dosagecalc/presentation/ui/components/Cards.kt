@@ -17,6 +17,7 @@ enum class CardTone { Primary, Secondary, Tertiary, Error }
 @Composable
 fun ExpressiveCard(
     modifier: Modifier = Modifier,
+    onClick: (() -> Unit)? = null,
     asymmetric: Boolean = true,
     mirrored: Boolean = false,
     containerAlpha: Float = 0.8f,
@@ -29,15 +30,15 @@ fun ExpressiveCard(
         mirrored    -> shapes.expressiveMirror
         else        -> shapes.expressive
     }
-    Card(
-        modifier  = modifier,
-        shape     = shape,
-        colors    = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = containerAlpha)
-        ),
-        elevation = CardDefaults.cardElevation(defaultElevation = elevation.level0),
-        content   = content
+    val colors = CardDefaults.cardColors(
+        containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = containerAlpha)
     )
+    val elev = CardDefaults.cardElevation(defaultElevation = elevation.level0)
+    if (onClick != null) {
+        Card(onClick = onClick, modifier = modifier, shape = shape, colors = colors, elevation = elev, content = content)
+    } else {
+        Card(modifier = modifier, shape = shape, colors = colors, elevation = elev, content = content)
+    }
 }
 
 @Composable

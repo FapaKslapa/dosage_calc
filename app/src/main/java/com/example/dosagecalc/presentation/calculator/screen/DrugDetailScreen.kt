@@ -47,6 +47,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.dosagecalc.presentation.ui.util.responsiveContentWidth
 import com.example.dosagecalc.domain.model.Drug
+import com.example.dosagecalc.domain.model.FormulaType
 import com.example.dosagecalc.presentation.calculator.AddDataViewModel
 import com.example.dosagecalc.presentation.ui.components.CardTone
 import com.example.dosagecalc.presentation.ui.components.GradientScreenHeader
@@ -212,6 +213,13 @@ fun DrugDetailScreen(
     }
 }
 
+private fun FormulaType.labelIt() = when (this) {
+    FormulaType.PER_KG   -> "per kg"
+    FormulaType.PER_M2   -> "per m²"
+    FormulaType.FIXED    -> "dose fissa"
+    FormulaType.BY_RANGE -> "per fascia di peso"
+}
+
 @Composable
 private fun DetailInfoSection(
     title: String,
@@ -278,7 +286,7 @@ private fun DosageDetailCard(drug: Drug) {
                 modifier = Modifier.fillMaxWidth()
             ) {
                 Text(
-                    text     = "${drug.unitDose} ${drug.unit} · ${drug.formulaType.name.replace("_", " ").lowercase()}",
+                    text     = "${drug.unitDose} ${drug.unit} · ${drug.formulaType.labelIt()}",
                     style    = MaterialTheme.typography.bodyMedium.copy(fontFamily = FontFamily.Monospace),
                     color    = cs.primary,
                     modifier = Modifier.padding(sp.base)

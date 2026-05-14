@@ -67,10 +67,10 @@ fun HistoryCard(
                 }
                 Spacer(modifier = Modifier.weight(1f))
                 Surface(
+                    onClick  = onDeleteClick,
                     shape    = shapes.chip,
                     color    = cs.errorContainer.copy(alpha = 0.45f),
-                    border   = BorderStroke(1.dp, cs.error.copy(alpha = 0.45f)),
-                    modifier = Modifier.clickable { onDeleteClick() }
+                    border   = BorderStroke(1.dp, cs.error.copy(alpha = 0.45f))
                 ) {
                     Row(
                         modifier  = Modifier.padding(horizontal = sp.sm, vertical = 5.dp),

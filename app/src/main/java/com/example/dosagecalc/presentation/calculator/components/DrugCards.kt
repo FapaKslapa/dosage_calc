@@ -101,11 +101,11 @@ fun DrugSelectionCard(
     val isCustom = onEditClick != null || onDeleteClick != null
 
     Card(
-        modifier = Modifier
+        onClick   = onClick,
+        modifier  = Modifier
             .width(268.dp)
             .wrapContentHeight()
-            .scale(scale)
-            .clickable { onClick() },
+            .scale(scale),
         shape = shapes.card,
         colors = CardDefaults.cardColors(
             containerColor = if (isSelected) cs.primaryContainer.copy(alpha = 0.55f) else cs.surfaceVariant
@@ -243,13 +243,11 @@ private fun DrugActionChip(
     val shapes = LocalDosageShapes.current
     val sp = MaterialTheme.spacing
     Surface(
-        shape = shapes.chip,
-        color = if (isSelected) cs.primary.copy(alpha = 0.12f) else cs.surface,
-        border = BorderStroke(
-            1.dp,
-            if (isSelected) cs.primary.copy(alpha = 0.4f) else cs.outlineVariant
-        ),
-        modifier = modifier.clickable { onClick() }
+        onClick  = onClick,
+        shape    = shapes.chip,
+        color    = if (isSelected) cs.primary.copy(alpha = 0.12f) else cs.surface,
+        border   = BorderStroke(1.dp, if (isSelected) cs.primary.copy(alpha = 0.4f) else cs.outlineVariant),
+        modifier = modifier
     ) {
         Row(
             modifier = Modifier.padding(horizontal = sp.sm, vertical = 6.dp),
