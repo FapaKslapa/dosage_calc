@@ -34,72 +34,38 @@ import java.time.format.DateTimeFormatter
 @Composable
 fun HistoryCard(
     record: HistoryRecord,
-    onDeleteClick: () -> Unit,
-    mirrored: Boolean = false
+    onDeleteClick: () -> Unit
 ) {
     val sp = MaterialTheme.spacing
     val shapes = LocalDosageShapes.current
     val cs = MaterialTheme.colorScheme
 
-    val dateFormatter = DateTimeFormatter.ofPattern("dd MMM · HH:mm")
+    val dateFormatter = DateTimeFormatter.ofPattern("dd MMM yyyy · HH:mm")
     val doseText = if (record.calculatedDoseMax != null) {
         "${fmt(record.calculatedDose)} – ${fmt(record.calculatedDoseMax)} ${record.doseUnit}"
     } else {
         "${fmt(record.calculatedDose)} ${record.doseUnit}"
     }
 
-    ExpressiveCard(
-        modifier  = Modifier.fillMaxWidth(),
-        mirrored  = mirrored,
-        containerAlpha = 0.9f
-    ) {
-        Column(
-            modifier = Modifier.padding(sp.base),
-            verticalArrangement = Arrangement.spacedBy(sp.xs)
-        ) {
-            Surface(
-                shape = shapes.chip,
-                color = cs.tertiary.copy(alpha = 0.10f)
-            ) {
-                Text(
-                    text     = record.date.format(dateFormatter),
-                    style    = MaterialTheme.typography.labelSmall.copy(fontWeight = FontWeight.Bold),
-                    color    = cs.tertiary,
-                    modifier = Modifier.padding(horizontal = sp.sm, vertical = 4.dp)
-                )
-            }
-
-            Text(
-                text  = record.drugName,
-                style = MaterialTheme.typography.titleSmall.copy(fontFamily = FontFamily.Serif),
-                color = cs.onSurface,
-                maxLines = 2
-            )
-
-            Text(
-                text  = doseText,
-                style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.ExtraBold),
-                color = cs.tertiary,
-                maxLines = 1
-            )
-
-            HorizontalDivider(
-                color     = cs.outlineVariant.copy(alpha = 0.4f),
-                thickness = 0.5.dp
-            )
-
-            FlowRow(horizontalArrangement = Arrangement.spacedBy(sp.xs)) {
-                InfoChip("${record.weightKg} kg", cs.secondary.copy(alpha = 0.10f), cs.secondary)
-                InfoChip("${record.ageYears} aa", cs.primary.copy(alpha = 0.10f), cs.primary)
-                record.heightCm?.let {
-                    InfoChip("${it} cm", cs.tertiary.copy(alpha = 0.10f), cs.tertiary)
-                }
-            }
+    ExpressiveCard(modifier = Modifier.fillMaxWidth()) {
+        Column(modifier = Modifier.padding(horizontal = sp.lg, vertical = sp.base)) {
 
             Row(
                 modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.End
+                verticalAlignment = Alignment.CenterVertically
             ) {
+                Surface(
+                    shape = shapes.chip,
+                    color = cs.tertiary.copy(alpha = 0.10f)
+                ) {
+                    Text(
+                        text     = record.date.format(dateFormatter),
+                        style    = MaterialTheme.typography.labelSmall.copy(fontWeight = FontWeight.Bold),
+                        color    = cs.tertiary,
+                        modifier = Modifier.padding(horizontal = sp.sm, vertical = 4.dp)
+                    )
+                }
+                Spacer(modifier = Modifier.weight(1f))
                 Surface(
                     shape    = shapes.chip,
                     color    = cs.errorContainer.copy(alpha = 0.45f),
@@ -116,20 +82,62 @@ fun HistoryCard(
                     }
                 }
             }
+
+            Spacer(modifier = Modifier.height(sp.sm))
+
+            Text(
+                text  = record.drugName,
+                style = MaterialTheme.typography.titleLarge.copy(
+                    fontFamily = FontFamily.Serif,
+                    fontWeight = FontWeight.SemiBold
+                ),
+                color = cs.onSurface
+            )
+
+            Text(
+                text  = doseText,
+                style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold),
+                color = cs.tertiary
+            )
+
+            if (!record.formulaUsed.isNullOrBlank()) {
+                Spacer(modifier = Modifier.height(sp.xs))
+                Text(
+                    text  = record.formulaUsed,
+                    style = MaterialTheme.typography.bodySmall,
+                    color = cs.onSurfaceVariant.copy(alpha = 0.75f)
+                )
+            }
+
+            Spacer(modifier = Modifier.height(sp.sm))
+            HorizontalDivider(color = cs.outlineVariant, thickness = 0.5.dp)
+            Spacer(modifier = Modifier.height(sp.sm))
+
+            FlowRow(horizontalArrangement = Arrangement.spacedBy(sp.xs)) {
+                InfoChip("${record.weightKg} kg", cs.secondary.copy(alpha = 0.10f), cs.secondary)
+                InfoChip("${record.ageYears} aa", cs.primary.copy(alpha = 0.10f), cs.primary)
+                record.heightCm?.let {
+                    InfoChip("$it cm", cs.tertiary.copy(alpha = 0.10f), cs.tertiary)
+                }
+            }
         }
     }
 }
 
 @Composable
-private fun InfoChip(text: String, bg: androidx.compose.ui.graphics.Color, fg: androidx.compose.ui.graphics.Color) {
+private fun InfoChip(
+    text: String,
+    bg: androidx.compose.ui.graphics.Color,
+    fg: androidx.compose.ui.graphics.Color
+) {
     val shapes = LocalDosageShapes.current
     val sp = MaterialTheme.spacing
     Surface(shape = shapes.chip, color = bg) {
         Text(
             text     = text,
-            style    = MaterialTheme.typography.labelSmall.copy(fontWeight = FontWeight.Medium),
+            style    = MaterialTheme.typography.labelMedium.copy(fontWeight = FontWeight.Medium),
             color    = fg,
-            modifier = Modifier.padding(horizontal = sp.sm, vertical = 3.dp)
+            modifier = Modifier.padding(horizontal = sp.sm, vertical = sp.xs)
         )
     }
 }
