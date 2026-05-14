@@ -37,7 +37,7 @@ abstract class AppDatabase : RoomDatabase() {
                 val passphrase = "dosage-calc-secure-key".toByteArray()
                 val factory = SupportOpenHelperFactory(passphrase)
 
-                val instance =
+                val built =
                     Room
                         .databaseBuilder(
                             context.applicationContext,
@@ -46,8 +46,8 @@ abstract class AppDatabase : RoomDatabase() {
                         ).openHelperFactory(factory)
                         .fallbackToDestructiveMigration(true)
                         .build()
-                instance = instance
-                instance
+                instance = built
+                built
             }
     }
 }
