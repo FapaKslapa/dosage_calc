@@ -12,30 +12,31 @@ import org.junit.jupiter.api.Test
 
 @DisplayName("CalculateDosageUseCase")
 class CalculateDosageUseCaseTest {
-
     private lateinit var sut: CalculateDosageUseCase
 
-    private val ivermectina = Drug(
-        id              = "ivermectina_scabbia",
-        name            = "Ivermectina",
-        indication      = "Scabbia",
-        formulaType     = FormulaType.PER_KG,
-        unitDose        = 200.0,
-        unit            = "µg",
-        minWeightKg     = 15.0,
-        maxWeightKg     = 150.0,
-        minAgeYears     = 5,
-        maxSingleDoseMcg = 400_000.0,
-        alert           = "Usare peso in kg.",
-        source          = "WHO 2023"
-    )
+    private val ivermectina =
+        Drug(
+            id = "ivermectina_scabbia",
+            name = "Ivermectina",
+            indication = "Scabbia",
+            formulaType = FormulaType.PER_KG,
+            unitDose = 200.0,
+            unit = "µg",
+            minWeightKg = 15.0,
+            maxWeightKg = 150.0,
+            minAgeYears = 5,
+            maxSingleDoseMcg = 400_000.0,
+            alert = "Usare peso in kg.",
+            source = "WHO 2023",
+        )
 
     @BeforeEach
     fun setUp() {
-        sut = CalculateDosageUseCase(
-            validateInputUseCase = ValidateInputUseCase(),
-            calculateBsaUseCase  = CalculateBsaUseCase()
-        )
+        sut =
+            CalculateDosageUseCase(
+                validateInputUseCase = ValidateInputUseCase(),
+                calculateBsaUseCase = CalculateBsaUseCase(),
+            )
     }
 
     @Test
@@ -50,10 +51,11 @@ class CalculateDosageUseCaseTest {
     @Test
     @DisplayName("Ivermectina 2000 kg (irreale) → dose cappata al massimo 400.000 µg")
     fun `dose capped al massimo consentito`() {
-        val drugConTettoBasso = ivermectina.copy(
-            maxSingleDoseMcg = 2_000.0,
-            maxWeightKg = null
-        )
+        val drugConTettoBasso =
+            ivermectina.copy(
+                maxSingleDoseMcg = 2_000.0,
+                maxWeightKg = null,
+            )
 
         val result = sut(drugConTettoBasso, PatientData(weightKg = 20.0, heightCm = null, ageYears = 7))
 

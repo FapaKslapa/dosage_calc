@@ -46,24 +46,26 @@ import com.example.dosagecalc.presentation.ui.util.isCompactHeight
 fun GradientScreenHeader(
     colors: List<Color>,
     modifier: Modifier = Modifier,
-    content: @Composable BoxScope.() -> Unit
+    content: @Composable BoxScope.() -> Unit,
 ) {
     val compact = isCompactHeight()
     val spacing = LocalSpacing.current
     Box(
-        modifier = modifier
-            .fillMaxWidth()
-            .clip(LocalDosageShapes.current.heroBottom)
-            .background(Brush.verticalGradient(colors = colors))
-            .statusBarsPadding()
-            .padding(bottom = if (compact) spacing.md else spacing.xl)
+        modifier =
+            modifier
+                .fillMaxWidth()
+                .clip(LocalDosageShapes.current.heroBottom)
+                .background(Brush.verticalGradient(colors = colors))
+                .statusBarsPadding()
+                .padding(bottom = if (compact) spacing.md else spacing.xl),
     ) {
         Box(
-            modifier = Modifier
-                .size(if (compact) 80.dp else 140.dp)
-                .align(Alignment.TopEnd)
-                .offset(x = 36.dp, y = (-20).dp)
-                .background(Color.White.copy(alpha = 0.07f), CircleShape)
+            modifier =
+                Modifier
+                    .size(if (compact) 80.dp else 140.dp)
+                    .align(Alignment.TopEnd)
+                    .offset(x = 36.dp, y = (-20).dp)
+                    .background(Color.White.copy(alpha = 0.07f), CircleShape),
         )
         content()
     }
@@ -74,37 +76,41 @@ fun EmptyStateView(
     icon: ImageVector,
     title: String,
     subtitle: String,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     var visible by remember { mutableStateOf(false) }
     LaunchedEffect(Unit) { visible = true }
 
     AnimatedVisibility(
         visible = visible,
-        enter = fadeIn(animationSpec = tween(300)) + slideInVertically(
-            initialOffsetY = { it / 3 },
-            animationSpec = spring(
-                dampingRatio = Spring.DampingRatioMediumBouncy,
-                stiffness = Spring.StiffnessMediumLow
-            )
-        ),
-        modifier = modifier
+        enter =
+            fadeIn(animationSpec = tween(300)) +
+                slideInVertically(
+                    initialOffsetY = { it / 3 },
+                    animationSpec =
+                        spring(
+                            dampingRatio = Spring.DampingRatioMediumBouncy,
+                            stiffness = Spring.StiffnessMediumLow,
+                        ),
+                ),
+        modifier = modifier,
     ) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center
+            verticalArrangement = Arrangement.Center,
         ) {
             Box(
-                modifier = Modifier
-                    .size(88.dp)
-                    .background(MaterialTheme.colorScheme.surfaceVariant, CircleShape),
-                contentAlignment = Alignment.Center
+                modifier =
+                    Modifier
+                        .size(88.dp)
+                        .background(MaterialTheme.colorScheme.surfaceVariant, CircleShape),
+                contentAlignment = Alignment.Center,
             ) {
                 Icon(
                     imageVector = icon,
                     contentDescription = null,
                     tint = MaterialTheme.colorScheme.onSurfaceVariant,
-                    modifier = Modifier.size(40.dp)
+                    modifier = Modifier.size(40.dp),
                 )
             }
             Spacer(modifier = Modifier.height(LocalSpacing.current.lg))
@@ -112,7 +118,7 @@ fun EmptyStateView(
                 text = title,
                 style = MaterialTheme.typography.titleLarge.copy(fontFamily = FontFamily.Serif),
                 color = MaterialTheme.colorScheme.onBackground,
-                textAlign = TextAlign.Center
+                textAlign = TextAlign.Center,
             )
             Spacer(modifier = Modifier.height(LocalSpacing.current.sm))
             Text(
@@ -120,7 +126,7 @@ fun EmptyStateView(
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 textAlign = TextAlign.Center,
-                modifier = Modifier.padding(horizontal = LocalSpacing.current.xxxl)
+                modifier = Modifier.padding(horizontal = LocalSpacing.current.xxxl),
             )
         }
     }
@@ -129,22 +135,24 @@ fun EmptyStateView(
 @Composable
 fun GradientBottomBar(
     modifier: Modifier = Modifier,
-    content: @Composable BoxScope.() -> Unit
+    content: @Composable BoxScope.() -> Unit,
 ) {
     Box(
-        modifier = modifier
-            .fillMaxWidth()
-            .background(
-                brush = Brush.verticalGradient(
-                    colors = listOf(
-                        MaterialTheme.colorScheme.background.copy(alpha = 0f),
-                        MaterialTheme.colorScheme.background
-                    )
-                )
-            )
-            .navigationBarsPadding()
-            .padding(horizontal = LocalSpacing.current.lg, vertical = LocalSpacing.current.base),
-        contentAlignment = Alignment.Center
+        modifier =
+            modifier
+                .fillMaxWidth()
+                .background(
+                    brush =
+                        Brush.verticalGradient(
+                            colors =
+                                listOf(
+                                    MaterialTheme.colorScheme.background.copy(alpha = 0f),
+                                    MaterialTheme.colorScheme.background,
+                                ),
+                        ),
+                ).navigationBarsPadding()
+                .padding(horizontal = LocalSpacing.current.lg, vertical = LocalSpacing.current.base),
+        contentAlignment = Alignment.Center,
     ) {
         content()
     }

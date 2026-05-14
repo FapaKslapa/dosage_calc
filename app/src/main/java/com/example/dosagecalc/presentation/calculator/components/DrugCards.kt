@@ -6,7 +6,6 @@ import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.spring
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -49,26 +48,30 @@ import com.example.dosagecalc.presentation.ui.theme.LocalDosageShapes
 import com.example.dosagecalc.presentation.ui.theme.LocalElevation
 import com.example.dosagecalc.presentation.ui.theme.spacing
 
-private data class CategoryColors(val container: Color, val on: Color)
+private data class CategoryColors(
+    val container: Color,
+    val on: Color,
+)
 
 @Composable
 private fun DrugCategory.colors(): CategoryColors {
     val cs = MaterialTheme.colorScheme
     return when (this) {
-        DrugCategory.ONCOLOGY    -> CategoryColors(cs.errorContainer,     cs.onErrorContainer)
-        DrugCategory.INFECTIOUS  -> CategoryColors(cs.tertiaryContainer,  cs.onTertiaryContainer)
-        DrugCategory.PEDIATRICS  -> CategoryColors(cs.secondaryContainer, cs.onSecondaryContainer)
-        DrugCategory.DERMATOLOGY -> CategoryColors(cs.primaryContainer,   cs.onPrimaryContainer)
-        DrugCategory.OTHER       -> CategoryColors(cs.surfaceVariant,     cs.onSurfaceVariant)
+        DrugCategory.ONCOLOGY -> CategoryColors(cs.errorContainer, cs.onErrorContainer)
+        DrugCategory.INFECTIOUS -> CategoryColors(cs.tertiaryContainer, cs.onTertiaryContainer)
+        DrugCategory.PEDIATRICS -> CategoryColors(cs.secondaryContainer, cs.onSecondaryContainer)
+        DrugCategory.DERMATOLOGY -> CategoryColors(cs.primaryContainer, cs.onPrimaryContainer)
+        DrugCategory.OTHER -> CategoryColors(cs.surfaceVariant, cs.onSurfaceVariant)
     }
 }
 
-private fun FormulaType.label(): String = when (this) {
-    FormulaType.PER_KG   -> "per kg"
-    FormulaType.PER_M2   -> "per m²"
-    FormulaType.FIXED    -> "dose fissa"
-    FormulaType.BY_RANGE -> "per fascia"
-}
+private fun FormulaType.label(): String =
+    when (this) {
+        FormulaType.PER_KG -> "per kg"
+        FormulaType.PER_M2 -> "per m²"
+        FormulaType.FIXED -> "dose fissa"
+        FormulaType.BY_RANGE -> "per fascia"
+    }
 
 @Composable
 fun DrugSelectionCard(
@@ -77,21 +80,26 @@ fun DrugSelectionCard(
     onClick: () -> Unit,
     onInfoClick: () -> Unit,
     onDeleteClick: (() -> Unit)? = null,
-    onEditClick: (() -> Unit)? = null
+    onEditClick: (() -> Unit)? = null,
 ) {
     val scale by animateFloatAsState(
         targetValue = if (isSelected) 1.03f else 1f,
-        animationSpec = spring(
-            dampingRatio = Spring.DampingRatioMediumBouncy,
-            stiffness = Spring.StiffnessMedium
-        ),
-        label = "drug_card_scale"
+        animationSpec =
+            spring(
+                dampingRatio = Spring.DampingRatioMediumBouncy,
+                stiffness = Spring.StiffnessMedium,
+            ),
+        label = "drug_card_scale",
     )
     val avatarColor by animateColorAsState(
-        targetValue = if (isSelected) MaterialTheme.colorScheme.primary
-                      else MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.2f),
+        targetValue =
+            if (isSelected) {
+                MaterialTheme.colorScheme.primary
+            } else {
+                MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.2f)
+            },
         animationSpec = spring(stiffness = Spring.StiffnessMedium),
-        label = "avatar_color"
+        label = "avatar_color",
     )
     val cs = MaterialTheme.colorScheme
     val sp = MaterialTheme.spacing
@@ -101,39 +109,43 @@ fun DrugSelectionCard(
     val isCustom = onEditClick != null || onDeleteClick != null
 
     Card(
-        onClick   = onClick,
-        modifier  = Modifier
-            .width(268.dp)
-            .wrapContentHeight()
-            .scale(scale),
+        onClick = onClick,
+        modifier =
+            Modifier
+                .width(268.dp)
+                .wrapContentHeight()
+                .scale(scale),
         shape = shapes.card,
-        colors = CardDefaults.cardColors(
-            containerColor = if (isSelected) cs.primaryContainer.copy(alpha = 0.55f) else cs.surfaceVariant
-        ),
-        elevation = CardDefaults.cardElevation(
-            defaultElevation = if (isSelected) elev.level3 else elev.level1
-        ),
-        border = BorderStroke(
-            width = if (isSelected) 2.dp else 0.5.dp,
-            color = if (isSelected) cs.primary else cs.outlineVariant.copy(alpha = 0.35f)
-        )
+        colors =
+            CardDefaults.cardColors(
+                containerColor = if (isSelected) cs.primaryContainer.copy(alpha = 0.55f) else cs.surfaceVariant,
+            ),
+        elevation =
+            CardDefaults.cardElevation(
+                defaultElevation = if (isSelected) elev.level3 else elev.level1,
+            ),
+        border =
+            BorderStroke(
+                width = if (isSelected) 2.dp else 0.5.dp,
+                color = if (isSelected) cs.primary else cs.outlineVariant.copy(alpha = 0.35f),
+            ),
     ) {
         Column(modifier = Modifier.padding(sp.base)) {
-
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Box(
-                    modifier = Modifier
-                        .size(44.dp)
-                        .background(
-                            if (isSelected) avatarColor else catColors.container,
-                            shapes.field
-                        ),
-                    contentAlignment = Alignment.Center
+                    modifier =
+                        Modifier
+                            .size(44.dp)
+                            .background(
+                                if (isSelected) avatarColor else catColors.container,
+                                shapes.field,
+                            ),
+                    contentAlignment = Alignment.Center,
                 ) {
                     Text(
                         text = drug.name.take(1).uppercase(),
                         style = MaterialTheme.typography.titleLarge.copy(fontFamily = FontFamily.Serif),
-                        color = if (isSelected) cs.onPrimary else catColors.on
+                        color = if (isSelected) cs.onPrimary else catColors.on,
                     )
                 }
                 Spacer(modifier = Modifier.width(sp.md))
@@ -143,25 +155,32 @@ fun DrugSelectionCard(
                         style = MaterialTheme.typography.titleMedium,
                         color = if (isSelected) cs.onPrimaryContainer else cs.onSurface,
                         maxLines = 1,
-                        overflow = TextOverflow.Ellipsis
+                        overflow = TextOverflow.Ellipsis,
                     )
                     Text(
                         text = "${drug.unitDose} ${drug.unit} · ${drug.formulaType.label()}",
                         style = MaterialTheme.typography.labelSmall,
-                        color = if (isSelected) cs.onPrimaryContainer.copy(alpha = 0.75f)
-                                else cs.onSurfaceVariant
+                        color =
+                            if (isSelected) {
+                                cs.onPrimaryContainer.copy(alpha = 0.75f)
+                            } else {
+                                cs.onSurfaceVariant
+                            },
                     )
                 }
                 Spacer(modifier = Modifier.width(sp.xs))
                 Surface(
                     shape = shapes.chip,
-                    color = catColors.container.copy(alpha = if (isSelected) 0.4f else 0.8f)
+                    color = catColors.container.copy(alpha = if (isSelected) 0.4f else 0.8f),
                 ) {
                     Text(
-                        text = drug.category.label.take(4).uppercase(),
+                        text =
+                            drug.category.label
+                                .take(4)
+                                .uppercase(),
                         style = MaterialTheme.typography.labelSmall.copy(fontSize = 9.sp),
                         modifier = Modifier.padding(horizontal = 6.dp, vertical = 3.dp),
-                        color = if (isSelected) cs.primary else catColors.on
+                        color = if (isSelected) cs.primary else catColors.on,
                     )
                 }
             }
@@ -171,32 +190,40 @@ fun DrugSelectionCard(
             Text(
                 text = drug.indication,
                 style = MaterialTheme.typography.bodySmall,
-                color = if (isSelected) cs.onPrimaryContainer.copy(alpha = 0.85f)
-                        else cs.onSurfaceVariant,
+                color =
+                    if (isSelected) {
+                        cs.onPrimaryContainer.copy(alpha = 0.85f)
+                    } else {
+                        cs.onSurfaceVariant
+                    },
                 maxLines = 2,
                 overflow = TextOverflow.Ellipsis,
-                modifier = Modifier.height(36.dp)
+                modifier = Modifier.height(36.dp),
             )
 
             Spacer(modifier = Modifier.height(sp.sm))
             HorizontalDivider(
-                color = if (isSelected) cs.primary.copy(alpha = 0.2f)
-                        else cs.outlineVariant.copy(alpha = 0.4f),
-                thickness = 0.5.dp
+                color =
+                    if (isSelected) {
+                        cs.primary.copy(alpha = 0.2f)
+                    } else {
+                        cs.outlineVariant.copy(alpha = 0.4f)
+                    },
+                thickness = 0.5.dp,
             )
             Spacer(modifier = Modifier.height(sp.sm))
 
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = if (isCustom) Arrangement.spacedBy(sp.xs) else Arrangement.End,
-                verticalAlignment = Alignment.CenterVertically
+                verticalAlignment = Alignment.CenterVertically,
             ) {
                 DrugActionChip(
                     icon = Icons.Rounded.Info,
                     label = "Info",
                     onClick = onInfoClick,
                     isSelected = isSelected,
-                    modifier = if (isCustom) Modifier.weight(1f) else Modifier
+                    modifier = if (isCustom) Modifier.weight(1f) else Modifier,
                 )
                 if (onEditClick != null) {
                     DrugActionChip(
@@ -204,24 +231,24 @@ fun DrugSelectionCard(
                         label = "Modifica",
                         onClick = onEditClick,
                         isSelected = isSelected,
-                        modifier = Modifier.weight(1f)
+                        modifier = Modifier.weight(1f),
                     )
                 }
                 if (onDeleteClick != null) {
                     Surface(
                         shape = shapes.chip,
                         color = cs.errorContainer.copy(alpha = 0.45f),
-                        border = BorderStroke(1.dp, cs.error.copy(alpha = 0.45f))
+                        border = BorderStroke(1.dp, cs.error.copy(alpha = 0.45f)),
                     ) {
                         IconButton(
                             onClick = onDeleteClick,
-                            modifier = Modifier.size(32.dp)
+                            modifier = Modifier.size(32.dp),
                         ) {
                             Icon(
                                 Icons.Default.Delete,
                                 contentDescription = "Elimina",
                                 tint = cs.error,
-                                modifier = Modifier.size(15.dp)
+                                modifier = Modifier.size(15.dp),
                             )
                         }
                     }
@@ -237,34 +264,34 @@ private fun DrugActionChip(
     label: String,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
-    isSelected: Boolean = false
+    isSelected: Boolean = false,
 ) {
     val cs = MaterialTheme.colorScheme
     val shapes = LocalDosageShapes.current
     val sp = MaterialTheme.spacing
     Surface(
-        onClick  = onClick,
-        shape    = shapes.chip,
-        color    = if (isSelected) cs.primary.copy(alpha = 0.12f) else cs.surface,
-        border   = BorderStroke(1.dp, if (isSelected) cs.primary.copy(alpha = 0.4f) else cs.outlineVariant),
-        modifier = modifier
+        onClick = onClick,
+        shape = shapes.chip,
+        color = if (isSelected) cs.primary.copy(alpha = 0.12f) else cs.surface,
+        border = BorderStroke(1.dp, if (isSelected) cs.primary.copy(alpha = 0.4f) else cs.outlineVariant),
+        modifier = modifier,
     ) {
         Row(
             modifier = Modifier.padding(horizontal = sp.sm, vertical = 6.dp),
             horizontalArrangement = Arrangement.Center,
-            verticalAlignment = Alignment.CenterVertically
+            verticalAlignment = Alignment.CenterVertically,
         ) {
             Icon(
                 icon,
                 contentDescription = label,
                 tint = if (isSelected) cs.primary else cs.onSurfaceVariant,
-                modifier = Modifier.size(13.dp)
+                modifier = Modifier.size(13.dp),
             )
             Spacer(modifier = Modifier.width(3.dp))
             Text(
                 label,
                 style = MaterialTheme.typography.labelSmall,
-                color = if (isSelected) cs.primary else cs.onSurfaceVariant
+                color = if (isSelected) cs.primary else cs.onSurfaceVariant,
             )
         }
     }
@@ -275,44 +302,45 @@ fun DrugPreviewCard(drug: Drug) {
     val sp = MaterialTheme.spacing
     val shapes = LocalDosageShapes.current
     Card(
-        modifier  = Modifier.fillMaxWidth(),
-        shape     = shapes.cardLarge,
+        modifier = Modifier.fillMaxWidth(),
+        shape = shapes.cardLarge,
         elevation = CardDefaults.cardElevation(defaultElevation = 0.dp),
-        colors    = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f)
-        )
+        colors =
+            CardDefaults.cardColors(
+                containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f),
+            ),
     ) {
         Column(modifier = Modifier.padding(sp.xl)) {
             Text(
                 text = "Dettagli Clinici",
                 style = MaterialTheme.typography.titleMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
             Spacer(modifier = Modifier.height(sp.base))
 
             Surface(
                 shape = shapes.tile,
                 color = MaterialTheme.colorScheme.surface,
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier.fillMaxWidth(),
             ) {
                 Row(modifier = Modifier.padding(sp.base), verticalAlignment = Alignment.CenterVertically) {
                     Icon(
                         Icons.Rounded.Info,
                         contentDescription = null,
                         tint = MaterialTheme.colorScheme.primary,
-                        modifier = Modifier.size(24.dp)
+                        modifier = Modifier.size(24.dp),
                     )
                     Spacer(modifier = Modifier.width(sp.base))
                     Column {
                         Text(
                             text = "Dosaggio Base",
                             style = MaterialTheme.typography.labelMedium,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
                         )
                         Text(
-                            text  = "${drug.unitDose} ${drug.unit} (${drug.formulaType.label()})",
+                            text = "${drug.unitDose} ${drug.unit} (${drug.formulaType.label()})",
                             style = MaterialTheme.typography.titleMedium,
-                            color = MaterialTheme.colorScheme.onSurface
+                            color = MaterialTheme.colorScheme.onSurface,
                         )
                     }
                 }
@@ -323,26 +351,26 @@ fun DrugPreviewCard(drug: Drug) {
                 Surface(
                     shape = shapes.tile,
                     color = MaterialTheme.colorScheme.errorContainer.copy(alpha = 0.7f),
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier.fillMaxWidth(),
                 ) {
                     Row(modifier = Modifier.padding(sp.base), verticalAlignment = Alignment.CenterVertically) {
                         Icon(
                             Icons.Rounded.Warning,
                             contentDescription = null,
                             tint = MaterialTheme.colorScheme.error,
-                            modifier = Modifier.size(24.dp)
+                            modifier = Modifier.size(24.dp),
                         )
                         Spacer(modifier = Modifier.width(sp.base))
                         Column {
                             Text(
                                 text = "Attenzione",
                                 style = MaterialTheme.typography.labelMedium,
-                                color = MaterialTheme.colorScheme.error
+                                color = MaterialTheme.colorScheme.error,
                             )
                             Text(
-                                text  = drug.alert,
+                                text = drug.alert,
                                 style = MaterialTheme.typography.bodySmall,
-                                color = MaterialTheme.colorScheme.onErrorContainer
+                                color = MaterialTheme.colorScheme.onErrorContainer,
                             )
                         }
                     }

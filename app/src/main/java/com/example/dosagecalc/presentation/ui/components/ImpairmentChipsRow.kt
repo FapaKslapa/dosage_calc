@@ -26,13 +26,13 @@ fun ImpairmentChipsRow(
     hepaticStage: HepaticStage,
     onRenalStageChanged: (RenalStage) -> Unit,
     onHepaticStageChanged: (HepaticStage) -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     Column(modifier = modifier.fillMaxWidth()) {
         Text(
             text = "Funzione Renale (CKD/GFR)",
             style = MaterialTheme.typography.labelLarge,
-            color = MaterialTheme.colorScheme.primary
+            color = MaterialTheme.colorScheme.primary,
         )
         FlowRow(
             modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp),
@@ -45,17 +45,33 @@ fun ImpairmentChipsRow(
                     onClick = { onRenalStageChanged(stage) },
                     label = { Text(stage.label) },
                     shape = LocalDosageShapes.current.chip,
-                    leadingIcon = if (renalStage == stage && isDanger) {
-                        { Icon(Icons.Filled.Warning, contentDescription = null, modifier = Modifier.size(16.dp)) }
-                    } else null,
-                    colors = FilterChipDefaults.filterChipColors(
-                        selectedContainerColor = if (isDanger) MaterialTheme.colorScheme.errorContainer
-                                                else MaterialTheme.colorScheme.primary,
-                        selectedLabelColor = if (isDanger) MaterialTheme.colorScheme.onErrorContainer
-                                            else MaterialTheme.colorScheme.onPrimary,
-                        selectedLeadingIconColor = if (isDanger) MaterialTheme.colorScheme.onErrorContainer
-                                                   else MaterialTheme.colorScheme.onPrimary
-                    )
+                    leadingIcon =
+                        if (renalStage == stage && isDanger) {
+                            { Icon(Icons.Filled.Warning, contentDescription = null, modifier = Modifier.size(16.dp)) }
+                        } else {
+                            null
+                        },
+                    colors =
+                        FilterChipDefaults.filterChipColors(
+                            selectedContainerColor =
+                                if (isDanger) {
+                                    MaterialTheme.colorScheme.errorContainer
+                                } else {
+                                    MaterialTheme.colorScheme.primary
+                                },
+                            selectedLabelColor =
+                                if (isDanger) {
+                                    MaterialTheme.colorScheme.onErrorContainer
+                                } else {
+                                    MaterialTheme.colorScheme.onPrimary
+                                },
+                            selectedLeadingIconColor =
+                                if (isDanger) {
+                                    MaterialTheme.colorScheme.onErrorContainer
+                                } else {
+                                    MaterialTheme.colorScheme.onPrimary
+                                },
+                        ),
                 )
             }
         }
@@ -64,7 +80,7 @@ fun ImpairmentChipsRow(
             text = "Funzione Epatica (Child-Pugh)",
             style = MaterialTheme.typography.labelLarge,
             color = MaterialTheme.colorScheme.primary,
-            modifier = Modifier.padding(top = 8.dp)
+            modifier = Modifier.padding(top = 8.dp),
         )
         FlowRow(
             modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp),
@@ -77,17 +93,33 @@ fun ImpairmentChipsRow(
                     onClick = { onHepaticStageChanged(stage) },
                     label = { Text(stage.label) },
                     shape = LocalDosageShapes.current.chip,
-                    leadingIcon = if (hepaticStage == stage && isDanger) {
-                        { Icon(Icons.Filled.Warning, contentDescription = null, modifier = Modifier.size(16.dp)) }
-                    } else null,
-                    colors = FilterChipDefaults.filterChipColors(
-                        selectedContainerColor = if (isDanger) MaterialTheme.colorScheme.errorContainer
-                                                else MaterialTheme.colorScheme.primary,
-                        selectedLabelColor = if (isDanger) MaterialTheme.colorScheme.onErrorContainer
-                                            else MaterialTheme.colorScheme.onPrimary,
-                        selectedLeadingIconColor = if (isDanger) MaterialTheme.colorScheme.onErrorContainer
-                                                   else MaterialTheme.colorScheme.onPrimary
-                    )
+                    leadingIcon =
+                        if (hepaticStage == stage && isDanger) {
+                            { Icon(Icons.Filled.Warning, contentDescription = null, modifier = Modifier.size(16.dp)) }
+                        } else {
+                            null
+                        },
+                    colors =
+                        FilterChipDefaults.filterChipColors(
+                            selectedContainerColor =
+                                if (isDanger) {
+                                    MaterialTheme.colorScheme.errorContainer
+                                } else {
+                                    MaterialTheme.colorScheme.primary
+                                },
+                            selectedLabelColor =
+                                if (isDanger) {
+                                    MaterialTheme.colorScheme.onErrorContainer
+                                } else {
+                                    MaterialTheme.colorScheme.onPrimary
+                                },
+                            selectedLeadingIconColor =
+                                if (isDanger) {
+                                    MaterialTheme.colorScheme.onErrorContainer
+                                } else {
+                                    MaterialTheme.colorScheme.onPrimary
+                                },
+                        ),
                 )
             }
         }

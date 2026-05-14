@@ -10,19 +10,21 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class MainViewModel @Inject constructor(
-    private val themeRepository: ThemeRepository
-) : ViewModel() {
+class MainViewModel
+    @Inject
+    constructor(
+        private val themeRepository: ThemeRepository,
+    ) : ViewModel() {
+        val isDarkTheme =
+            themeRepository.isDarkTheme.stateIn(
+                scope = viewModelScope,
+                started = SharingStarted.Eagerly,
+                initialValue = true,
+            )
 
-    val isDarkTheme = themeRepository.isDarkTheme.stateIn(
-        scope = viewModelScope,
-        started = SharingStarted.Eagerly,
-        initialValue = true
-    )
-
-    fun toggleTheme() {
-        viewModelScope.launch {
-            themeRepository.setDarkTheme(!isDarkTheme.value)
+        fun toggleTheme() {
+            viewModelScope.launch {
+                themeRepository.setDarkTheme(!isDarkTheme.value)
+            }
         }
     }
-}

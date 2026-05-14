@@ -29,7 +29,7 @@ import com.patrykandpatrick.vico.core.cartesian.data.lineSeries
 @Composable
 fun DoseTrendChart(
     records: List<HistoryRecord>,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     if (records.size < 2) return
 
@@ -49,39 +49,45 @@ fun DoseTrendChart(
         Text(
             text = "Trend Dosaggio ($unit)",
             style = MaterialTheme.typography.titleMedium,
-            color = MaterialTheme.colorScheme.onSurface
+            color = MaterialTheme.colorScheme.onSurface,
         )
         Text(
             text = "Variazione calcolata per ${records.first().drugName}",
             style = MaterialTheme.typography.bodySmall,
-            color = MaterialTheme.colorScheme.onSurfaceVariant
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
         )
         Spacer(modifier = Modifier.height(24.dp))
 
         CartesianChartHost(
-            chart = rememberCartesianChart(
-                rememberLineCartesianLayer(),
-                startAxis = rememberStartAxis(
-                    label = rememberTextComponent(
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        textSize = 10.sp
-                    ),
-                    guideline = rememberLineComponent(
-                        color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.1f),
-                        thickness = 1.dp
-                    )
+            chart =
+                rememberCartesianChart(
+                    rememberLineCartesianLayer(),
+                    startAxis =
+                        rememberStartAxis(
+                            label =
+                                rememberTextComponent(
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                    textSize = 10.sp,
+                                ),
+                            guideline =
+                                rememberLineComponent(
+                                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.1f),
+                                    thickness = 1.dp,
+                                ),
+                        ),
+                    bottomAxis =
+                        rememberBottomAxis(
+                            label =
+                                rememberTextComponent(
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                    textSize = 10.sp,
+                                ),
+                            guideline = null,
+                        ),
+                    horizontalLayout = HorizontalLayout.fullWidth(),
                 ),
-                bottomAxis = rememberBottomAxis(
-                    label = rememberTextComponent(
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        textSize = 10.sp
-                    ),
-                    guideline = null
-                ),
-                horizontalLayout = HorizontalLayout.fullWidth()
-            ),
             modelProducer = modelProducer,
-            modifier = Modifier.fillMaxWidth().height(220.dp)
+            modifier = Modifier.fillMaxWidth().height(220.dp),
         )
     }
 }

@@ -30,21 +30,21 @@ fun RoundedTextField(
     val fieldShape = shape ?: LocalDosageShapes.current.field
 
     OutlinedTextField(
-        value           = value,
-        onValueChange   = onValueChange,
-        modifier        = modifier,
-        label           = label,
-        placeholder     = placeholder,
-        leadingIcon     = leadingIcon,
-        trailingIcon    = trailingIcon,
-        singleLine      = singleLine,
-        maxLines        = maxLines,
-        minLines        = minLines,
-        readOnly        = readOnly,
-        enabled         = enabled,
-        isError         = isError,
+        value = value,
+        onValueChange = onValueChange,
+        modifier = modifier,
+        label = label,
+        placeholder = placeholder,
+        leadingIcon = leadingIcon,
+        trailingIcon = trailingIcon,
+        singleLine = singleLine,
+        maxLines = maxLines,
+        minLines = minLines,
+        readOnly = readOnly,
+        enabled = enabled,
+        isError = isError,
         keyboardOptions = keyboardOptions,
         keyboardActions = keyboardActions,
-        shape           = fieldShape
+        shape = fieldShape,
     )
 }

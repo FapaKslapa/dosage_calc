@@ -28,10 +28,10 @@ data class CustomDrugEntity(
     val daysPerCycle: Int? = null,
     val numberOfCycles: Int? = null,
     val contraindications: String? = null,
-    val sideEffects: String? = null
+    val sideEffects: String? = null,
 ) {
-    fun toDomain(): Drug {
-        return Drug(
+    fun toDomain(): Drug =
+        Drug(
             id = id,
             name = name,
             indication = indication,
@@ -45,7 +45,9 @@ data class CustomDrugEntity(
             maxSingleDoseMcg = maxSingleDoseMcg,
             alert = alert,
             source = source,
-            category = com.example.dosagecalc.domain.model.DrugCategory.valueOf(category),
+            category =
+                com.example.dosagecalc.domain.model.DrugCategory
+                    .valueOf(category),
             renalDoseMultiplier = renalDoseMultiplier,
             hepaticDoseMultiplier = hepaticDoseMultiplier,
             renalAlert = renalAlert,
@@ -53,13 +55,12 @@ data class CustomDrugEntity(
             daysPerCycle = daysPerCycle,
             numberOfCycles = numberOfCycles,
             contraindications = contraindications,
-            sideEffects = sideEffects
+            sideEffects = sideEffects,
         )
-    }
 }
 
-fun Drug.toEntity(): CustomDrugEntity {
-    return CustomDrugEntity(
+fun Drug.toEntity(): CustomDrugEntity =
+    CustomDrugEntity(
         id = id,
         name = name,
         indication = indication,
@@ -81,7 +82,5 @@ fun Drug.toEntity(): CustomDrugEntity {
         daysPerCycle = daysPerCycle,
         numberOfCycles = numberOfCycles,
         contraindications = contraindications,
-        sideEffects = sideEffects
+        sideEffects = sideEffects,
     )
-}
-

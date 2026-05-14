@@ -15,25 +15,20 @@ import java.time.LocalDateTime
 import java.time.ZoneId
 
 class PatientRepositoryImpl(
-    private val patientDao: PatientDao
+    private val patientDao: PatientDao,
 ) : PatientRepository {
-
-    override fun getAllPatients(): Flow<List<Patient>> {
-        return patientDao.getAllPatients().map { entities ->
+    override fun getAllPatients(): Flow<List<Patient>> =
+        patientDao.getAllPatients().map { entities ->
             entities.map { it.toDomain() }
         }
-    }
 
-    override fun getPatientsPaged(query: String): Flow<PagingData<Patient>> {
-        return Pager(
+    override fun getPatientsPaged(query: String): Flow<PagingData<Patient>> =
+        Pager(
             config = PagingConfig(pageSize = 20, enablePlaceholders = false),
-            pagingSourceFactory = { patientDao.getPatientsPaged(query) }
+            pagingSourceFactory = { patientDao.getPatientsPaged(query) },
         ).flow.map { pagingData -> pagingData.map { it.toDomain() } }
-    }
 
-    override suspend fun getPatientById(id: String): Patient? {
-        return patientDao.getPatientById(id)?.toDomain()
-    }
+    override suspend fun getPatientById(id: String): Patient? = patientDao.getPatientById(id)?.toDomain()
 
     override suspend fun savePatient(patient: Patient) {
         patientDao.insertPatient(patient.toEntity())
@@ -43,8 +38,8 @@ class PatientRepositoryImpl(
         patientDao.deletePatient(patientId)
     }
 
-    private fun PatientEntity.toDomain(): Patient {
-        return Patient(
+    private fun PatientEntity.toDomain(): Patient =
+        Patient(
             id = id,
             name = name,
             surname = surname,
@@ -54,12 +49,11 @@ class PatientRepositoryImpl(
             ageYears = ageYears,
             notes = notes,
             hasRenalImpairment = hasRenalImpairment,
-            hasHepaticImpairment = hasHepaticImpairment
+            hasHepaticImpairment = hasHepaticImpairment,
         )
-    }
 
-    private fun Patient.toEntity(): PatientEntity {
-        return PatientEntity(
+    private fun Patient.toEntity(): PatientEntity =
+        PatientEntity(
             id = id,
             name = name,
             surname = surname,
@@ -69,7 +63,6 @@ class PatientRepositoryImpl(
             ageYears = ageYears,
             notes = notes,
             hasRenalImpairment = hasRenalImpairment,
-            hasHepaticImpairment = hasHepaticImpairment
+            hasHepaticImpairment = hasHepaticImpairment,
         )
-    }
 }

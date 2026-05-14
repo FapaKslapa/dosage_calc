@@ -6,8 +6,12 @@ import kotlinx.coroutines.flow.Flow
 
 interface PatientRepository {
     fun getAllPatients(): Flow<List<Patient>>
+
     fun getPatientsPaged(query: String): Flow<PagingData<Patient>>
+
     suspend fun getPatientById(id: String): Patient?
+
     suspend fun savePatient(patient: Patient)
+
     suspend fun deletePatient(patientId: String)
 }

@@ -59,7 +59,7 @@ import com.example.dosagecalc.presentation.utils.ReminderManager
 @Composable
 fun RemindersScreen(
     viewModel: RemindersViewModel,
-    onNavigateBack: () -> Unit
+    onNavigateBack: () -> Unit,
 ) {
     val reminders by viewModel.reminders.collectAsStateWithLifecycle()
     val context = LocalContext.current
@@ -67,44 +67,45 @@ fun RemindersScreen(
     val cs = MaterialTheme.colorScheme
 
     Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(cs.background)
+        modifier =
+            Modifier
+                .fillMaxSize()
+                .background(cs.background),
     ) {
         Column(modifier = Modifier.fillMaxSize()) {
             GradientScreenHeader(
                 colors = listOf(cs.primary, cs.primaryContainer),
-                modifier = Modifier.padding(bottom = 0.dp)
+                modifier = Modifier.padding(bottom = 0.dp),
             ) {
                 Column {
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
-                        modifier = Modifier.padding(top = sp.sm)
+                        modifier = Modifier.padding(top = sp.sm),
                     ) {
                         IconButton(onClick = onNavigateBack) {
                             Icon(
-                                imageVector        = Icons.AutoMirrored.Filled.ArrowBack,
+                                imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                                 contentDescription = "Indietro",
-                                tint               = cs.onPrimary
+                                tint = cs.onPrimary,
                             )
                         }
                         Text(
-                            text  = "Calendario",
+                            text = "Calendario",
                             style = MaterialTheme.typography.titleMedium,
-                            color = cs.onPrimary.copy(alpha = 0.8f)
+                            color = cs.onPrimary.copy(alpha = 0.8f),
                         )
                     }
                     Column(modifier = Modifier.padding(start = sp.xl, end = sp.xl, top = sp.xs)) {
                         Text(
-                            text  = "Promemoria",
+                            text = "Promemoria",
                             style = MaterialTheme.typography.headlineMedium.copy(fontFamily = FontFamily.Serif),
-                            color = cs.onPrimary
+                            color = cs.onPrimary,
                         )
                         Spacer(modifier = Modifier.height(sp.sm))
                         Text(
-                            text  = "Gestisci i tuoi allarmi attivi",
+                            text = "Gestisci i tuoi allarmi attivi",
                             style = MaterialTheme.typography.bodyMedium,
-                            color = cs.onPrimary.copy(alpha = 0.9f)
+                            color = cs.onPrimary.copy(alpha = 0.9f),
                         )
                         Spacer(modifier = Modifier.height(sp.xl))
                     }
@@ -114,49 +115,53 @@ fun RemindersScreen(
             if (reminders.isEmpty()) {
                 Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                     EmptyStateView(
-                        icon     = Icons.Default.AlarmOff,
-                        title    = "Nessun promemoria",
-                        subtitle = "Crea un promemoria dalla schermata risultato dopo aver calcolato una dose"
+                        icon = Icons.Default.AlarmOff,
+                        title = "Nessun promemoria",
+                        subtitle = "Crea un promemoria dalla schermata risultato dopo aver calcolato una dose",
                     )
                 }
             } else {
                 val paired = reminders.chunked(2)
 
                 LazyColumn(
-                    contentPadding = PaddingValues(
-                        horizontal = sp.base,
-                        vertical   = sp.xl
-                    ),
-                    verticalArrangement = Arrangement.spacedBy(sp.md)
+                    contentPadding =
+                        PaddingValues(
+                            horizontal = sp.base,
+                            vertical = sp.xl,
+                        ),
+                    verticalArrangement = Arrangement.spacedBy(sp.md),
                 ) {
                     itemsIndexed(paired) { rowIndex, pair ->
                         val featuredFirst = rowIndex % 2 == 0
 
                         Row(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .height(IntrinsicSize.Max),
-                            horizontalArrangement = Arrangement.spacedBy(sp.md)
+                            modifier =
+                                Modifier
+                                    .fillMaxWidth()
+                                    .height(IntrinsicSize.Max),
+                            horizontalArrangement = Arrangement.spacedBy(sp.md),
                         ) {
                             ReminderBentoCard(
-                                reminder  = pair[0],
-                                featured  = featuredFirst,
-                                context   = context,
+                                reminder = pair[0],
+                                featured = featuredFirst,
+                                context = context,
                                 viewModel = viewModel,
-                                modifier  = Modifier
-                                    .weight(if (featuredFirst) 1.35f else 1f)
-                                    .fillMaxHeight()
+                                modifier =
+                                    Modifier
+                                        .weight(if (featuredFirst) 1.35f else 1f)
+                                        .fillMaxHeight(),
                             )
 
                             if (pair.size > 1) {
                                 ReminderBentoCard(
-                                    reminder  = pair[1],
-                                    featured  = !featuredFirst,
-                                    context   = context,
+                                    reminder = pair[1],
+                                    featured = !featuredFirst,
+                                    context = context,
                                     viewModel = viewModel,
-                                    modifier  = Modifier
-                                        .weight(if (!featuredFirst) 1.35f else 1f)
-                                        .fillMaxHeight()
+                                    modifier =
+                                        Modifier
+                                            .weight(if (!featuredFirst) 1.35f else 1f)
+                                            .fillMaxHeight(),
                                 )
                             } else {
                                 Spacer(modifier = Modifier.weight(if (!featuredFirst) 1.35f else 1f))
@@ -175,7 +180,7 @@ private fun ReminderBentoCard(
     featured: Boolean,
     context: android.content.Context,
     viewModel: RemindersViewModel,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     val sp = MaterialTheme.spacing
     val cs = MaterialTheme.colorScheme
@@ -184,14 +189,19 @@ private fun ReminderBentoCard(
     var showDeleteDialog by remember { mutableStateOf(false) }
 
     val timeString = String.format("%02d:%02d", reminder.hour, reminder.minute)
-    val frequencyText = when (reminder.interval) {
-        ReminderInterval.DAILY   -> "Giornaliero"
-        ReminderInterval.WEEKLY  -> "Sett. · G${reminder.daySelection}"
-        ReminderInterval.MONTHLY -> "Mens. · G${reminder.daySelection}"
-    }
+    val frequencyText =
+        when (reminder.interval) {
+            ReminderInterval.DAILY -> "Giornaliero"
+            ReminderInterval.WEEKLY -> "Sett. · G${reminder.daySelection}"
+            ReminderInterval.MONTHLY -> "Mens. · G${reminder.daySelection}"
+        }
 
-    val bgColor   = if (featured) cs.secondaryContainer.copy(alpha = 0.75f)
-                    else cs.surfaceVariant.copy(alpha = 0.8f)
+    val bgColor =
+        if (featured) {
+            cs.secondaryContainer.copy(alpha = 0.75f)
+        } else {
+            cs.surfaceVariant.copy(alpha = 0.8f)
+        }
     val timeColor = if (featured) cs.secondary else cs.onSurface
     val timeFontSize = if (featured) 44.sp else 34.sp
     val chipBg = if (featured) cs.secondary.copy(alpha = 0.13f) else cs.surface
@@ -200,7 +210,7 @@ private fun ReminderBentoCard(
         AlertDialog(
             onDismissRequest = { showDeleteDialog = false },
             title = { Text("Elimina Promemoria") },
-            text  = { Text("Vuoi eliminare il promemoria per ${reminder.drugName} alle $timeString?") },
+            text = { Text("Vuoi eliminare il promemoria per ${reminder.drugName} alle $timeString?") },
             confirmButton = {
                 TextButton(
                     onClick = {
@@ -209,79 +219,82 @@ private fun ReminderBentoCard(
                         Toast.makeText(context, "Promemoria cancellato", Toast.LENGTH_SHORT).show()
                         showDeleteDialog = false
                     },
-                    colors = ButtonDefaults.textButtonColors(contentColor = cs.error)
+                    colors = ButtonDefaults.textButtonColors(contentColor = cs.error),
                 ) { Text("Elimina") }
             },
             dismissButton = {
                 TextButton(onClick = { showDeleteDialog = false }) { Text("Annulla") }
-            }
+            },
         )
     }
 
     Card(
         modifier = modifier,
-        shape    = shapes.cardLarge,
-        colors   = CardDefaults.cardColors(containerColor = bgColor),
-        border   = BorderStroke(
-            0.5.dp,
-            if (featured) cs.secondary.copy(alpha = 0.3f) else cs.outlineVariant.copy(alpha = 0.35f)
-        )
+        shape = shapes.cardLarge,
+        colors = CardDefaults.cardColors(containerColor = bgColor),
+        border =
+            BorderStroke(
+                0.5.dp,
+                if (featured) cs.secondary.copy(alpha = 0.3f) else cs.outlineVariant.copy(alpha = 0.35f),
+            ),
     ) {
         Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(sp.base),
-            verticalArrangement = Arrangement.SpaceBetween
+            modifier =
+                Modifier
+                    .fillMaxSize()
+                    .padding(sp.base),
+            verticalArrangement = Arrangement.SpaceBetween,
         ) {
             Column {
                 Text(
                     text = timeString,
-                    style = MaterialTheme.typography.displayMedium.copy(
-                        fontFamily = FontFamily.Serif,
-                        fontWeight = FontWeight.Bold,
-                        fontSize   = timeFontSize,
-                        lineHeight = timeFontSize * 1.05f
-                    ),
-                    color = timeColor
+                    style =
+                        MaterialTheme.typography.displayMedium.copy(
+                            fontFamily = FontFamily.Serif,
+                            fontWeight = FontWeight.Bold,
+                            fontSize = timeFontSize,
+                            lineHeight = timeFontSize * 1.05f,
+                        ),
+                    color = timeColor,
                 )
 
                 Spacer(modifier = Modifier.height(sp.xs))
 
                 Text(
-                    text     = reminder.drugName,
-                    style    = MaterialTheme.typography.labelMedium.copy(fontWeight = FontWeight.Medium),
-                    color    = if (featured) cs.onSecondaryContainer else cs.onSurfaceVariant,
+                    text = reminder.drugName,
+                    style = MaterialTheme.typography.labelMedium.copy(fontWeight = FontWeight.Medium),
+                    color = if (featured) cs.onSecondaryContainer else cs.onSurfaceVariant,
                     maxLines = 1,
-                    overflow = TextOverflow.Ellipsis
+                    overflow = TextOverflow.Ellipsis,
                 )
             }
 
             Column {
                 Surface(shape = shapes.chip, color = chipBg) {
                     Text(
-                        text     = frequencyText,
-                        style    = MaterialTheme.typography.labelSmall,
-                        color    = if (featured) cs.secondary else cs.onSurfaceVariant,
+                        text = frequencyText,
+                        style = MaterialTheme.typography.labelSmall,
+                        color = if (featured) cs.secondary else cs.onSurfaceVariant,
                         modifier = Modifier.padding(horizontal = sp.sm, vertical = 3.dp),
                         maxLines = 1,
-                        overflow = TextOverflow.Ellipsis
+                        overflow = TextOverflow.Ellipsis,
                     )
                 }
 
                 Row(
                     modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.End
+                    horizontalArrangement = Arrangement.End,
                 ) {
                     TextButton(
-                        onClick         = { showDeleteDialog = true },
-                        shape           = shapes.chip,
-                        colors          = ButtonDefaults.textButtonColors(contentColor = cs.error),
-                        contentPadding  = PaddingValues(horizontal = sp.sm, vertical = 4.dp)
+                        onClick = { showDeleteDialog = true },
+                        shape = shapes.chip,
+                        colors = ButtonDefaults.textButtonColors(contentColor = cs.error),
+                        contentPadding = PaddingValues(horizontal = sp.sm, vertical = 4.dp),
                     ) {
                         Icon(
                             Icons.Default.Delete,
                             contentDescription = "Elimina",
-                            modifier = Modifier.size(13.dp)
+                            modifier = Modifier.size(13.dp),
                         )
                         Spacer(modifier = Modifier.width(3.dp))
                         Text("Elimina", style = MaterialTheme.typography.labelSmall)

@@ -47,7 +47,7 @@ fun FilterSection(
     selectedDrug: String?,
     selectedPatient: Patient?,
     onDrugSelected: (String?) -> Unit,
-    onPatientSelected: (Patient?) -> Unit
+    onPatientSelected: (Patient?) -> Unit,
 ) {
     val sp = MaterialTheme.spacing
     val shapes = LocalDosageShapes.current
@@ -57,13 +57,13 @@ fun FilterSection(
                 Icons.Default.FilterList,
                 contentDescription = null,
                 tint = MaterialTheme.colorScheme.tertiary,
-                modifier = Modifier.size(20.dp)
+                modifier = Modifier.size(20.dp),
             )
             Spacer(modifier = Modifier.width(sp.sm))
             Text(
                 text = "Filtra Risultati",
                 style = MaterialTheme.typography.titleSmall,
-                color = MaterialTheme.colorScheme.tertiary
+                color = MaterialTheme.colorScheme.tertiary,
             )
         }
 
@@ -76,24 +76,30 @@ fun FilterSection(
                     onClick = { drugExpanded = true },
                     modifier = Modifier.fillMaxWidth(),
                     shape = shapes.pill,
-                    contentPadding = PaddingValues(horizontal = sp.md, vertical = sp.sm)
+                    contentPadding = PaddingValues(horizontal = sp.md, vertical = sp.sm),
                 ) {
                     Text(
                         text = selectedDrug ?: "Tutti i Farmaci",
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis,
-                        style = MaterialTheme.typography.bodySmall
+                        style = MaterialTheme.typography.bodySmall,
                     )
                 }
                 DropdownMenu(expanded = drugExpanded, onDismissRequest = { drugExpanded = false }) {
                     DropdownMenuItem(
                         text = { Text("Tutti i Farmaci") },
-                        onClick = { onDrugSelected(null); drugExpanded = false }
+                        onClick = {
+                            onDrugSelected(null)
+                            drugExpanded = false
+                        },
                     )
                     drugs.forEach { name ->
                         DropdownMenuItem(
                             text = { Text(name) },
-                            onClick = { onDrugSelected(name); drugExpanded = false }
+                            onClick = {
+                                onDrugSelected(name)
+                                drugExpanded = false
+                            },
                         )
                     }
                 }
@@ -104,24 +110,30 @@ fun FilterSection(
                     onClick = { patientExpanded = true },
                     modifier = Modifier.fillMaxWidth(),
                     shape = shapes.pill,
-                    contentPadding = PaddingValues(horizontal = sp.md, vertical = sp.sm)
+                    contentPadding = PaddingValues(horizontal = sp.md, vertical = sp.sm),
                 ) {
                     Text(
                         text = selectedPatient?.let { "${it.name} ${it.surname}" } ?: "Tutti i Pazienti",
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis,
-                        style = MaterialTheme.typography.bodySmall
+                        style = MaterialTheme.typography.bodySmall,
                     )
                 }
                 DropdownMenu(expanded = patientExpanded, onDismissRequest = { patientExpanded = false }) {
                     DropdownMenuItem(
                         text = { Text("Tutti i Pazienti") },
-                        onClick = { onPatientSelected(null); patientExpanded = false }
+                        onClick = {
+                            onPatientSelected(null)
+                            patientExpanded = false
+                        },
                     )
                     patients.forEach { p ->
                         DropdownMenuItem(
                             text = { Text("${p.name} ${p.surname}") },
-                            onClick = { onPatientSelected(p); patientExpanded = false }
+                            onClick = {
+                                onPatientSelected(p)
+                                patientExpanded = false
+                            },
                         )
                     }
                 }
@@ -131,50 +143,54 @@ fun FilterSection(
 }
 
 @Composable
-fun StatsSummaryCard(totalCalculations: Int, totalCategories: Int) {
+fun StatsSummaryCard(
+    totalCalculations: Int,
+    totalCategories: Int,
+) {
     val sp = MaterialTheme.spacing
     val shapes = LocalDosageShapes.current
     Card(
         modifier = Modifier.fillMaxWidth(),
         shape = shapes.cardLarge,
-        colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.tertiaryContainer.copy(alpha = 0.3f)
-        ),
+        colors =
+            CardDefaults.cardColors(
+                containerColor = MaterialTheme.colorScheme.tertiaryContainer.copy(alpha = 0.3f),
+            ),
         border = BorderStroke(1.dp, MaterialTheme.colorScheme.tertiary.copy(alpha = 0.2f)),
-        elevation = CardDefaults.cardElevation(defaultElevation = 0.dp)
+        elevation = CardDefaults.cardElevation(defaultElevation = 0.dp),
     ) {
         Row(
             modifier = Modifier.padding(sp.xl).fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceAround
+            horizontalArrangement = Arrangement.SpaceAround,
         ) {
             Column(horizontalAlignment = Alignment.CenterHorizontally) {
                 Text(
                     text = totalCalculations.toString(),
                     style = MaterialTheme.typography.displaySmall,
                     fontWeight = FontWeight.Bold,
-                    color = MaterialTheme.colorScheme.tertiary
+                    color = MaterialTheme.colorScheme.tertiary,
                 )
                 Text(
                     text = "Calcoli",
                     style = MaterialTheme.typography.labelMedium,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
             }
             VerticalDivider(
                 modifier = Modifier.height(40.dp).align(Alignment.CenterVertically),
-                color = MaterialTheme.colorScheme.tertiary.copy(alpha = 0.2f)
+                color = MaterialTheme.colorScheme.tertiary.copy(alpha = 0.2f),
             )
             Column(horizontalAlignment = Alignment.CenterHorizontally) {
                 Text(
                     text = totalCategories.toString(),
                     style = MaterialTheme.typography.displaySmall,
                     fontWeight = FontWeight.Bold,
-                    color = MaterialTheme.colorScheme.tertiary
+                    color = MaterialTheme.colorScheme.tertiary,
                 )
                 Text(
                     text = "Categorie",
                     style = MaterialTheme.typography.labelMedium,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
             }
         }
@@ -188,7 +204,7 @@ fun CategoryDistributionCard(dist: Map<String, Int>) {
         modifier = Modifier.fillMaxWidth(),
         shape = LocalDosageShapes.current.cardLarge,
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
-        elevation = CardDefaults.cardElevation(defaultElevation = LocalElevation.current.level1)
+        elevation = CardDefaults.cardElevation(defaultElevation = LocalElevation.current.level1),
     ) {
         Column(modifier = Modifier.padding(sp.xl)) {
             Text(text = "Distribuzione per Categoria", style = MaterialTheme.typography.titleMedium)
@@ -200,13 +216,13 @@ fun CategoryDistributionCard(dist: Map<String, Int>) {
                 Column(modifier = Modifier.padding(vertical = sp.sm)) {
                     Row(
                         modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.SpaceBetween
+                        horizontalArrangement = Arrangement.SpaceBetween,
                     ) {
                         Text(text = cat, style = MaterialTheme.typography.bodyMedium)
                         Text(
                             text = "${(progress * 100).toInt()}%",
                             style = MaterialTheme.typography.bodySmall,
-                            fontWeight = FontWeight.Bold
+                            fontWeight = FontWeight.Bold,
                         )
                     }
                     Spacer(modifier = Modifier.height(sp.xs))
@@ -215,7 +231,7 @@ fun CategoryDistributionCard(dist: Map<String, Int>) {
                         modifier = Modifier.fillMaxWidth().height(8.dp),
                         strokeCap = androidx.compose.ui.graphics.StrokeCap.Round,
                         color = MaterialTheme.colorScheme.tertiary,
-                        trackColor = MaterialTheme.colorScheme.tertiary.copy(alpha = 0.1f)
+                        trackColor = MaterialTheme.colorScheme.tertiary.copy(alpha = 0.1f),
                     )
                 }
             }
@@ -228,13 +244,13 @@ fun InfoNote(text: String) {
     Surface(
         color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f),
         shape = LocalDosageShapes.current.tile,
-        modifier = Modifier.fillMaxWidth()
+        modifier = Modifier.fillMaxWidth(),
     ) {
         Text(
             text = text,
             modifier = Modifier.padding(MaterialTheme.spacing.base),
             style = MaterialTheme.typography.bodyMedium,
-            color = MaterialTheme.colorScheme.onSurfaceVariant
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
         )
     }
 }

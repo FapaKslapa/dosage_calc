@@ -10,33 +10,36 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.serialization.json.Json
 import javax.inject.Inject
 
-class DrugInteractionRepositoryImpl @Inject constructor(
-    @ApplicationContext private val context: Context,
-    private val json: Json
-) : DrugInteractionRepository {
+class DrugInteractionRepositoryImpl
+    @Inject
+    constructor(
+        @ApplicationContext private val context: Context,
+        private val json: Json,
+    ) : DrugInteractionRepository {
+        private val FILE_NAME = "interactions.json"
 
-    private val FILE_NAME = "interactions.json"
+        override fun getInteractions(): Flow<List<DrugInteraction>> =
+            flow {
+                val interactions = loadInteractions()
+                emit(interactions.map { it.toDomain() })
+            }
 
-    override fun getInteractions(): Flow<List<DrugInteraction>> = flow {
-        val interactions = loadInteractions()
-        emit(interactions.map { it.toDomain() })
-    }
+        override suspend fun checkInteraction(
+            drugId1: String,
+            drugId2: String,
+        ): DrugInteraction? =
+            loadInteractions()
+                .map { it.toDomain() }
+                .find {
+                    (it.drugId1 == drugId1 && it.drugId2 == drugId2) ||
+                        (it.drugId1 == drugId2 && it.drugId2 == drugId1)
+                }
 
-    override suspend fun checkInteraction(drugId1: String, drugId2: String): DrugInteraction? {
-        return loadInteractions()
-            .map { it.toDomain() }
-            .find { 
-                (it.drugId1 == drugId1 && it.drugId2 == drugId2) || 
-                (it.drugId1 == drugId2 && it.drugId2 == drugId1) 
+        private fun loadInteractions(): List<DrugInteractionDto> =
+            try {
+                val jsonString = context.assets.open(FILE_NAME).use { it.bufferedReader().readText() }
+                json.decodeFromString<List<DrugInteractionDto>>(jsonString)
+            } catch (e: Exception) {
+                emptyList()
             }
     }
-
-    private fun loadInteractions(): List<DrugInteractionDto> {
-        return try {
-            val jsonString = context.assets.open(FILE_NAME).use { it.bufferedReader().readText() }
-            json.decodeFromString<List<DrugInteractionDto>>(jsonString)
-        } catch (e: Exception) {
-            emptyList()
-        }
-    }
-}

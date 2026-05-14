@@ -11,90 +11,85 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 
-private val LightColorScheme = lightColorScheme(
-    primary              = Purple40,
-    onPrimary            = Color.White,
-    primaryContainer     = Purple90,
-    onPrimaryContainer   = Purple20,
+private val LightColorScheme =
+    lightColorScheme(
+        primary = Purple40,
+        onPrimary = Color.White,
+        primaryContainer = Purple90,
+        onPrimaryContainer = Purple20,
+        secondary = Teal40,
+        onSecondary = Color.White,
+        secondaryContainer = Teal90,
+        onSecondaryContainer = Teal30,
+        tertiary = Amber40,
+        onTertiary = Color.White,
+        tertiaryContainer = Amber90,
+        onTertiaryContainer = Color(0xFF3B2800),
+        error = Error40,
+        onError = Color.White,
+        errorContainer = Error90,
+        onErrorContainer = Color(0xFF410002),
+        background = WarmWhite,
+        onBackground = DarkInk,
+        surface = Color.White,
+        onSurface = DarkInk,
+        surfaceVariant = WarmGray,
+        onSurfaceVariant = MediumInk,
+        outline = Color(0xFFB8B0A6),
+    )
 
-    secondary            = Teal40,
-    onSecondary          = Color.White,
-    secondaryContainer   = Teal90,
-    onSecondaryContainer = Teal30,
-
-    tertiary             = Amber40,
-    onTertiary           = Color.White,
-    tertiaryContainer    = Amber90,
-    onTertiaryContainer  = Color(0xFF3B2800),
-
-    error                = Error40,
-    onError              = Color.White,
-    errorContainer       = Error90,
-    onErrorContainer     = Color(0xFF410002),
-
-    background           = WarmWhite,
-    onBackground         = DarkInk,
-    surface              = Color.White,
-    onSurface            = DarkInk,
-    surfaceVariant       = WarmGray,
-    onSurfaceVariant     = MediumInk,
-    outline              = Color(0xFFB8B0A6),
-)
-
-private val DarkColorScheme = darkColorScheme(
-    primary              = Purple80,
-    onPrimary            = Purple20,
-    primaryContainer     = Purple40,
-    onPrimaryContainer   = Purple90,
-
-    secondary            = Teal80,
-    onSecondary          = Color.White,
-    secondaryContainer   = Teal40,
-    onSecondaryContainer = Teal90,
-
-    tertiary             = Amber80,
-    onTertiary           = Color(0xFF3B2800),
-    tertiaryContainer    = Amber40,
-    onTertiaryContainer  = Amber90,
-
-    error                = Error90,
-    onError              = Color(0xFF690005),
-    errorContainer       = Error40,
-    onErrorContainer     = Error90,
-
-    background           = DarkBackground,
-    onBackground         = WarmWhite,
-    surface              = DarkSurface,
-    onSurface            = WarmWhite,
-    surfaceVariant       = DarkSurfaceVariant,
-    onSurfaceVariant     = WarmGray,
-)
+private val DarkColorScheme =
+    darkColorScheme(
+        primary = Purple80,
+        onPrimary = Purple20,
+        primaryContainer = Purple40,
+        onPrimaryContainer = Purple90,
+        secondary = Teal80,
+        onSecondary = Color.White,
+        secondaryContainer = Teal40,
+        onSecondaryContainer = Teal90,
+        tertiary = Amber80,
+        onTertiary = Color(0xFF3B2800),
+        tertiaryContainer = Amber40,
+        onTertiaryContainer = Amber90,
+        error = Error90,
+        onError = Color(0xFF690005),
+        errorContainer = Error40,
+        onErrorContainer = Error90,
+        background = DarkBackground,
+        onBackground = WarmWhite,
+        surface = DarkSurface,
+        onSurface = WarmWhite,
+        surfaceVariant = DarkSurfaceVariant,
+        onSurfaceVariant = WarmGray,
+    )
 
 @Composable
 fun DosageCalcTheme(
     darkTheme: Boolean = true,
     dynamicColor: Boolean = false,
-    content: @Composable () -> Unit
+    content: @Composable () -> Unit,
 ) {
-    val colorScheme = when {
-        dynamicColor && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S -> {
-            val context = LocalContext.current
-            if (darkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
+    val colorScheme =
+        when {
+            dynamicColor && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S -> {
+                val context = LocalContext.current
+                if (darkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
+            }
+            darkTheme -> DarkColorScheme
+            else -> LightColorScheme
         }
-        darkTheme -> DarkColorScheme
-        else      -> LightColorScheme
-    }
 
     CompositionLocalProvider(
         LocalSpacing provides Spacing(),
         LocalElevation provides Elevation(),
-        LocalDosageShapes provides DosageShapes()
+        LocalDosageShapes provides DosageShapes(),
     ) {
         MaterialTheme(
             colorScheme = colorScheme,
-            typography  = DosageCalcTypography,
-            shapes      = DosageMaterialShapes,
-            content     = content
+            typography = DosageCalcTypography,
+            shapes = DosageMaterialShapes,
+            content = content,
         )
     }
 }

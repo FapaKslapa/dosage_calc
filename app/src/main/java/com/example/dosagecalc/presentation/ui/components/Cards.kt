@@ -21,18 +21,20 @@ fun ExpressiveCard(
     asymmetric: Boolean = true,
     mirrored: Boolean = false,
     containerAlpha: Float = 0.8f,
-    content: @Composable ColumnScope.() -> Unit
+    content: @Composable ColumnScope.() -> Unit,
 ) {
     val shapes = LocalDosageShapes.current
     val elevation = LocalElevation.current
-    val shape = when {
-        !asymmetric -> shapes.card
-        mirrored    -> shapes.expressiveMirror
-        else        -> shapes.expressive
-    }
-    val colors = CardDefaults.cardColors(
-        containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = containerAlpha)
-    )
+    val shape =
+        when {
+            !asymmetric -> shapes.card
+            mirrored -> shapes.expressiveMirror
+            else -> shapes.expressive
+        }
+    val colors =
+        CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = containerAlpha),
+        )
     val elev = CardDefaults.cardElevation(defaultElevation = elevation.level0)
     if (onClick != null) {
         Card(onClick = onClick, modifier = modifier, shape = shape, colors = colors, elevation = elev, content = content)
@@ -45,14 +47,14 @@ fun ExpressiveCard(
 fun ElevatedSurfaceCard(
     modifier: Modifier = Modifier,
     elevation: Dp = 4.dp,
-    content: @Composable ColumnScope.() -> Unit
+    content: @Composable ColumnScope.() -> Unit,
 ) {
     Card(
-        modifier  = modifier,
-        shape     = LocalDosageShapes.current.card,
-        colors    = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
+        modifier = modifier,
+        shape = LocalDosageShapes.current.card,
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
         elevation = CardDefaults.cardElevation(defaultElevation = elevation),
-        content   = content
+        content = content,
     )
 }
 
@@ -60,21 +62,22 @@ fun ElevatedSurfaceCard(
 fun OutlinedTintCard(
     modifier: Modifier = Modifier,
     tone: CardTone = CardTone.Primary,
-    content: @Composable ColumnScope.() -> Unit
+    content: @Composable ColumnScope.() -> Unit,
 ) {
     val cs = MaterialTheme.colorScheme
-    val toneColor = when (tone) {
-        CardTone.Primary   -> cs.primary
-        CardTone.Secondary -> cs.secondary
-        CardTone.Tertiary  -> cs.tertiary
-        CardTone.Error     -> cs.error
-    }
+    val toneColor =
+        when (tone) {
+            CardTone.Primary -> cs.primary
+            CardTone.Secondary -> cs.secondary
+            CardTone.Tertiary -> cs.tertiary
+            CardTone.Error -> cs.error
+        }
     Card(
-        modifier  = modifier,
-        shape     = LocalDosageShapes.current.cardLarge,
-        colors    = CardDefaults.cardColors(containerColor = toneColor.copy(alpha = 0.08f)),
+        modifier = modifier,
+        shape = LocalDosageShapes.current.cardLarge,
+        colors = CardDefaults.cardColors(containerColor = toneColor.copy(alpha = 0.08f)),
         elevation = CardDefaults.cardElevation(defaultElevation = 0.dp),
-        border    = BorderStroke(1.dp, toneColor.copy(alpha = 0.3f)),
-        content   = content
+        border = BorderStroke(1.dp, toneColor.copy(alpha = 0.3f)),
+        content = content,
     )
 }

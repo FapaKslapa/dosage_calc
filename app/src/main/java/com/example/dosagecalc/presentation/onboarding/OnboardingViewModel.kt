@@ -10,17 +10,19 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class OnboardingViewModel @Inject constructor(
-    private val repository: OnboardingRepository
-) : ViewModel() {
+class OnboardingViewModel
+    @Inject
+    constructor(
+        private val repository: OnboardingRepository,
+    ) : ViewModel() {
+        val isCompleted =
+            repository.isCompleted.stateIn(
+                scope = viewModelScope,
+                started = SharingStarted.Eagerly,
+                initialValue = null,
+            )
 
-    val isCompleted = repository.isCompleted.stateIn(
-        scope = viewModelScope,
-        started = SharingStarted.Eagerly,
-        initialValue = null
-    )
-
-    fun completeOnboarding() {
-        viewModelScope.launch { repository.markCompleted() }
+        fun completeOnboarding() {
+            viewModelScope.launch { repository.markCompleted() }
+        }
     }
-}

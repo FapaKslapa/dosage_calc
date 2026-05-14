@@ -9,11 +9,11 @@ data class PatientEntity(
     val id: String,
     val name: String,
     val surname: String,
-    val birthDate: Long, 
+    val birthDate: Long,
     val weightKg: Float,
     val heightCm: Float?,
     val ageYears: Int,
     val notes: String?,
     val hasRenalImpairment: Boolean = false,
-    val hasHepaticImpairment: Boolean = false
+    val hasHepaticImpairment: Boolean = false,
 )

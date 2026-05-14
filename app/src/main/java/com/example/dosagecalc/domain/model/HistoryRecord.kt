@@ -4,7 +4,7 @@ import java.time.LocalDateTime
 
 data class HistoryRecord(
     val id: String,
-    val patientId: String?, 
+    val patientId: String?,
     val drugId: String,
     val drugName: String,
     val date: LocalDateTime,
@@ -17,6 +17,5 @@ data class HistoryRecord(
     val calculatedTherapyDose: Double? = null,
     val doseUnit: String,
     val formulaUsed: String? = null,
-    val notes: String? = null
+    val notes: String? = null,
 )
-

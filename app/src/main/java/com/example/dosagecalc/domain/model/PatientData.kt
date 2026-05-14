@@ -8,7 +8,7 @@ data class PatientData(
     val ageYears: Int?,
     val renalStage: RenalStage = RenalStage.NONE,
     val hepaticStage: HepaticStage = HepaticStage.NONE,
-    val bsaFormula: BsaFormulaType = BsaFormulaType.MOSTELLER
+    val bsaFormula: BsaFormulaType = BsaFormulaType.MOSTELLER,
 ) {
     val hasRenalImpairment: Boolean get() = renalStage != RenalStage.NONE
     val hasHepaticImpairment: Boolean get() = hepaticStage != HepaticStage.NONE

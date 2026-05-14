@@ -39,7 +39,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.example.dosagecalc.presentation.ui.util.responsiveContentWidth
 import com.example.dosagecalc.domain.model.FormulaType
 import com.example.dosagecalc.presentation.calculator.CalculatorViewModel
 import com.example.dosagecalc.presentation.calculator.components.AnthropometricInputsGroup
@@ -49,12 +48,13 @@ import com.example.dosagecalc.presentation.ui.components.ImpairmentChipsRow
 import com.example.dosagecalc.presentation.ui.theme.LocalDosageShapes
 import com.example.dosagecalc.presentation.ui.theme.LocalElevation
 import com.example.dosagecalc.presentation.ui.theme.spacing
+import com.example.dosagecalc.presentation.ui.util.responsiveContentWidth
 
 @Composable
 fun PatientInputScreen(
     viewModel: CalculatorViewModel,
     onNavigateBack: () -> Unit,
-    onNavigateToResult: () -> Unit
+    onNavigateToResult: () -> Unit,
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
@@ -67,49 +67,51 @@ fun PatientInputScreen(
     val elev = LocalElevation.current
 
     Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(MaterialTheme.colorScheme.background)
+        modifier =
+            Modifier
+                .fillMaxSize()
+                .background(MaterialTheme.colorScheme.background),
     ) {
         Column(
-            modifier = Modifier.fillMaxSize()
+            modifier = Modifier.fillMaxSize(),
         ) {
             GradientScreenHeader(
-                colors = listOf(
-                    MaterialTheme.colorScheme.primary,
-                    MaterialTheme.colorScheme.primaryContainer
-                )
+                colors =
+                    listOf(
+                        MaterialTheme.colorScheme.primary,
+                        MaterialTheme.colorScheme.primaryContainer,
+                    ),
             ) {
                 Column {
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
-                        modifier = Modifier.padding(top = sp.sm)
+                        modifier = Modifier.padding(top = sp.sm),
                     ) {
                         IconButton(onClick = onNavigateBack) {
                             Icon(
-                                imageVector        = Icons.AutoMirrored.Filled.ArrowBack,
+                                imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                                 contentDescription = "Indietro",
-                                tint               = MaterialTheme.colorScheme.onPrimary
+                                tint = MaterialTheme.colorScheme.onPrimary,
                             )
                         }
                         Text(
-                            text  = "Dati del Paziente",
+                            text = "Dati del Paziente",
                             style = MaterialTheme.typography.titleMedium,
-                            color = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.8f)
+                            color = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.8f),
                         )
                     }
 
                     uiState.selectedDrug?.let { drug ->
                         Column(modifier = Modifier.padding(start = sp.xl, end = sp.xl, top = sp.xs)) {
                             Text(
-                                text  = drug.name,
+                                text = drug.name,
                                 style = MaterialTheme.typography.headlineMedium.copy(fontFamily = FontFamily.Serif),
-                                color = MaterialTheme.colorScheme.onPrimary
+                                color = MaterialTheme.colorScheme.onPrimary,
                             )
                             Text(
-                                text  = drug.indication,
+                                text = drug.indication,
                                 style = MaterialTheme.typography.bodyLarge,
-                                color = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.9f)
+                                color = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.9f),
                             )
                         }
                     }
@@ -117,157 +119,166 @@ fun PatientInputScreen(
             }
 
             Column(
-                modifier = Modifier
-                    .weight(1f)
-                    .verticalScroll(rememberScrollState())
-                    .padding(horizontal = sp.lg)
-                    .padding(bottom = sp.bottomBarClearance),
-                horizontalAlignment = Alignment.CenterHorizontally
+                modifier =
+                    Modifier
+                        .weight(1f)
+                        .verticalScroll(rememberScrollState())
+                        .padding(horizontal = sp.lg)
+                        .padding(bottom = sp.bottomBarClearance),
+                horizontalAlignment = Alignment.CenterHorizontally,
             ) {
                 Column(modifier = Modifier.responsiveContentWidth()) {
-                Spacer(modifier = Modifier.height(sp.lg))
+                    Spacer(modifier = Modifier.height(sp.lg))
 
-                if (uiState.savedPatients.isNotEmpty()) {
-                    var expanded by remember { mutableStateOf(false) }
+                    if (uiState.savedPatients.isNotEmpty()) {
+                        var expanded by remember { mutableStateOf(false) }
 
-                    ExposedDropdownMenuBox(
-                        expanded = expanded,
-                        onExpandedChange = { expanded = it },
-                        modifier = Modifier.fillMaxWidth()
-                    ) {
-                        androidx.compose.material3.OutlinedTextField(
-                            value = uiState.selectedPatient?.let { "${it.name} ${it.surname}" } ?: "Calcolo Anonimo",
-                            onValueChange = {},
-                            readOnly = true,
-                            label = { Text("Seleziona Paziente (Opzionale)") },
-                            trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
-                            colors = OutlinedTextFieldDefaults.colors(),
-                            modifier = Modifier.menuAnchor(androidx.compose.material3.ExposedDropdownMenuAnchorType.PrimaryNotEditable).fillMaxWidth(),
-                            shape = shapes.card
-                        )
-                        ExposedDropdownMenu(
+                        ExposedDropdownMenuBox(
                             expanded = expanded,
-                            onDismissRequest = { expanded = false }
+                            onExpandedChange = { expanded = it },
+                            modifier = Modifier.fillMaxWidth(),
                         ) {
-                            DropdownMenuItem(
-                                text = { Text("Calcolo Anonimo (Nuovo)", style = MaterialTheme.typography.bodyLarge) },
-                                onClick = {
-                                    viewModel.onPatientSelected(null)
-                                    expanded = false
-                                }
+                            androidx.compose.material3.OutlinedTextField(
+                                value = uiState.selectedPatient?.let { "${it.name} ${it.surname}" } ?: "Calcolo Anonimo",
+                                onValueChange = {},
+                                readOnly = true,
+                                label = { Text("Seleziona Paziente (Opzionale)") },
+                                trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
+                                colors = OutlinedTextFieldDefaults.colors(),
+                                modifier =
+                                    Modifier
+                                        .menuAnchor(
+                                            androidx.compose.material3.ExposedDropdownMenuAnchorType.PrimaryNotEditable,
+                                        ).fillMaxWidth(),
+                                shape = shapes.card,
                             )
-                            uiState.savedPatients.forEach { patient ->
-                                DropdownMenuItem(
-                                    text = { Text("${patient.name} ${patient.surname}", style = MaterialTheme.typography.bodyLarge) },
-                                    onClick = {
-                                        viewModel.onPatientSelected(patient)
-                                        expanded = false
-                                    }
-                                )
-                            }
-                        }
-                    }
-                    Spacer(modifier = Modifier.height(sp.base))
-                }
-
-                Card(
-                    modifier  = Modifier.fillMaxWidth(),
-                    shape     = shapes.card,
-                    elevation = CardDefaults.cardElevation(defaultElevation = elev.level2),
-                    colors    = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
-                ) {
-                    Column(modifier = Modifier.padding(sp.lg)) {
-                        Text(
-                            text  = "Dati Antropometrici",
-                            style = MaterialTheme.typography.titleLarge,
-                            color = MaterialTheme.colorScheme.onSurface
-                        )
-                        Spacer(modifier = Modifier.height(sp.xs))
-                        Text(
-                            text  = "Valori validati in tempo reale",
-                            style = MaterialTheme.typography.bodyMedium,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant
-                        )
-                        Spacer(modifier = Modifier.height(sp.lg))
-
-                        AnthropometricInputsGroup(
-                            weightValue = uiState.weightInput,
-                            heightValue = uiState.heightInput,
-                            ageValue = uiState.ageInput,
-                            onWeightChanged = viewModel::onWeightChanged,
-                            onHeightChanged = viewModel::onHeightChanged,
-                            onAgeChanged = viewModel::onAgeChanged,
-                            showHeight = uiState.selectedDrug?.formulaType == FormulaType.PER_M2,
-                            heightHint = "Necessaria per il calcolo BSA (${uiState.bsaFormula.name.lowercase().replaceFirstChar { it.uppercase() }})",
-                            weightError = uiState.weightError,
-                            heightError = uiState.heightError,
-                            ageError = uiState.ageError,
-                            weightHint = uiState.selectedDrug?.minWeightKg?.let { "Minimo richiesto: $it kg" },
-                            ageHint = uiState.selectedDrug?.minAgeYears?.let { "Età minima richiesta: $it anni" }
-                        )
-
-                        if (uiState.selectedDrug?.formulaType == FormulaType.PER_M2) {
-                            Spacer(modifier = Modifier.height(sp.xl))
-                            Text(
-                                text  = "Formula BSA Preferita",
-                                style = MaterialTheme.typography.titleMedium,
-                                color = MaterialTheme.colorScheme.onSurface
-                            )
-                            Spacer(modifier = Modifier.height(sp.sm))
-                            Row(
-                                modifier = Modifier.fillMaxWidth(),
-                                horizontalArrangement = Arrangement.spacedBy(sp.sm)
+                            ExposedDropdownMenu(
+                                expanded = expanded,
+                                onDismissRequest = { expanded = false },
                             ) {
-                                com.example.dosagecalc.domain.repository.BsaFormulaType.entries.forEach { formula ->
-                                    androidx.compose.material3.FilterChip(
-                                        selected = uiState.bsaFormula == formula,
-                                        onClick = { viewModel.onBsaFormulaChanged(formula) },
-                                        label = { Text(formula.name.replace("_", " ")) },
-                                        shape = shapes.chip,
-                                        colors = androidx.compose.material3.FilterChipDefaults.filterChipColors(
-                                            selectedContainerColor = MaterialTheme.colorScheme.primary,
-                                            selectedLabelColor = MaterialTheme.colorScheme.onPrimary
-                                        ),
-                                        modifier = Modifier.weight(1f)
+                                DropdownMenuItem(
+                                    text = { Text("Calcolo Anonimo (Nuovo)", style = MaterialTheme.typography.bodyLarge) },
+                                    onClick = {
+                                        viewModel.onPatientSelected(null)
+                                        expanded = false
+                                    },
+                                )
+                                uiState.savedPatients.forEach { patient ->
+                                    DropdownMenuItem(
+                                        text = { Text("${patient.name} ${patient.surname}", style = MaterialTheme.typography.bodyLarge) },
+                                        onClick = {
+                                            viewModel.onPatientSelected(patient)
+                                            expanded = false
+                                        },
                                     )
                                 }
                             }
                         }
-
-                        Spacer(modifier = Modifier.height(sp.xl))
-                        Text(
-                            text  = "Patologie Concomitanti",
-                            style = MaterialTheme.typography.titleMedium,
-                            color = MaterialTheme.colorScheme.onSurface
-                        )
-                        Spacer(modifier = Modifier.height(sp.md))
-
-                        ImpairmentChipsRow(
-                            renalStage = uiState.renalStage,
-                            hepaticStage = uiState.hepaticStage,
-                            onRenalStageChanged = viewModel::onRenalStageChanged,
-                            onHepaticStageChanged = viewModel::onHepaticStageChanged
-                        )
+                        Spacer(modifier = Modifier.height(sp.base))
                     }
-                }
+
+                    Card(
+                        modifier = Modifier.fillMaxWidth(),
+                        shape = shapes.card,
+                        elevation = CardDefaults.cardElevation(defaultElevation = elev.level2),
+                        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
+                    ) {
+                        Column(modifier = Modifier.padding(sp.lg)) {
+                            Text(
+                                text = "Dati Antropometrici",
+                                style = MaterialTheme.typography.titleLarge,
+                                color = MaterialTheme.colorScheme.onSurface,
+                            )
+                            Spacer(modifier = Modifier.height(sp.xs))
+                            Text(
+                                text = "Valori validati in tempo reale",
+                                style = MaterialTheme.typography.bodyMedium,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            )
+                            Spacer(modifier = Modifier.height(sp.lg))
+
+                            AnthropometricInputsGroup(
+                                weightValue = uiState.weightInput,
+                                heightValue = uiState.heightInput,
+                                ageValue = uiState.ageInput,
+                                onWeightChanged = viewModel::onWeightChanged,
+                                onHeightChanged = viewModel::onHeightChanged,
+                                onAgeChanged = viewModel::onAgeChanged,
+                                showHeight = uiState.selectedDrug?.formulaType == FormulaType.PER_M2,
+                                heightHint = "Necessaria per il calcolo BSA (${uiState.bsaFormula.name.lowercase().replaceFirstChar {
+                                    it
+                                        .uppercase()
+                                }})",
+                                weightError = uiState.weightError,
+                                heightError = uiState.heightError,
+                                ageError = uiState.ageError,
+                                weightHint = uiState.selectedDrug?.minWeightKg?.let { "Minimo richiesto: $it kg" },
+                                ageHint = uiState.selectedDrug?.minAgeYears?.let { "Età minima richiesta: $it anni" },
+                            )
+
+                            if (uiState.selectedDrug?.formulaType == FormulaType.PER_M2) {
+                                Spacer(modifier = Modifier.height(sp.xl))
+                                Text(
+                                    text = "Formula BSA Preferita",
+                                    style = MaterialTheme.typography.titleMedium,
+                                    color = MaterialTheme.colorScheme.onSurface,
+                                )
+                                Spacer(modifier = Modifier.height(sp.sm))
+                                Row(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    horizontalArrangement = Arrangement.spacedBy(sp.sm),
+                                ) {
+                                    com.example.dosagecalc.domain.repository.BsaFormulaType.entries.forEach { formula ->
+                                        androidx.compose.material3.FilterChip(
+                                            selected = uiState.bsaFormula == formula,
+                                            onClick = { viewModel.onBsaFormulaChanged(formula) },
+                                            label = { Text(formula.name.replace("_", " ")) },
+                                            shape = shapes.chip,
+                                            colors =
+                                                androidx.compose.material3.FilterChipDefaults.filterChipColors(
+                                                    selectedContainerColor = MaterialTheme.colorScheme.primary,
+                                                    selectedLabelColor = MaterialTheme.colorScheme.onPrimary,
+                                                ),
+                                            modifier = Modifier.weight(1f),
+                                        )
+                                    }
+                                }
+                            }
+
+                            Spacer(modifier = Modifier.height(sp.xl))
+                            Text(
+                                text = "Patologie Concomitanti",
+                                style = MaterialTheme.typography.titleMedium,
+                                color = MaterialTheme.colorScheme.onSurface,
+                            )
+                            Spacer(modifier = Modifier.height(sp.md))
+
+                            ImpairmentChipsRow(
+                                renalStage = uiState.renalStage,
+                                hepaticStage = uiState.hepaticStage,
+                                onRenalStageChanged = viewModel::onRenalStageChanged,
+                                onHepaticStageChanged = viewModel::onHepaticStageChanged,
+                            )
+                        }
+                    }
                 }
             }
         }
 
         GradientBottomBar(
-            modifier = Modifier.align(Alignment.BottomCenter)
+            modifier = Modifier.align(Alignment.BottomCenter),
         ) {
             Button(
-                onClick  = viewModel::calculateDosage,
-                enabled  = uiState.canCalculate && !uiState.isCalculating,
-                shape    = shapes.pill,
-                modifier = Modifier.fillMaxWidth().height(56.dp)
+                onClick = viewModel::calculateDosage,
+                enabled = uiState.canCalculate && !uiState.isCalculating,
+                shape = shapes.pill,
+                modifier = Modifier.fillMaxWidth().height(56.dp),
             ) {
                 if (uiState.isCalculating) {
                     CircularProgressIndicator(
-                        modifier    = Modifier.size(24.dp),
-                        color       = Color.White,
-                        strokeWidth = 2.dp
+                        modifier = Modifier.size(24.dp),
+                        color = Color.White,
+                        strokeWidth = 2.dp,
                     )
                 } else {
                     Text(text = "Calcola Dose", style = MaterialTheme.typography.titleMedium)

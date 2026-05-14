@@ -9,18 +9,18 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
-class ReminderRepositoryImpl @Inject constructor(
-    private val dao: ReminderDao
-) : ReminderRepository {
+class ReminderRepositoryImpl
+    @Inject
+    constructor(
+        private val dao: ReminderDao,
+    ) : ReminderRepository {
+        override fun getAllReminders(): Flow<List<Reminder>> = dao.getAllReminders().map { entities -> entities.map { it.toDomain() } }
 
-    override fun getAllReminders(): Flow<List<Reminder>> =
-        dao.getAllReminders().map { entities -> entities.map { it.toDomain() } }
+        override suspend fun addReminder(reminder: Reminder) {
+            dao.insertReminder(reminder.toEntity())
+        }
 
-    override suspend fun addReminder(reminder: Reminder) {
-        dao.insertReminder(reminder.toEntity())
+        override suspend fun removeReminder(id: String) {
+            dao.deleteReminder(id)
+        }
     }
-
-    override suspend fun removeReminder(id: String) {
-        dao.deleteReminder(id)
-    }
-}

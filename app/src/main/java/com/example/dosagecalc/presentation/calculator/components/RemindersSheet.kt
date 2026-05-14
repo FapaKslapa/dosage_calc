@@ -33,8 +33,8 @@ import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
-import androidx.compose.material3.TimePicker
 import androidx.compose.material3.TimeInput
+import androidx.compose.material3.TimePicker
 import androidx.compose.material3.TimePickerDefaults
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.material3.rememberTimePickerState
@@ -70,7 +70,7 @@ fun RemindersSheet(
     context: Context,
     drugName: String?,
     onDismissRequest: () -> Unit,
-    viewModel: RemindersViewModel = hiltViewModel()
+    viewModel: RemindersViewModel = hiltViewModel(),
 ) {
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     val reminders by viewModel.reminders.collectAsStateWithLifecycle()
@@ -83,20 +83,20 @@ fun RemindersSheet(
         onDismissRequest = onDismissRequest,
         sheetState = sheetState,
         containerColor = cs.surface,
-        shape = shapes.sheet
+        shape = shapes.sheet,
     ) {
         Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .verticalScroll(rememberScrollState())
-                .padding(bottom = sp.xl)
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .verticalScroll(rememberScrollState())
+                    .padding(bottom = sp.xl),
         ) {
-
             Column(modifier = Modifier.padding(horizontal = sp.xl)) {
                 Text(
                     text = "Promemoria Attivi",
                     style = MaterialTheme.typography.titleLarge.copy(fontFamily = FontFamily.Serif),
-                    color = cs.onSurface
+                    color = cs.onSurface,
                 )
                 Spacer(modifier = Modifier.height(sp.sm))
             }
@@ -105,50 +105,54 @@ fun RemindersSheet(
                 Surface(
                     shape = shapes.card,
                     color = cs.surfaceVariant.copy(alpha = 0.45f),
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = sp.xl)
+                    modifier =
+                        Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = sp.xl),
                 ) {
                     Text(
                         text = "Nessun promemoria attivo.",
                         style = MaterialTheme.typography.bodyMedium,
                         color = cs.onSurfaceVariant,
-                        modifier = Modifier.padding(sp.lg)
+                        modifier = Modifier.padding(sp.lg),
                     )
                 }
             } else {
                 LazyRow(
                     contentPadding = PaddingValues(horizontal = sp.xl),
-                    horizontalArrangement = Arrangement.spacedBy(sp.base)
+                    horizontalArrangement = Arrangement.spacedBy(sp.base),
                 ) {
                     items(reminders, key = { it.id }) { reminder ->
                         val timeString = String.format(Locale.US, "%02d:%02d", reminder.hour, reminder.minute)
-                        val intervalText = when (reminder.interval) {
-                            ReminderInterval.DAILY   -> "Giornaliero"
-                            ReminderInterval.WEEKLY  -> "Sett. · G${reminder.daySelection}"
-                            ReminderInterval.MONTHLY -> "Mens. · G${reminder.daySelection}"
-                        }
+                        val intervalText =
+                            when (reminder.interval) {
+                                ReminderInterval.DAILY -> "Giornaliero"
+                                ReminderInterval.WEEKLY -> "Sett. · G${reminder.daySelection}"
+                                ReminderInterval.MONTHLY -> "Mens. · G${reminder.daySelection}"
+                            }
                         Card(
                             modifier = Modifier.width(180.dp),
                             shape = shapes.card,
-                            colors = CardDefaults.cardColors(
-                                containerColor = cs.secondaryContainer.copy(alpha = 0.5f)
-                            ),
-                            border = BorderStroke(0.5.dp, cs.secondary.copy(alpha = 0.25f))
+                            colors =
+                                CardDefaults.cardColors(
+                                    containerColor = cs.secondaryContainer.copy(alpha = 0.5f),
+                                ),
+                            border = BorderStroke(0.5.dp, cs.secondary.copy(alpha = 0.25f)),
                         ) {
                             Column(modifier = Modifier.padding(sp.base)) {
                                 Surface(
                                     shape = shapes.chip,
-                                    color = cs.secondary.copy(alpha = 0.13f)
+                                    color = cs.secondary.copy(alpha = 0.13f),
                                 ) {
                                     Text(
                                         text = timeString,
-                                        style = MaterialTheme.typography.titleMedium.copy(
-                                            fontFamily = FontFamily.Serif,
-                                            fontWeight = FontWeight.Medium
-                                        ),
+                                        style =
+                                            MaterialTheme.typography.titleMedium.copy(
+                                                fontFamily = FontFamily.Serif,
+                                                fontWeight = FontWeight.Medium,
+                                            ),
                                         color = cs.secondary,
-                                        modifier = Modifier.padding(horizontal = sp.sm, vertical = 4.dp)
+                                        modifier = Modifier.padding(horizontal = sp.sm, vertical = 4.dp),
                                     )
                                 }
                                 Spacer(modifier = Modifier.height(sp.xs))
@@ -157,7 +161,7 @@ fun RemindersSheet(
                                     style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.SemiBold),
                                     color = cs.onSurface,
                                     maxLines = 1,
-                                    overflow = TextOverflow.Ellipsis
+                                    overflow = TextOverflow.Ellipsis,
                                 )
                                 Spacer(modifier = Modifier.height(sp.xs))
                                 Surface(shape = shapes.chip, color = cs.surface) {
@@ -165,13 +169,13 @@ fun RemindersSheet(
                                         text = intervalText,
                                         style = MaterialTheme.typography.labelSmall,
                                         color = cs.onSurfaceVariant,
-                                        modifier = Modifier.padding(horizontal = sp.sm, vertical = 3.dp)
+                                        modifier = Modifier.padding(horizontal = sp.sm, vertical = 3.dp),
                                     )
                                 }
                                 Spacer(modifier = Modifier.height(sp.sm))
                                 Row(
                                     modifier = Modifier.fillMaxWidth(),
-                                    horizontalArrangement = Arrangement.End
+                                    horizontalArrangement = Arrangement.End,
                                 ) {
                                     TextButton(
                                         onClick = {
@@ -181,12 +185,12 @@ fun RemindersSheet(
                                         },
                                         shape = shapes.chip,
                                         colors = ButtonDefaults.textButtonColors(contentColor = cs.error),
-                                        contentPadding = PaddingValues(horizontal = sp.sm, vertical = 4.dp)
+                                        contentPadding = PaddingValues(horizontal = sp.sm, vertical = 4.dp),
                                     ) {
                                         Icon(
                                             Icons.Default.Delete,
                                             contentDescription = "Elimina",
-                                            modifier = Modifier.size(14.dp)
+                                            modifier = Modifier.size(14.dp),
                                         )
                                         Spacer(modifier = Modifier.width(3.dp))
                                         Text("Elimina", style = MaterialTheme.typography.labelMedium)
@@ -204,7 +208,7 @@ fun RemindersSheet(
                 Text(
                     text = "Nuovo Promemoria",
                     style = MaterialTheme.typography.titleLarge.copy(fontFamily = FontFamily.Serif),
-                    color = cs.onSurface
+                    color = cs.onSurface,
                 )
                 Spacer(modifier = Modifier.height(sp.base))
 
@@ -212,13 +216,13 @@ fun RemindersSheet(
                     Surface(
                         shape = shapes.card,
                         color = cs.surfaceVariant.copy(alpha = 0.45f),
-                        modifier = Modifier.fillMaxWidth()
+                        modifier = Modifier.fillMaxWidth(),
                     ) {
                         Text(
                             text = "Esegui prima un calcolo per un farmaco.",
                             style = MaterialTheme.typography.bodyMedium,
                             color = cs.onSurfaceVariant,
-                            modifier = Modifier.padding(sp.lg)
+                            modifier = Modifier.padding(sp.lg),
                         )
                     }
                 } else {
@@ -230,31 +234,34 @@ fun RemindersSheet(
                     Text(
                         text = "Frequenza",
                         style = MaterialTheme.typography.labelLarge,
-                        color = cs.onSurfaceVariant
+                        color = cs.onSurfaceVariant,
                     )
                     Spacer(modifier = Modifier.height(sp.sm))
 
                     Row(
                         modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.spacedBy(sp.sm)
+                        horizontalArrangement = Arrangement.spacedBy(sp.sm),
                     ) {
                         ReminderInterval.entries.forEach { interval ->
                             val isSelected = selectedInterval == interval
-                            val label = when (interval) {
-                                ReminderInterval.DAILY   -> "Giornaliero"
-                                ReminderInterval.WEEKLY  -> "Settimanale"
-                                ReminderInterval.MONTHLY -> "Mensile"
-                            }
+                            val label =
+                                when (interval) {
+                                    ReminderInterval.DAILY -> "Giornaliero"
+                                    ReminderInterval.WEEKLY -> "Settimanale"
+                                    ReminderInterval.MONTHLY -> "Mensile"
+                                }
                             Surface(
                                 shape = shapes.chip,
                                 color = if (isSelected) cs.primary else cs.surfaceVariant,
-                                border = BorderStroke(
-                                    1.dp,
-                                    if (isSelected) cs.primary else cs.outlineVariant
-                                ),
-                                modifier = Modifier
-                                    .weight(1f)
-                                    .clickable { selectedInterval = interval }
+                                border =
+                                    BorderStroke(
+                                        1.dp,
+                                        if (isSelected) cs.primary else cs.outlineVariant,
+                                    ),
+                                modifier =
+                                    Modifier
+                                        .weight(1f)
+                                        .clickable { selectedInterval = interval },
                             ) {
                                 Text(
                                     text = label,
@@ -262,7 +269,7 @@ fun RemindersSheet(
                                     color = if (isSelected) cs.onPrimary else cs.onSurfaceVariant,
                                     textAlign = TextAlign.Center,
                                     modifier = Modifier.padding(vertical = sp.sm, horizontal = 2.dp),
-                                    maxLines = 1
+                                    maxLines = 1,
                                 )
                             }
                         }
@@ -273,30 +280,33 @@ fun RemindersSheet(
                     Text(
                         text = "Orario della somministrazione",
                         style = MaterialTheme.typography.labelLarge,
-                        color = cs.onSurfaceVariant
+                        color = cs.onSurfaceVariant,
                     )
                     Spacer(modifier = Modifier.height(sp.sm))
 
-                    val timePickerColors = TimePickerDefaults.colors(
-                        clockDialSelectedContentColor = cs.onPrimary,
-                        selectorColor = cs.primary,
-                        timeSelectorSelectedContainerColor = cs.primaryContainer,
-                        timeSelectorSelectedContentColor = cs.onPrimaryContainer,
-                        periodSelectorSelectedContainerColor = cs.primaryContainer,
-                        periodSelectorSelectedContentColor = cs.onPrimaryContainer
-                    )
+                    val timePickerColors =
+                        TimePickerDefaults.colors(
+                            clockDialSelectedContentColor = cs.onPrimary,
+                            selectorColor = cs.primary,
+                            timeSelectorSelectedContainerColor = cs.primaryContainer,
+                            timeSelectorSelectedContentColor = cs.onPrimaryContainer,
+                            periodSelectorSelectedContainerColor = cs.primaryContainer,
+                            periodSelectorSelectedContentColor = cs.onPrimaryContainer,
+                        )
                     Card(
                         modifier = Modifier.fillMaxWidth(),
                         shape = shapes.card,
-                        colors = CardDefaults.cardColors(
-                            containerColor = cs.surfaceVariant.copy(alpha = 0.7f)
-                        )
+                        colors =
+                            CardDefaults.cardColors(
+                                containerColor = cs.surfaceVariant.copy(alpha = 0.7f),
+                            ),
                     ) {
                         Box(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(sp.base),
-                            contentAlignment = Alignment.Center
+                            modifier =
+                                Modifier
+                                    .fillMaxWidth()
+                                    .padding(sp.base),
+                            contentAlignment = Alignment.Center,
                         ) {
                             if (isCompact) {
                                 TimeInput(state = timePickerState, colors = timePickerColors)
@@ -310,22 +320,24 @@ fun RemindersSheet(
 
                     Row(
                         modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.spacedBy(sp.base)
+                        horizontalArrangement = Arrangement.spacedBy(sp.base),
                     ) {
                         RoundedTextField(
                             value = durationDays,
                             onValueChange = { if (it.isEmpty() || it.all { c -> c.isDigit() }) durationDays = it },
                             label = {
-                                Text(when (selectedInterval) {
-                                    ReminderInterval.DAILY   -> "Durata (Giorni)"
-                                    ReminderInterval.WEEKLY  -> "Durata (Settimane)"
-                                    ReminderInterval.MONTHLY -> "Durata (Mesi)"
-                                })
+                                Text(
+                                    when (selectedInterval) {
+                                        ReminderInterval.DAILY -> "Durata (Giorni)"
+                                        ReminderInterval.WEEKLY -> "Durata (Settimane)"
+                                        ReminderInterval.MONTHLY -> "Durata (Mesi)"
+                                    },
+                                )
                             },
                             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                             modifier = Modifier.weight(1f),
                             singleLine = true,
-                            shape = shapes.card
+                            shape = shapes.card,
                         )
                         if (selectedInterval == ReminderInterval.MONTHLY) {
                             RoundedTextField(
@@ -335,7 +347,7 @@ fun RemindersSheet(
                                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                                 modifier = Modifier.weight(1f),
                                 singleLine = true,
-                                shape = shapes.card
+                                shape = shapes.card,
                             )
                         }
                     }
@@ -345,13 +357,13 @@ fun RemindersSheet(
                         Text(
                             text = "Giorno della settimana",
                             style = MaterialTheme.typography.labelLarge,
-                            color = cs.onSurfaceVariant
+                            color = cs.onSurfaceVariant,
                         )
                         Spacer(modifier = Modifier.height(sp.sm))
                         val daysOfWeek = listOf("L", "M", "M", "G", "V", "S", "D")
                         Row(
                             modifier = Modifier.fillMaxWidth(),
-                            horizontalArrangement = Arrangement.SpaceEvenly
+                            horizontalArrangement = Arrangement.SpaceEvenly,
                         ) {
                             daysOfWeek.forEachIndexed { index, day ->
                                 val dayNumber = index + 1
@@ -361,10 +373,11 @@ fun RemindersSheet(
                                     onClick = { daySelection = dayNumber.toString() },
                                     label = { Text(day, style = MaterialTheme.typography.bodyMedium) },
                                     shape = shapes.chip,
-                                    colors = FilterChipDefaults.filterChipColors(
-                                        selectedContainerColor = cs.primaryContainer,
-                                        selectedLabelColor = cs.onPrimaryContainer
-                                    )
+                                    colors =
+                                        FilterChipDefaults.filterChipColors(
+                                            selectedContainerColor = cs.primaryContainer,
+                                            selectedLabelColor = cs.onPrimaryContainer,
+                                        ),
                                 )
                             }
                         }
@@ -377,15 +390,16 @@ fun RemindersSheet(
                             val dur = durationDays.toIntOrNull() ?: 1
                             val ds = daySelection.toIntOrNull() ?: 1
 
-                            val reminder = Reminder(
-                                id = seriesId,
-                                drugName = drugName,
-                                interval = selectedInterval,
-                                daySelection = if (selectedInterval == ReminderInterval.DAILY) 0 else ds,
-                                hour = timePickerState.hour,
-                                minute = timePickerState.minute,
-                                durationDays = dur
-                            )
+                            val reminder =
+                                Reminder(
+                                    id = seriesId,
+                                    drugName = drugName,
+                                    interval = selectedInterval,
+                                    daySelection = if (selectedInterval == ReminderInterval.DAILY) 0 else ds,
+                                    hour = timePickerState.hour,
+                                    minute = timePickerState.minute,
+                                    durationDays = dur,
+                                )
                             viewModel.addReminder(reminder)
                             ReminderManager.scheduleReminder(
                                 context = context,
@@ -395,13 +409,13 @@ fun RemindersSheet(
                                 daySelection = ds,
                                 hour = timePickerState.hour,
                                 minute = timePickerState.minute,
-                                duration = dur
+                                duration = dur,
                             )
                             Toast.makeText(context, "Promemoria impostato!", Toast.LENGTH_SHORT).show()
                             onDismissRequest()
                         },
                         label = "Salva Promemoria",
-                        modifier = Modifier.fillMaxWidth()
+                        modifier = Modifier.fillMaxWidth(),
                     )
                 }
             }

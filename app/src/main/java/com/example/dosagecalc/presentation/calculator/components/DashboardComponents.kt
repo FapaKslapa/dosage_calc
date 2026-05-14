@@ -19,7 +19,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.ui.draw.scale
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.List
 import androidx.compose.material.icons.filled.DateRange
@@ -36,6 +35,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -53,21 +53,24 @@ private data class ShortcutItem(
     val subtitle: String,
     val variant: ShortcutColorVariant,
     val shape: Shape,
-    val onClick: () -> Unit
+    val onClick: () -> Unit,
 )
 
 private data class ResolvedShortcutColors(
     val container: Color,
     val iconBg: Color,
     val iconTint: Color,
-    val text: Color
+    val text: Color,
 )
 
-private fun resolveColors(variant: ShortcutColorVariant, cs: ColorScheme) = when (variant) {
-    ShortcutColorVariant.PRIMARY   -> ResolvedShortcutColors(cs.primaryContainer,   cs.primary,   cs.onPrimary,   cs.onPrimaryContainer)
+private fun resolveColors(
+    variant: ShortcutColorVariant,
+    cs: ColorScheme,
+) = when (variant) {
+    ShortcutColorVariant.PRIMARY -> ResolvedShortcutColors(cs.primaryContainer, cs.primary, cs.onPrimary, cs.onPrimaryContainer)
     ShortcutColorVariant.SECONDARY -> ResolvedShortcutColors(cs.secondaryContainer, cs.secondary, cs.onSecondary, cs.onSecondaryContainer)
-    ShortcutColorVariant.TERTIARY  -> ResolvedShortcutColors(cs.tertiaryContainer,  cs.tertiary,  cs.onTertiary,  cs.onTertiaryContainer)
-    ShortcutColorVariant.ERROR     -> ResolvedShortcutColors(cs.errorContainer,     cs.error,     cs.onError,     cs.onErrorContainer)
+    ShortcutColorVariant.TERTIARY -> ResolvedShortcutColors(cs.tertiaryContainer, cs.tertiary, cs.onTertiary, cs.onTertiaryContainer)
+    ShortcutColorVariant.ERROR -> ResolvedShortcutColors(cs.errorContainer, cs.error, cs.onError, cs.onErrorContainer)
 }
 
 @Composable
@@ -76,21 +79,55 @@ fun DashboardShortcuts(
     onNavigateToPatients: () -> Unit,
     onNavigateToHistory: () -> Unit,
     onNavigateToReminders: () -> Unit = {},
-    onNavigateToAddData: () -> Unit = {}
+    onNavigateToAddData: () -> Unit = {},
 ) {
     val shapes = LocalDosageShapes.current
-    val items = listOf(
-        ShortcutItem(Icons.Filled.Person,            "Pazienti",   "Pazienti",   "Anagrafica",        ShortcutColorVariant.SECONDARY, shapes.expressiveMirror, onNavigateToPatients),
-        ShortcutItem(Icons.AutoMirrored.Filled.List, "Storico",    "Storico",    "Calcoli Passati",   ShortcutColorVariant.TERTIARY,  shapes.tile,             onNavigateToHistory),
-        ShortcutItem(Icons.Filled.DateRange,         "Calendario", "Calendario", "Promemoria Attivi", ShortcutColorVariant.PRIMARY,   shapes.tile,             onNavigateToReminders),
-        ShortcutItem(Icons.Rounded.Add,              "Nuovo",      "Nuovo",      "Aggiungi Farmaco",  ShortcutColorVariant.ERROR,     shapes.expressive,       onNavigateToAddData)
-    )
+    val items =
+        listOf(
+            ShortcutItem(
+                Icons.Filled.Person,
+                "Pazienti",
+                "Pazienti",
+                "Anagrafica",
+                ShortcutColorVariant.SECONDARY,
+                shapes.expressiveMirror,
+                onNavigateToPatients,
+            ),
+            ShortcutItem(
+                Icons.AutoMirrored.Filled.List,
+                "Storico",
+                "Storico",
+                "Calcoli Passati",
+                ShortcutColorVariant.TERTIARY,
+                shapes.tile,
+                onNavigateToHistory,
+            ),
+            ShortcutItem(
+                Icons.Filled.DateRange,
+                "Calendario",
+                "Calendario",
+                "Promemoria Attivi",
+                ShortcutColorVariant.PRIMARY,
+                shapes.tile,
+                onNavigateToReminders,
+            ),
+            ShortcutItem(
+                Icons.Rounded.Add,
+                "Nuovo",
+                "Nuovo",
+                "Aggiungi Farmaco",
+                ShortcutColorVariant.ERROR,
+                shapes.expressive,
+                onNavigateToAddData,
+            ),
+        )
 
     Row(
-        modifier = modifier
-            .fillMaxWidth()
-            .horizontalScroll(rememberScrollState())
-            .padding(horizontal = MaterialTheme.spacing.lg)
+        modifier =
+            modifier
+                .fillMaxWidth()
+                .horizontalScroll(rememberScrollState())
+                .padding(horizontal = MaterialTheme.spacing.lg),
     ) {
         items.forEachIndexed { index, item ->
             ShortcutCard(item)
@@ -106,11 +143,12 @@ private fun ShortcutCard(item: ShortcutItem) {
     val isPressed by interactionSource.collectIsPressedAsState()
     val scale by animateFloatAsState(
         targetValue = if (isPressed) 0.93f else 1f,
-        animationSpec = spring(
-            dampingRatio = Spring.DampingRatioMediumBouncy,
-            stiffness = Spring.StiffnessMediumLow
-        ),
-        label = "shortcut_scale"
+        animationSpec =
+            spring(
+                dampingRatio = Spring.DampingRatioMediumBouncy,
+                stiffness = Spring.StiffnessMediumLow,
+            ),
+        label = "shortcut_scale",
     )
 
     Card(
@@ -119,25 +157,25 @@ private fun ShortcutCard(item: ShortcutItem) {
         interactionSource = interactionSource,
         shape = item.shape,
         colors = CardDefaults.cardColors(containerColor = colors.container),
-        elevation = CardDefaults.cardElevation(defaultElevation = LocalElevation.current.level3)
+        elevation = CardDefaults.cardElevation(defaultElevation = LocalElevation.current.level3),
     ) {
         Column(
             modifier = Modifier.fillMaxSize().padding(MaterialTheme.spacing.base),
-            horizontalAlignment = Alignment.Start
+            horizontalAlignment = Alignment.Start,
         ) {
             Box(
-                modifier = Modifier.background(colors.iconBg, CircleShape).padding(MaterialTheme.spacing.sm)
+                modifier = Modifier.background(colors.iconBg, CircleShape).padding(MaterialTheme.spacing.sm),
             ) {
                 Icon(
                     imageVector = item.icon,
                     contentDescription = item.iconDescription,
                     tint = colors.iconTint,
-                    modifier = Modifier.size(20.dp)
+                    modifier = Modifier.size(20.dp),
                 )
             }
             Spacer(modifier = Modifier.weight(1f))
-            Text(item.title,    style = MaterialTheme.typography.titleMedium, color = colors.text)
-            Text(item.subtitle, style = MaterialTheme.typography.bodySmall,   color = colors.text.copy(alpha = 0.7f))
+            Text(item.title, style = MaterialTheme.typography.titleMedium, color = colors.text)
+            Text(item.subtitle, style = MaterialTheme.typography.bodySmall, color = colors.text.copy(alpha = 0.7f))
         }
     }
 }

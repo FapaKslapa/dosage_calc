@@ -27,7 +27,7 @@ fun AnthropometricInputsGroup(
     weightHint: String? = null,
     heightHint: String? = null,
     ageHint: String? = null,
-    verticalSpacing: Dp = 24.dp
+    verticalSpacing: Dp = 24.dp,
 ) {
     PatientInputField(
         label = "Peso",
@@ -40,7 +40,7 @@ fun AnthropometricInputsGroup(
         activeColor = MaterialTheme.colorScheme.primary,
         inactiveColor = MaterialTheme.colorScheme.primaryContainer,
         errorMessage = weightError,
-        hintMessage = weightHint
+        hintMessage = weightHint,
     )
 
     if (showHeight) {
@@ -56,7 +56,7 @@ fun AnthropometricInputsGroup(
             activeColor = MaterialTheme.colorScheme.secondary,
             inactiveColor = MaterialTheme.colorScheme.secondaryContainer,
             errorMessage = heightError,
-            hintMessage = heightHint
+            hintMessage = heightHint,
         )
     }
 
@@ -75,6 +75,6 @@ fun AnthropometricInputsGroup(
         activeColor = MaterialTheme.colorScheme.tertiary,
         inactiveColor = MaterialTheme.colorScheme.tertiaryContainer,
         errorMessage = ageError,
-        hintMessage = ageHint
+        hintMessage = ageHint,
     )
 }

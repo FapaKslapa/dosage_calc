@@ -11,7 +11,6 @@ import org.junit.jupiter.params.provider.CsvSource
 
 @DisplayName("CalculateBsaUseCase - Mosteller & Du Bois")
 class CalculateBsaUseCaseTest {
-
     private lateinit var calculateBsa: CalculateBsaUseCase
 
     @BeforeEach
@@ -23,10 +22,12 @@ class CalculateBsaUseCaseTest {
     @CsvSource(
         "70.0, 175.0, 1.8447",
         "60.0, 165.0, 1.6583",
-        "20.0, 120.0, 0.8165"
+        "20.0, 120.0, 0.8165",
     )
     fun `Mosteller BSA calcolato correttamente`(
-        weightKg: Double, heightCm: Double, expectedBsa: Double
+        weightKg: Double,
+        heightCm: Double,
+        expectedBsa: Double,
     ) {
         val result = calculateBsa(weightKg, heightCm, BsaFormulaType.MOSTELLER)
         assertEquals(expectedBsa, result, 0.0001)
@@ -36,10 +37,12 @@ class CalculateBsaUseCaseTest {
     @CsvSource(
         "70.0, 175.0, 1.8481",
         "60.0, 165.0, 1.6587",
-        "20.0, 120.0, 0.8255"
+        "20.0, 120.0, 0.8255",
     )
     fun `Du Bois BSA calcolato correttamente`(
-        weightKg: Double, heightCm: Double, expectedBsa: Double
+        weightKg: Double,
+        heightCm: Double,
+        expectedBsa: Double,
     ) {
         val result = calculateBsa(weightKg, heightCm, BsaFormulaType.DU_BOIS)
         assertEquals(expectedBsa, result, 0.0001)

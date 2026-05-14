@@ -21,20 +21,22 @@ fun WavySlider(
     modifier: Modifier = Modifier,
     valueRange: ClosedFloatingPointRange<Float> = 0f..1f,
     activeColor: Color,
-    inactiveColor: Color
+    inactiveColor: Color,
 ) {
     Slider(
         value = value,
         onValueChange = onValueChange,
         modifier = modifier,
         valueRange = valueRange,
-        colors = SliderDefaults.colors(
-            thumbColor = activeColor,
-            activeTrackColor = Color.Transparent,
-            inactiveTrackColor = Color.Transparent
-        ),
+        colors =
+            SliderDefaults.colors(
+                thumbColor = activeColor,
+                activeTrackColor = Color.Transparent,
+                inactiveTrackColor = Color.Transparent,
+            ),
         track = { sliderState ->
-            val fraction = (value - valueRange.start) /
+            val fraction =
+                (value - valueRange.start) /
                     (valueRange.endInclusive - valueRange.start).coerceAtLeast(0.01f)
 
             Canvas(modifier = Modifier.fillMaxWidth().height(48.dp)) {
@@ -49,7 +51,7 @@ fun WavySlider(
                         start = Offset(activeWidth, midY),
                         end = Offset(size.width, midY),
                         strokeWidth = 4.dp.toPx(),
-                        cap = StrokeCap.Round
+                        cap = StrokeCap.Round,
                     )
                 }
 
@@ -66,11 +68,10 @@ fun WavySlider(
                     drawPath(
                         path = path,
                         color = activeColor,
-                        style = Stroke(width = 4.dp.toPx(), cap = StrokeCap.Round)
+                        style = Stroke(width = 4.dp.toPx(), cap = StrokeCap.Round),
                     )
                 }
             }
-        }
+        },
     )
 }
-

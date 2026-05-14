@@ -37,25 +37,25 @@ fun PatientCard(
     patient: Patient,
     onClick: () -> Unit,
     onDeleteClick: () -> Unit,
-    onEditClick: () -> Unit = {}
+    onEditClick: () -> Unit = {},
 ) {
     val sp = MaterialTheme.spacing
     val shapes = LocalDosageShapes.current
     val cs = MaterialTheme.colorScheme
 
     ExpressiveCard(
-        onClick  = onClick,
-        modifier = Modifier.fillMaxWidth()
+        onClick = onClick,
+        modifier = Modifier.fillMaxWidth(),
     ) {
         Column(modifier = Modifier.padding(horizontal = sp.lg, vertical = sp.base)) {
-
             Text(
                 text = "${patient.surname}, ${patient.name}",
-                style = MaterialTheme.typography.titleLarge.copy(
-                    fontFamily = FontFamily.Serif,
-                    fontWeight = FontWeight.SemiBold
-                ),
-                color = cs.onSurface
+                style =
+                    MaterialTheme.typography.titleLarge.copy(
+                        fontFamily = FontFamily.Serif,
+                        fontWeight = FontWeight.SemiBold,
+                    ),
+                color = cs.onSurface,
             )
 
             Spacer(modifier = Modifier.height(sp.sm))
@@ -66,7 +66,7 @@ fun PatientCard(
                         text = "${patient.weightKg} kg",
                         style = MaterialTheme.typography.labelMedium.copy(fontWeight = FontWeight.Medium),
                         modifier = Modifier.padding(horizontal = sp.sm, vertical = sp.xs),
-                        color = cs.onSecondaryContainer
+                        color = cs.onSecondaryContainer,
                     )
                 }
                 if (patient.heightCm != null) {
@@ -75,7 +75,7 @@ fun PatientCard(
                             text = "${patient.heightCm} cm",
                             style = MaterialTheme.typography.labelMedium.copy(fontWeight = FontWeight.Medium),
                             modifier = Modifier.padding(horizontal = sp.sm, vertical = sp.xs),
-                            color = cs.onTertiaryContainer
+                            color = cs.onTertiaryContainer,
                         )
                     }
                 }
@@ -84,7 +84,7 @@ fun PatientCard(
                         text = "${patient.ageYears} aa",
                         style = MaterialTheme.typography.labelMedium.copy(fontWeight = FontWeight.Medium),
                         modifier = Modifier.padding(horizontal = sp.sm, vertical = sp.xs),
-                        color = cs.onSurfaceVariant
+                        color = cs.onSurfaceVariant,
                     )
                 }
             }
@@ -96,23 +96,23 @@ fun PatientCard(
                         Surface(
                             shape = shapes.chip,
                             color = cs.errorContainer.copy(alpha = 0.55f),
-                            border = BorderStroke(0.5.dp, cs.error.copy(alpha = 0.4f))
+                            border = BorderStroke(0.5.dp, cs.error.copy(alpha = 0.4f)),
                         ) {
                             Row(
                                 modifier = Modifier.padding(horizontal = sp.sm, vertical = 4.dp),
-                                verticalAlignment = Alignment.CenterVertically
+                                verticalAlignment = Alignment.CenterVertically,
                             ) {
                                 Icon(
                                     Icons.Rounded.Warning,
                                     contentDescription = null,
                                     tint = cs.error,
-                                    modifier = Modifier.size(11.dp)
+                                    modifier = Modifier.size(11.dp),
                                 )
                                 Spacer(modifier = Modifier.width(3.dp))
                                 Text(
                                     text = "IRC",
                                     style = MaterialTheme.typography.labelSmall.copy(fontSize = 10.sp),
-                                    color = cs.error
+                                    color = cs.error,
                                 )
                             }
                         }
@@ -121,23 +121,23 @@ fun PatientCard(
                         Surface(
                             shape = shapes.chip,
                             color = cs.tertiaryContainer.copy(alpha = 0.7f),
-                            border = BorderStroke(0.5.dp, cs.tertiary.copy(alpha = 0.4f))
+                            border = BorderStroke(0.5.dp, cs.tertiary.copy(alpha = 0.4f)),
                         ) {
                             Row(
                                 modifier = Modifier.padding(horizontal = sp.sm, vertical = 4.dp),
-                                verticalAlignment = Alignment.CenterVertically
+                                verticalAlignment = Alignment.CenterVertically,
                             ) {
                                 Icon(
                                     Icons.Rounded.Warning,
                                     contentDescription = null,
                                     tint = cs.tertiary,
-                                    modifier = Modifier.size(11.dp)
+                                    modifier = Modifier.size(11.dp),
                                 )
                                 Spacer(modifier = Modifier.width(3.dp))
                                 Text(
                                     text = "Epat.",
                                     style = MaterialTheme.typography.labelSmall.copy(fontSize = 10.sp),
-                                    color = cs.tertiary
+                                    color = cs.tertiary,
                                 )
                             }
                         }
@@ -148,22 +148,22 @@ fun PatientCard(
             Spacer(modifier = Modifier.height(sp.sm))
             HorizontalDivider(
                 color = cs.outlineVariant,
-                thickness = 0.5.dp
+                thickness = 0.5.dp,
             )
 
             Row(
                 modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(sp.xs, Alignment.End)
+                horizontalArrangement = Arrangement.spacedBy(sp.xs, Alignment.End),
             ) {
                 Surface(
-                    onClick  = onEditClick,
-                    shape    = shapes.chip,
-                    color    = cs.surface,
-                    border   = BorderStroke(1.dp, cs.outlineVariant)
+                    onClick = onEditClick,
+                    shape = shapes.chip,
+                    color = cs.surface,
+                    border = BorderStroke(1.dp, cs.outlineVariant),
                 ) {
                     Row(
                         modifier = Modifier.padding(horizontal = sp.sm, vertical = 5.dp),
-                        verticalAlignment = Alignment.CenterVertically
+                        verticalAlignment = Alignment.CenterVertically,
                     ) {
                         Icon(Icons.Filled.Edit, contentDescription = "Modifica", tint = cs.primary, modifier = Modifier.size(13.dp))
                         Spacer(modifier = Modifier.width(3.dp))
@@ -171,14 +171,14 @@ fun PatientCard(
                     }
                 }
                 Surface(
-                    onClick  = onDeleteClick,
-                    shape    = shapes.chip,
-                    color    = cs.errorContainer.copy(alpha = 0.45f),
-                    border   = BorderStroke(1.dp, cs.error.copy(alpha = 0.45f))
+                    onClick = onDeleteClick,
+                    shape = shapes.chip,
+                    color = cs.errorContainer.copy(alpha = 0.45f),
+                    border = BorderStroke(1.dp, cs.error.copy(alpha = 0.45f)),
                 ) {
                     Row(
                         modifier = Modifier.padding(horizontal = sp.sm, vertical = 5.dp),
-                        verticalAlignment = Alignment.CenterVertically
+                        verticalAlignment = Alignment.CenterVertically,
                     ) {
                         Icon(Icons.Filled.Delete, contentDescription = "Elimina", tint = cs.error, modifier = Modifier.size(13.dp))
                         Spacer(modifier = Modifier.width(3.dp))

@@ -11,6 +11,5 @@ data class CalculationHistory(
     val totalDose: Double,
     val totalDoseMax: Double?,
     val unit: String,
-    val formulaUsed: String
+    val formulaUsed: String,
 )
-

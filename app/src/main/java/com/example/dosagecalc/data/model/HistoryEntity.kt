@@ -12,12 +12,12 @@ import androidx.room.PrimaryKey
             entity = PatientEntity::class,
             parentColumns = ["id"],
             childColumns = ["patientId"],
-            onDelete = ForeignKey.CASCADE
-        )
+            onDelete = ForeignKey.CASCADE,
+        ),
     ],
     indices = [
-        Index(value = ["patientId"])
-    ]
+        Index(value = ["patientId"]),
+    ],
 )
 data class HistoryEntity(
     @PrimaryKey
@@ -25,7 +25,7 @@ data class HistoryEntity(
     val patientId: String?,
     val drugId: String,
     val drugName: String,
-    val date: Long, 
+    val date: Long,
     val weightKg: Float,
     val heightCm: Float?,
     val ageYears: Int,
@@ -35,6 +35,5 @@ data class HistoryEntity(
     val calculatedTherapyDose: Double? = null,
     val doseUnit: String,
     val formulaUsed: String? = null,
-    val notes: String?
+    val notes: String?,
 )
-

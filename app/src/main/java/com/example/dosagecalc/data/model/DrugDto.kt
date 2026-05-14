@@ -27,42 +27,45 @@ data class DrugDto(
     val daysPerCycle: Int? = null,
     val numberOfCycles: Int? = null,
     val contraindications: String? = null,
-    val sideEffects: String? = null
+    val sideEffects: String? = null,
 ) {
-    fun toDomain(): Drug = Drug(
-        id                    = id,
-        name                  = name,
-        indication            = indication,
-        formulaType           = when (formulaType.lowercase()) {
-            "per_kg"          -> FormulaType.PER_KG
-            "per_m2"          -> FormulaType.PER_M2
-            "fixed"           -> FormulaType.FIXED
-            "by_range"        -> FormulaType.BY_RANGE
-            else              -> FormulaType.FIXED
-        },
-        unitDose              = unitDose,
-        unitDoseMax           = unitDoseMax,
-        unit                  = unit,
-        minWeightKg           = minWeightKg,
-        maxWeightKg           = maxWeightKg,
-        minAgeYears           = minAgeYears,
-        maxSingleDoseMcg      = maxSingleDoseMcg,
-        alert                 = alert,
-        source                = source,
-        category              = when (category?.lowercase()) {
-            "dermatology"     -> com.example.dosagecalc.domain.model.DrugCategory.DERMATOLOGY
-            "oncology"        -> com.example.dosagecalc.domain.model.DrugCategory.ONCOLOGY
-            "infectious"      -> com.example.dosagecalc.domain.model.DrugCategory.INFECTIOUS
-            "pediatrics"      -> com.example.dosagecalc.domain.model.DrugCategory.PEDIATRICS
-            else              -> com.example.dosagecalc.domain.model.DrugCategory.OTHER
-        },
-        renalDoseMultiplier   = renalDoseMultiplier,
-        hepaticDoseMultiplier = hepaticDoseMultiplier,
-        renalAlert            = renalAlert,
-        hepaticAlert          = hepaticAlert,
-        daysPerCycle          = daysPerCycle,
-        numberOfCycles        = numberOfCycles,
-        contraindications     = contraindications,
-        sideEffects           = sideEffects
-    )
+    fun toDomain(): Drug =
+        Drug(
+            id = id,
+            name = name,
+            indication = indication,
+            formulaType =
+                when (formulaType.lowercase()) {
+                    "per_kg" -> FormulaType.PER_KG
+                    "per_m2" -> FormulaType.PER_M2
+                    "fixed" -> FormulaType.FIXED
+                    "by_range" -> FormulaType.BY_RANGE
+                    else -> FormulaType.FIXED
+                },
+            unitDose = unitDose,
+            unitDoseMax = unitDoseMax,
+            unit = unit,
+            minWeightKg = minWeightKg,
+            maxWeightKg = maxWeightKg,
+            minAgeYears = minAgeYears,
+            maxSingleDoseMcg = maxSingleDoseMcg,
+            alert = alert,
+            source = source,
+            category =
+                when (category?.lowercase()) {
+                    "dermatology" -> com.example.dosagecalc.domain.model.DrugCategory.DERMATOLOGY
+                    "oncology" -> com.example.dosagecalc.domain.model.DrugCategory.ONCOLOGY
+                    "infectious" -> com.example.dosagecalc.domain.model.DrugCategory.INFECTIOUS
+                    "pediatrics" -> com.example.dosagecalc.domain.model.DrugCategory.PEDIATRICS
+                    else -> com.example.dosagecalc.domain.model.DrugCategory.OTHER
+                },
+            renalDoseMultiplier = renalDoseMultiplier,
+            hepaticDoseMultiplier = hepaticDoseMultiplier,
+            renalAlert = renalAlert,
+            hepaticAlert = hepaticAlert,
+            daysPerCycle = daysPerCycle,
+            numberOfCycles = numberOfCycles,
+            contraindications = contraindications,
+            sideEffects = sideEffects,
+        )
 }

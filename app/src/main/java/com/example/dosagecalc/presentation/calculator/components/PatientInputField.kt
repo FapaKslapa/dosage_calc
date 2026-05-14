@@ -63,7 +63,7 @@ fun PatientInputField(
     activeColor: Color,
     inactiveColor: Color,
     errorMessage: String?,
-    hintMessage: String?
+    hintMessage: String?,
 ) {
     val haptic = LocalHapticFeedback.current
     var lastHapticValue by remember { mutableFloatStateOf(sliderValue) }
@@ -73,12 +73,16 @@ fun PatientInputField(
     val sp = MaterialTheme.spacing
     val shapes = LocalDosageShapes.current
 
-    val fraction = ((sliderValue - sliderRange.start) /
-            (sliderRange.endInclusive - sliderRange.start)).coerceIn(0f, 1f)
+    val fraction =
+        (
+            (sliderValue - sliderRange.start) /
+                (sliderRange.endInclusive - sliderRange.start)
+        ).coerceIn(0f, 1f)
 
-    val displayText = value.toFloatOrNull()?.let { v ->
-        if (v == kotlin.math.floor(v.toDouble()).toFloat()) v.toLong().toString() else value
-    } ?: if (value.isEmpty()) "—" else value
+    val displayText =
+        value.toFloatOrNull()?.let { v ->
+            if (v == kotlin.math.floor(v.toDouble()).toFloat()) v.toLong().toString() else value
+        } ?: if (value.isEmpty()) "—" else value
 
     LaunchedEffect(isEditing) {
         if (isEditing) focusRequester.requestFocus()
@@ -88,43 +92,46 @@ fun PatientInputField(
         shape = shapes.tile,
         colors = CardDefaults.cardColors(containerColor = inactiveColor.copy(alpha = 0.2f)),
         elevation = CardDefaults.cardElevation(defaultElevation = 0.dp),
-        modifier = Modifier
-            .fillMaxWidth()
-            .onSizeChanged { cardWidthPx = it.width.coerceAtLeast(1) }
-            .pointerInput(sliderRange) {
-                detectHorizontalDragGestures { change, dragAmount ->
-                    change.consume()
-                    if (!isEditing) {
-                        val range = sliderRange.endInclusive - sliderRange.start
-                        val delta = (dragAmount / cardWidthPx.toFloat()) * range
-                        val newVal = (sliderValue + delta).coerceIn(sliderRange)
-                        onSliderChange(newVal)
-                        val formatted = if (keyboardType == KeyboardType.Number)
-                            newVal.toInt().toString()
-                        else
-                            String.format(Locale.US, "%.1f", newVal)
-                        onValueChange(formatted)
-                        if (kotlin.math.abs(newVal - lastHapticValue) >= 1f) {
-                            haptic.performHapticFeedback(HapticFeedbackType.TextHandleMove)
-                            lastHapticValue = newVal
+        modifier =
+            Modifier
+                .fillMaxWidth()
+                .onSizeChanged { cardWidthPx = it.width.coerceAtLeast(1) }
+                .pointerInput(sliderRange) {
+                    detectHorizontalDragGestures { change, dragAmount ->
+                        change.consume()
+                        if (!isEditing) {
+                            val range = sliderRange.endInclusive - sliderRange.start
+                            val delta = (dragAmount / cardWidthPx.toFloat()) * range
+                            val newVal = (sliderValue + delta).coerceIn(sliderRange)
+                            onSliderChange(newVal)
+                            val formatted =
+                                if (keyboardType == KeyboardType.Number) {
+                                    newVal.toInt().toString()
+                                } else {
+                                    String.format(Locale.US, "%.1f", newVal)
+                                }
+                            onValueChange(formatted)
+                            if (kotlin.math.abs(newVal - lastHapticValue) >= 1f) {
+                                haptic.performHapticFeedback(HapticFeedbackType.TextHandleMove)
+                                lastHapticValue = newVal
+                            }
                         }
                     }
-                }
-            }
+                },
     ) {
         Column(
             modifier = Modifier.padding(horizontal = sp.base, vertical = sp.md),
-            horizontalAlignment = Alignment.CenterHorizontally
+            horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
+                verticalAlignment = Alignment.CenterVertically,
             ) {
                 Text(
                     text = label,
                     style = MaterialTheme.typography.labelLarge,
-                    color = activeColor
+                    color = activeColor,
                 )
             }
 
@@ -132,7 +139,7 @@ fun PatientInputField(
 
             Box(
                 modifier = Modifier.fillMaxWidth(),
-                contentAlignment = Alignment.Center
+                contentAlignment = Alignment.Center,
             ) {
                 if (isEditing) {
                     BasicTextField(
@@ -145,39 +152,48 @@ fun PatientInputField(
                                 }
                             }
                         },
-                        keyboardOptions = KeyboardOptions(
-                            keyboardType = keyboardType,
-                            imeAction = imeAction
-                        ),
+                        keyboardOptions =
+                            KeyboardOptions(
+                                keyboardType = keyboardType,
+                                imeAction = imeAction,
+                            ),
                         keyboardActions = KeyboardActions(onAny = { isEditing = false }),
                         singleLine = true,
                         cursorBrush = SolidColor(activeColor),
-                        textStyle = MaterialTheme.typography.headlineLarge.copy(
-                            fontFamily = FontFamily.Serif,
-                            fontWeight = FontWeight.Bold,
-                            textAlign = TextAlign.Center,
-                            color = MaterialTheme.colorScheme.onSurface
-                        ),
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .focusRequester(focusRequester)
+                        textStyle =
+                            MaterialTheme.typography.headlineLarge.copy(
+                                fontFamily = FontFamily.Serif,
+                                fontWeight = FontWeight.Bold,
+                                textAlign = TextAlign.Center,
+                                color = MaterialTheme.colorScheme.onSurface,
+                            ),
+                        modifier =
+                            Modifier
+                                .fillMaxWidth()
+                                .focusRequester(focusRequester),
                     )
                 } else {
                     Text(
                         text = displayText,
-                        style = MaterialTheme.typography.headlineLarge.copy(
-                            fontFamily = FontFamily.Serif,
-                            fontWeight = FontWeight.Bold
-                        ),
-                        color = if (errorMessage != null) MaterialTheme.colorScheme.error
-                                else MaterialTheme.colorScheme.onSurface,
+                        style =
+                            MaterialTheme.typography.headlineLarge.copy(
+                                fontFamily = FontFamily.Serif,
+                                fontWeight = FontWeight.Bold,
+                            ),
+                        color =
+                            if (errorMessage != null) {
+                                MaterialTheme.colorScheme.error
+                            } else {
+                                MaterialTheme.colorScheme.onSurface
+                            },
                         textAlign = TextAlign.Center,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .clickable(
-                                interactionSource = remember { MutableInteractionSource() },
-                                indication = null
-                            ) { isEditing = true }
+                        modifier =
+                            Modifier
+                                .fillMaxWidth()
+                                .clickable(
+                                    interactionSource = remember { MutableInteractionSource() },
+                                    indication = null,
+                                ) { isEditing = true },
                     )
                 }
             }
@@ -186,7 +202,7 @@ fun PatientInputField(
                 text = suffix,
                 style = MaterialTheme.typography.labelMedium,
                 color = activeColor,
-                textAlign = TextAlign.Center
+                textAlign = TextAlign.Center,
             )
 
             Spacer(modifier = Modifier.height(sp.md))
@@ -199,19 +215,19 @@ fun PatientInputField(
 
                 drawRoundRect(
                     color = inactiveColor.copy(alpha = 0.35f),
-                    cornerRadius = CornerRadius(r)
+                    cornerRadius = CornerRadius(r),
                 )
                 if (fraction > 0f) {
                     drawRoundRect(
                         color = activeColor.copy(alpha = 0.55f),
                         size = size.copy(width = thumbX),
-                        cornerRadius = CornerRadius(r)
+                        cornerRadius = CornerRadius(r),
                     )
                 }
                 drawCircle(
                     color = activeColor,
                     radius = thumbR,
-                    center = Offset(thumbX, size.height / 2f)
+                    center = Offset(thumbX, size.height / 2f),
                 )
             }
         }
@@ -221,10 +237,14 @@ fun PatientInputField(
     if (helperText != null) {
         Text(
             text = helperText,
-            color = if (errorMessage != null) MaterialTheme.colorScheme.error
-                    else MaterialTheme.colorScheme.onSurfaceVariant,
+            color =
+                if (errorMessage != null) {
+                    MaterialTheme.colorScheme.error
+                } else {
+                    MaterialTheme.colorScheme.onSurfaceVariant
+                },
             style = MaterialTheme.typography.bodySmall,
-            modifier = Modifier.padding(start = sp.xs, top = 2.dp)
+            modifier = Modifier.padding(start = sp.xs, top = 2.dp),
         )
     }
 }

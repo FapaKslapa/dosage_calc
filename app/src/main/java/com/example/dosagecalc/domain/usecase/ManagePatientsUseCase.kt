@@ -7,25 +7,28 @@ import kotlinx.coroutines.flow.Flow
 import java.util.UUID
 import javax.inject.Inject
 
-class ManagePatientsUseCase @Inject constructor(
-    private val patientRepository: PatientRepository
-) {
-    fun getPatients(): Flow<List<Patient>> = patientRepository.getAllPatients()
+class ManagePatientsUseCase
+    @Inject
+    constructor(
+        private val patientRepository: PatientRepository,
+    ) {
+        fun getPatients(): Flow<List<Patient>> = patientRepository.getAllPatients()
 
-    fun getPatientsPaged(query: String): Flow<PagingData<Patient>> = patientRepository.getPatientsPaged(query)
+        fun getPatientsPaged(query: String): Flow<PagingData<Patient>> = patientRepository.getPatientsPaged(query)
 
-    suspend fun getPatientById(id: String): Patient? = patientRepository.getPatientById(id)
+        suspend fun getPatientById(id: String): Patient? = patientRepository.getPatientById(id)
 
-    suspend fun savePatient(patient: Patient) {
-        val toSave = if (patient.id.isBlank()) {
-            patient.copy(id = UUID.randomUUID().toString())
-        } else {
-            patient
+        suspend fun savePatient(patient: Patient) {
+            val toSave =
+                if (patient.id.isBlank()) {
+                    patient.copy(id = UUID.randomUUID().toString())
+                } else {
+                    patient
+                }
+            patientRepository.savePatient(toSave)
         }
-        patientRepository.savePatient(toSave)
-    }
 
-    suspend fun deletePatient(patientId: String) {
-        patientRepository.deletePatient(patientId)
+        suspend fun deletePatient(patientId: String) {
+            patientRepository.deletePatient(patientId)
+        }
     }
-}

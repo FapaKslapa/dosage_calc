@@ -21,8 +21,8 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Share
@@ -55,39 +55,43 @@ private data class OnboardingPage(
     val title: String,
     val description: String,
     val gradientStart: @Composable () -> androidx.compose.ui.graphics.Color,
-    val gradientEnd: @Composable () -> androidx.compose.ui.graphics.Color
+    val gradientEnd: @Composable () -> androidx.compose.ui.graphics.Color,
 )
 
 @Composable
 fun OnboardingScreen(onFinish: () -> Unit) {
-    val pages = listOf(
-        OnboardingPage(
-            icon = Icons.Rounded.CheckCircle,
-            title = "Calcola con Precisione",
-            description = "Dosi per peso (mg/kg), superficie corporea (BSA) e dosi fisse. " +
-                          "Correzione automatica per insufficienza renale ed epatica. " +
-                          "Tetto di sicurezza sempre applicato.",
-            gradientStart = { MaterialTheme.colorScheme.primary },
-            gradientEnd   = { MaterialTheme.colorScheme.primaryContainer }
-        ),
-        OnboardingPage(
-            icon = Icons.Filled.Person,
-            title = "Gestisci i Pazienti",
-            description = "Salva la cartella paziente con peso, altezza, età e patologie. " +
-                          "Richiama i dati in un tap per ricalcoli futuri e consulta lo storico completo.",
-            gradientStart = { MaterialTheme.colorScheme.secondary },
-            gradientEnd   = { MaterialTheme.colorScheme.secondaryContainer }
-        ),
-        OnboardingPage(
-            icon = Icons.Filled.Share,
-            title = "Condividi e Monitora",
-            description = "Esporta il referto in PDF con grafica professionale. " +
-                          "Imposta promemoria per le somministrazioni. " +
-                          "Consulta tutto lo storico dei calcoli.",
-            gradientStart = { MaterialTheme.colorScheme.tertiary },
-            gradientEnd   = { MaterialTheme.colorScheme.tertiaryContainer }
+    val pages =
+        listOf(
+            OnboardingPage(
+                icon = Icons.Rounded.CheckCircle,
+                title = "Calcola con Precisione",
+                description =
+                    "Dosi per peso (mg/kg), superficie corporea (BSA) e dosi fisse. " +
+                        "Correzione automatica per insufficienza renale ed epatica. " +
+                        "Tetto di sicurezza sempre applicato.",
+                gradientStart = { MaterialTheme.colorScheme.primary },
+                gradientEnd = { MaterialTheme.colorScheme.primaryContainer },
+            ),
+            OnboardingPage(
+                icon = Icons.Filled.Person,
+                title = "Gestisci i Pazienti",
+                description =
+                    "Salva la cartella paziente con peso, altezza, età e patologie. " +
+                        "Richiama i dati in un tap per ricalcoli futuri e consulta lo storico completo.",
+                gradientStart = { MaterialTheme.colorScheme.secondary },
+                gradientEnd = { MaterialTheme.colorScheme.secondaryContainer },
+            ),
+            OnboardingPage(
+                icon = Icons.Filled.Share,
+                title = "Condividi e Monitora",
+                description =
+                    "Esporta il referto in PDF con grafica professionale. " +
+                        "Imposta promemoria per le somministrazioni. " +
+                        "Consulta tutto lo storico dei calcoli.",
+                gradientStart = { MaterialTheme.colorScheme.tertiary },
+                gradientEnd = { MaterialTheme.colorScheme.tertiaryContainer },
+            ),
         )
-    )
 
     val pagerState = rememberPagerState(pageCount = { pages.size })
     val scope = rememberCoroutineScope()
@@ -97,43 +101,50 @@ fun OnboardingScreen(onFinish: () -> Unit) {
     Box(modifier = Modifier.fillMaxSize().background(MaterialTheme.colorScheme.background)) {
         HorizontalPager(
             state = pagerState,
-            modifier = Modifier.fillMaxSize()
+            modifier = Modifier.fillMaxSize(),
         ) { index ->
             OnboardingPageContent(page = pages[index])
         }
 
         Row(
-            modifier = Modifier
-                .align(Alignment.BottomCenter)
-                .navigationBarsPadding()
-                .padding(bottom = sp.bottomBarClearance - 8.dp),
-            horizontalArrangement = Arrangement.spacedBy(sp.sm)
+            modifier =
+                Modifier
+                    .align(Alignment.BottomCenter)
+                    .navigationBarsPadding()
+                    .padding(bottom = sp.bottomBarClearance - 8.dp),
+            horizontalArrangement = Arrangement.spacedBy(sp.sm),
         ) {
             repeat(pages.size) { index ->
                 val isSelected = pagerState.currentPage == index
                 val color by animateColorAsState(
-                    targetValue = if (isSelected) MaterialTheme.colorScheme.primary
-                                  else MaterialTheme.colorScheme.onBackground.copy(alpha = 0.2f),
+                    targetValue =
+                        if (isSelected) {
+                            MaterialTheme.colorScheme.primary
+                        } else {
+                            MaterialTheme.colorScheme.onBackground.copy(alpha = 0.2f)
+                        },
                     animationSpec = tween(300),
-                    label = "dot_color"
+                    label = "dot_color",
                 )
                 Box(
-                    modifier = Modifier
-                        .size(if (isSelected) 24.dp else 8.dp, 8.dp)
-                        .clip(shapes.pill)
-                        .background(color)
+                    modifier =
+                        Modifier
+                            .size(if (isSelected) 24.dp else 8.dp, 8.dp)
+                            .clip(shapes.pill)
+                            .background(color),
                 )
             }
         }
 
         Row(
-            modifier = Modifier
-                .align(Alignment.BottomCenter)
-                .navigationBarsPadding()
-                .fillMaxWidth()
-                .padding(horizontal = sp.xl, vertical = sp.xl),
+            modifier =
+                Modifier
+                    .align(Alignment.BottomCenter)
+                    .navigationBarsPadding()
+                    .fillMaxWidth()
+                    .padding(horizontal = sp.xl, vertical = sp.xl),
             horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically
+            verticalAlignment = Alignment.CenterVertically,
         ) {
             if (pagerState.currentPage < pages.lastIndex) {
                 TextButton(onClick = onFinish) {
@@ -153,13 +164,14 @@ fun OnboardingScreen(onFinish: () -> Unit) {
                 },
                 shape = shapes.pill,
                 modifier = Modifier.height(52.dp).width(140.dp),
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = MaterialTheme.colorScheme.primary
-                )
+                colors =
+                    ButtonDefaults.buttonColors(
+                        containerColor = MaterialTheme.colorScheme.primary,
+                    ),
             ) {
                 Text(
                     text = if (pagerState.currentPage < pages.lastIndex) "Avanti" else "Inizia",
-                    style = MaterialTheme.typography.titleMedium
+                    style = MaterialTheme.typography.titleMedium,
                 )
             }
         }
@@ -170,56 +182,62 @@ fun OnboardingScreen(onFinish: () -> Unit) {
 private fun OnboardingPageContent(page: OnboardingPage) {
     val shapes = LocalDosageShapes.current
     BoxWithConstraints(
-        modifier = Modifier.fillMaxSize().statusBarsPadding()
+        modifier = Modifier.fillMaxSize().statusBarsPadding(),
     ) {
         val isLandscape = maxWidth > maxHeight
 
         if (isLandscape) {
             Row(modifier = Modifier.fillMaxSize()) {
                 Box(
-                    modifier = Modifier
-                        .fillMaxHeight()
-                        .weight(0.4f)
-                        .clip(androidx.compose.foundation.shape.RoundedCornerShape(topEnd = 48.dp, bottomEnd = 48.dp))
-                        .background(
-                            Brush.verticalGradient(listOf(page.gradientStart(), page.gradientEnd()))
-                        ),
-                    contentAlignment = Alignment.Center
+                    modifier =
+                        Modifier
+                            .fillMaxHeight()
+                            .weight(0.4f)
+                            .clip(
+                                androidx.compose.foundation.shape
+                                    .RoundedCornerShape(topEnd = 48.dp, bottomEnd = 48.dp),
+                            ).background(
+                                Brush.verticalGradient(listOf(page.gradientStart(), page.gradientEnd())),
+                            ),
+                    contentAlignment = Alignment.Center,
                 ) {
                     Box(
-                        modifier = Modifier
-                            .size(100.dp)
-                            .background(page.gradientEnd().copy(alpha = 0.3f), CircleShape),
-                        contentAlignment = Alignment.Center
+                        modifier =
+                            Modifier
+                                .size(100.dp)
+                                .background(page.gradientEnd().copy(alpha = 0.3f), CircleShape),
+                        contentAlignment = Alignment.Center,
                     ) {
                         Icon(
                             imageVector = page.icon,
                             contentDescription = null,
                             tint = page.gradientStart(),
-                            modifier = Modifier.size(56.dp)
+                            modifier = Modifier.size(56.dp),
                         )
                     }
                 }
 
                 Column(
-                    modifier = Modifier
-                        .weight(0.6f)
-                        .fillMaxHeight()
-                        .verticalScroll(rememberScrollState())
-                        .padding(horizontal = 32.dp, vertical = 24.dp)
-                        .navigationBarsPadding(),
+                    modifier =
+                        Modifier
+                            .weight(0.6f)
+                            .fillMaxHeight()
+                            .verticalScroll(rememberScrollState())
+                            .padding(horizontal = 32.dp, vertical = 24.dp)
+                            .navigationBarsPadding(),
                     horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.Center
+                    verticalArrangement = Arrangement.Center,
                 ) {
                     Text(
                         text = page.title,
-                        style = MaterialTheme.typography.headlineMedium.copy(
-                            fontFamily = FontFamily.Serif,
-                            fontWeight = FontWeight.Bold,
-                            lineHeight = 34.sp
-                        ),
+                        style =
+                            MaterialTheme.typography.headlineMedium.copy(
+                                fontFamily = FontFamily.Serif,
+                                fontWeight = FontWeight.Bold,
+                                lineHeight = 34.sp,
+                            ),
                         textAlign = TextAlign.Center,
-                        color = MaterialTheme.colorScheme.onBackground
+                        color = MaterialTheme.colorScheme.onBackground,
                     )
                     Spacer(modifier = Modifier.height(16.dp))
                     Text(
@@ -227,57 +245,61 @@ private fun OnboardingPageContent(page: OnboardingPage) {
                         style = MaterialTheme.typography.bodyLarge,
                         textAlign = TextAlign.Center,
                         color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.7f),
-                        lineHeight = 26.sp
+                        lineHeight = 26.sp,
                     )
                 }
             }
         } else {
             Column(
                 modifier = Modifier.fillMaxSize(),
-                horizontalAlignment = Alignment.CenterHorizontally
+                horizontalAlignment = Alignment.CenterHorizontally,
             ) {
                 Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .weight(0.45f)
-                        .clip(shapes.heroLanding)
-                        .background(
-                            Brush.verticalGradient(listOf(page.gradientStart(), page.gradientEnd()))
-                        ),
-                    contentAlignment = Alignment.Center
+                    modifier =
+                        Modifier
+                            .fillMaxWidth()
+                            .weight(0.45f)
+                            .clip(shapes.heroLanding)
+                            .background(
+                                Brush.verticalGradient(listOf(page.gradientStart(), page.gradientEnd())),
+                            ),
+                    contentAlignment = Alignment.Center,
                 ) {
                     Box(
-                        modifier = Modifier
-                            .size(140.dp)
-                            .background(page.gradientEnd().copy(alpha = 0.3f), CircleShape),
-                        contentAlignment = Alignment.Center
+                        modifier =
+                            Modifier
+                                .size(140.dp)
+                                .background(page.gradientEnd().copy(alpha = 0.3f), CircleShape),
+                        contentAlignment = Alignment.Center,
                     ) {
                         Icon(
                             imageVector = page.icon,
                             contentDescription = null,
                             tint = page.gradientStart(),
-                            modifier = Modifier.size(72.dp)
+                            modifier = Modifier.size(72.dp),
                         )
                     }
                 }
 
                 Column(
-                    modifier = Modifier
-                        .weight(0.55f)
-                        .padding(horizontal = 36.dp)
-                        .padding(top = 32.dp, bottom = 160.dp),
+                    modifier =
+                        Modifier
+                            .weight(0.55f)
+                            .padding(horizontal = 36.dp)
+                            .padding(top = 32.dp, bottom = 160.dp),
                     horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.Top
+                    verticalArrangement = Arrangement.Top,
                 ) {
                     Text(
                         text = page.title,
-                        style = MaterialTheme.typography.headlineMedium.copy(
-                            fontFamily = FontFamily.Serif,
-                            fontWeight = FontWeight.Bold,
-                            lineHeight = 34.sp
-                        ),
+                        style =
+                            MaterialTheme.typography.headlineMedium.copy(
+                                fontFamily = FontFamily.Serif,
+                                fontWeight = FontWeight.Bold,
+                                lineHeight = 34.sp,
+                            ),
                         textAlign = TextAlign.Center,
-                        color = MaterialTheme.colorScheme.onBackground
+                        color = MaterialTheme.colorScheme.onBackground,
                     )
                     Spacer(modifier = Modifier.height(16.dp))
                     Text(
@@ -285,7 +307,7 @@ private fun OnboardingPageContent(page: OnboardingPage) {
                         style = MaterialTheme.typography.bodyLarge,
                         textAlign = TextAlign.Center,
                         color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.7f),
-                        lineHeight = 26.sp
+                        lineHeight = 26.sp,
                     )
                 }
             }

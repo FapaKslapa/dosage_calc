@@ -26,7 +26,7 @@ android {
             isMinifyEnabled = true
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro"
+                "proguard-rules.pro",
             )
         }
         debug {
@@ -53,10 +53,12 @@ android {
 
 tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
     compilerOptions {
-        optIn.addAll(listOf(
-            "androidx.compose.material3.ExperimentalMaterial3Api",
-            "androidx.compose.foundation.layout.ExperimentalLayoutApi"
-        ))
+        optIn.addAll(
+            listOf(
+                "androidx.compose.material3.ExperimentalMaterial3Api",
+                "androidx.compose.foundation.layout.ExperimentalLayoutApi",
+            ),
+        )
     }
 }
 

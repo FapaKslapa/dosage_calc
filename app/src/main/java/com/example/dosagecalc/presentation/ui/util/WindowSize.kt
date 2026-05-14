@@ -10,22 +10,19 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 
-val LocalWindowSizeClass = compositionLocalOf<WindowSizeClass> {
-    error("WindowSizeClass not provided — wrap root content with CompositionLocalProvider")
-}
+val LocalWindowSizeClass =
+    compositionLocalOf<WindowSizeClass> {
+        error("WindowSizeClass not provided — wrap root content with CompositionLocalProvider")
+    }
 
 @Composable
-fun isCompactHeight(): Boolean =
-    LocalWindowSizeClass.current.heightSizeClass == WindowHeightSizeClass.Compact
+fun isCompactHeight(): Boolean = LocalWindowSizeClass.current.heightSizeClass == WindowHeightSizeClass.Compact
 
 @Composable
-fun isMediumOrExpandedWidth(): Boolean =
-    LocalWindowSizeClass.current.widthSizeClass != WindowWidthSizeClass.Compact
+fun isMediumOrExpandedWidth(): Boolean = LocalWindowSizeClass.current.widthSizeClass != WindowWidthSizeClass.Compact
 
 @Composable
-fun isExpandedWidth(): Boolean =
-    LocalWindowSizeClass.current.widthSizeClass == WindowWidthSizeClass.Expanded
+fun isExpandedWidth(): Boolean = LocalWindowSizeClass.current.widthSizeClass == WindowWidthSizeClass.Expanded
 
 // no-op on phones; caps width for tablets so content doesn't stretch edge-to-edge
-fun Modifier.responsiveContentWidth(maxWidth: Dp = 640.dp): Modifier =
-    this.widthIn(max = maxWidth)
+fun Modifier.responsiveContentWidth(maxWidth: Dp = 640.dp): Modifier = this.widthIn(max = maxWidth)

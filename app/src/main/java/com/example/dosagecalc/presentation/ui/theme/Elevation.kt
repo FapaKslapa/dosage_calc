@@ -15,7 +15,7 @@ data class Elevation(
     val level0: Dp = 0.dp,
     val level1: Dp = 2.dp,
     val level2: Dp = 4.dp,
-    val level3: Dp = 8.dp
+    val level3: Dp = 8.dp,
 )
 
 val LocalElevation = staticCompositionLocalOf { Elevation() }
@@ -25,9 +25,13 @@ val MaterialTheme.elevation: Elevation
     @ReadOnlyComposable
     get() = LocalElevation.current
 
-fun Modifier.softShadow(elevation: Dp, shape: Shape): Modifier = shadow(
-    elevation    = elevation,
-    shape        = shape,
-    ambientColor = Color.Black.copy(alpha = 0.08f),
-    spotColor    = Color.Black.copy(alpha = 0.18f)
-)
+fun Modifier.softShadow(
+    elevation: Dp,
+    shape: Shape,
+): Modifier =
+    shadow(
+        elevation = elevation,
+        shape = shape,
+        ambientColor = Color.Black.copy(alpha = 0.08f),
+        spotColor = Color.Black.copy(alpha = 0.18f),
+    )

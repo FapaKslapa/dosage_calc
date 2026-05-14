@@ -11,7 +11,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.material.icons.Icons
@@ -46,11 +45,11 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.example.dosagecalc.presentation.history.HistoryViewModel
 import com.example.dosagecalc.presentation.history.components.HistoryCard
-import com.example.dosagecalc.presentation.ui.util.isCompactHeight
 import com.example.dosagecalc.presentation.ui.components.EmptyStateView
 import com.example.dosagecalc.presentation.ui.components.GradientScreenHeader
 import com.example.dosagecalc.presentation.ui.theme.LocalDosageShapes
 import com.example.dosagecalc.presentation.ui.theme.spacing
+import com.example.dosagecalc.presentation.ui.util.isCompactHeight
 import com.example.dosagecalc.presentation.utils.ExportManager
 
 @Composable
@@ -58,7 +57,7 @@ fun HistoryScreen(
     viewModel: HistoryViewModel,
     patientId: String? = null,
     onNavigateBack: () -> Unit,
-    onNavigateToAnalytics: () -> Unit
+    onNavigateToAnalytics: () -> Unit,
 ) {
     val context = LocalContext.current
     val exportManager = remember { ExportManager(context) }
@@ -77,42 +76,44 @@ fun HistoryScreen(
     }
 
     Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(MaterialTheme.colorScheme.background)
+        modifier =
+            Modifier
+                .fillMaxSize()
+                .background(MaterialTheme.colorScheme.background),
     ) {
         Column(modifier = Modifier.fillMaxSize()) {
             GradientScreenHeader(
-                colors = listOf(
-                    MaterialTheme.colorScheme.tertiary,
-                    MaterialTheme.colorScheme.tertiaryContainer
-                ),
-                modifier = Modifier.padding(bottom = 0.dp)
+                colors =
+                    listOf(
+                        MaterialTheme.colorScheme.tertiary,
+                        MaterialTheme.colorScheme.tertiaryContainer,
+                    ),
+                modifier = Modifier.padding(bottom = 0.dp),
             ) {
                 Column {
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
-                        modifier = Modifier.padding(top = sp.sm)
+                        modifier = Modifier.padding(top = sp.sm),
                     ) {
                         IconButton(onClick = onNavigateBack) {
                             Icon(
-                                imageVector        = Icons.AutoMirrored.Filled.ArrowBack,
+                                imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                                 contentDescription = "Indietro",
-                                tint               = MaterialTheme.colorScheme.onTertiary
+                                tint = MaterialTheme.colorScheme.onTertiary,
                             )
                         }
                         Text(
-                            text  = "Cronologia",
+                            text = "Cronologia",
                             style = MaterialTheme.typography.titleMedium,
-                            color = MaterialTheme.colorScheme.onTertiary.copy(alpha = 0.8f)
+                            color = MaterialTheme.colorScheme.onTertiary.copy(alpha = 0.8f),
                         )
                         Spacer(modifier = Modifier.weight(1f))
-                        
+
                         IconButton(onClick = onNavigateToAnalytics) {
                             Icon(
                                 imageVector = Icons.Default.Analytics,
                                 contentDescription = "Statistiche",
-                                tint = MaterialTheme.colorScheme.onTertiary
+                                tint = MaterialTheme.colorScheme.onTertiary,
                             )
                         }
 
@@ -124,33 +125,37 @@ fun HistoryScreen(
                             Icon(
                                 imageVector = Icons.Filled.Share,
                                 contentDescription = "Esporta CSV",
-                                tint = MaterialTheme.colorScheme.onTertiary
+                                tint = MaterialTheme.colorScheme.onTertiary,
                             )
                         }
                     }
 
                     Column(modifier = Modifier.padding(start = sp.xl, end = sp.xl, top = sp.xs)) {
                         Text(
-                            text  = filteredPatientName ?: "Storico Calcoli",
+                            text = filteredPatientName ?: "Storico Calcoli",
                             style = MaterialTheme.typography.headlineMedium.copy(fontFamily = FontFamily.Serif),
-                            color = MaterialTheme.colorScheme.onTertiary
+                            color = MaterialTheme.colorScheme.onTertiary,
                         )
                         Row(
                             verticalAlignment = Alignment.CenterVertically,
-                            modifier = Modifier.fillMaxWidth()
+                            modifier = Modifier.fillMaxWidth(),
                         ) {
                             Text(
-                                text  = if (filteredPatientName != null) "Cronologia specifica" else "Tutte le dosi calcolate",
+                                text = if (filteredPatientName != null) "Cronologia specifica" else "Tutte le dosi calcolate",
                                 style = MaterialTheme.typography.bodyLarge,
                                 color = MaterialTheme.colorScheme.onTertiary.copy(alpha = 0.9f),
-                                modifier = Modifier.weight(1f)
+                                modifier = Modifier.weight(1f),
                             )
                             if (filteredPatientName != null) {
                                 TextButton(
                                     onClick = { viewModel.setFilterPatientId(null) },
-                                    contentPadding = PaddingValues(0.dp)
+                                    contentPadding = PaddingValues(0.dp),
                                 ) {
-                                    Text("Rimuovi filtro", color = MaterialTheme.colorScheme.onTertiary, style = MaterialTheme.typography.labelMedium)
+                                    Text(
+                                        "Rimuovi filtro",
+                                        color = MaterialTheme.colorScheme.onTertiary,
+                                        style = MaterialTheme.typography.labelMedium,
+                                    )
                                 }
                             }
                         }
@@ -160,15 +165,16 @@ fun HistoryScreen(
                             onValueChange = viewModel::updateSearchQuery,
                             placeholder = { Text("Cerca per farmaco, paziente...") },
                             leadingIcon = { Icon(Icons.Filled.Search, contentDescription = "Cerca") },
-                            colors = OutlinedTextFieldDefaults.colors(
-                                focusedContainerColor = MaterialTheme.colorScheme.surface.copy(alpha = 0.9f),
-                                unfocusedContainerColor = MaterialTheme.colorScheme.surface.copy(alpha = 0.9f),
-                                focusedBorderColor = Color.Transparent,
-                                unfocusedBorderColor = Color.Transparent
-                            ),
+                            colors =
+                                OutlinedTextFieldDefaults.colors(
+                                    focusedContainerColor = MaterialTheme.colorScheme.surface.copy(alpha = 0.9f),
+                                    unfocusedContainerColor = MaterialTheme.colorScheme.surface.copy(alpha = 0.9f),
+                                    focusedBorderColor = Color.Transparent,
+                                    unfocusedBorderColor = Color.Transparent,
+                                ),
                             shape = shapes.card,
                             modifier = Modifier.fillMaxWidth().height(52.dp),
-                            singleLine = true
+                            singleLine = true,
                         )
                     }
                 }
@@ -184,13 +190,13 @@ fun HistoryScreen(
                         EmptyStateView(
                             icon = Icons.Default.History,
                             title = "Nessun calcolo",
-                            subtitle = "I calcoli effettuati appariranno qui con tutti i dati del paziente"
+                            subtitle = "I calcoli effettuati appariranno qui con tutti i dati del paziente",
                         )
                     } else {
                         EmptyStateView(
                             icon = Icons.Default.SearchOff,
                             title = "Nessun risultato",
-                            subtitle = "Nessun calcolo corrisponde a \"$searchQuery\""
+                            subtitle = "Nessun calcolo corrisponde a \"$searchQuery\"",
                         )
                     }
                 }
@@ -200,7 +206,7 @@ fun HistoryScreen(
                     modifier = Modifier.fillMaxSize(),
                     contentPadding = PaddingValues(top = sp.base, bottom = sp.xxxl, start = sp.lg, end = sp.lg),
                     horizontalArrangement = Arrangement.spacedBy(sp.base),
-                    verticalArrangement = Arrangement.spacedBy(sp.base)
+                    verticalArrangement = Arrangement.spacedBy(sp.base),
                 ) {
                     items(count = pagedHistory.itemCount) { index ->
                         val record = pagedHistory[index]
@@ -209,7 +215,7 @@ fun HistoryScreen(
 
                             HistoryCard(
                                 record = record,
-                                onDeleteClick = { showDeleteDialog = true }
+                                onDeleteClick = { showDeleteDialog = true },
                             )
 
                             if (showDeleteDialog) {
@@ -223,7 +229,7 @@ fun HistoryScreen(
                                                 viewModel.deleteRecord(record.id)
                                                 showDeleteDialog = false
                                             },
-                                            shape = shapes.pill
+                                            shape = shapes.pill,
                                         ) {
                                             Text("Elimina", color = MaterialTheme.colorScheme.error)
                                         }
@@ -231,11 +237,11 @@ fun HistoryScreen(
                                     dismissButton = {
                                         TextButton(
                                             onClick = { showDeleteDialog = false },
-                                            shape = shapes.pill
+                                            shape = shapes.pill,
                                         ) {
                                             Text("Annulla")
                                         }
-                                    }
+                                    },
                                 )
                             }
                         }

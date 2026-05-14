@@ -27,19 +27,22 @@ data class CalculatorUiState(
     val renalStage: RenalStage = RenalStage.NONE,
     val hepaticStage: HepaticStage = HepaticStage.NONE,
     val bsaFormula: com.example.dosagecalc.domain.repository.BsaFormulaType = com.example.dosagecalc.domain.repository.BsaFormulaType.MOSTELLER,
-    val interactions: List<com.example.dosagecalc.domain.model.DrugInteraction> = emptyList()
+    val interactions: List<com.example.dosagecalc.domain.model.DrugInteraction> = emptyList(),
 ) {
     val filteredDrugs: List<Drug>
-        get() = availableDrugs
-            .filter { drug ->
-                val matchesSearch = drug.name.contains(searchQuery, ignoreCase = true) ||
-                                    drug.indication.contains(searchQuery, ignoreCase = true)
-                val matchesCategory = selectedCategory == null || drug.category == selectedCategory
-                matchesSearch && matchesCategory
-            }
+        get() =
+            availableDrugs
+                .filter { drug ->
+                    val matchesSearch =
+                        drug.name.contains(searchQuery, ignoreCase = true) ||
+                            drug.indication.contains(searchQuery, ignoreCase = true)
+                    val matchesCategory = selectedCategory == null || drug.category == selectedCategory
+                    matchesSearch && matchesCategory
+                }
 
     val canCalculate: Boolean
-        get() = selectedDrug != null &&
+        get() =
+            selectedDrug != null &&
                 weightInput.isNotBlank() &&
                 weightError == null &&
                 heightError == null &&

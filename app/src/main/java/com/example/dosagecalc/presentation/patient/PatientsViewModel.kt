@@ -20,100 +20,104 @@ import javax.inject.Inject
 data class PatientsUiState(
     val patients: List<Patient> = emptyList(),
     val isLoading: Boolean = true,
-    val error: String? = null
+    val error: String? = null,
 )
 
 @HiltViewModel
-class PatientsViewModel @Inject constructor(
-    private val managePatientsUseCase: ManagePatientsUseCase
-) : ViewModel() {
+class PatientsViewModel
+    @Inject
+    constructor(
+        private val managePatientsUseCase: ManagePatientsUseCase,
+    ) : ViewModel() {
+        private val _searchQuery = MutableStateFlow("")
+        val searchQuery: StateFlow<String> = _searchQuery.asStateFlow()
 
-    private val _searchQuery = MutableStateFlow("")
-    val searchQuery: StateFlow<String> = _searchQuery.asStateFlow()
+        private val _uiState = MutableStateFlow(PatientsUiState())
+        val uiState: StateFlow<PatientsUiState> = _uiState.asStateFlow()
 
-    private val _uiState = MutableStateFlow(PatientsUiState())
-    val uiState: StateFlow<PatientsUiState> = _uiState.asStateFlow()
+        val patientsPaged: Flow<PagingData<Patient>> =
+            _searchQuery
+                .flatMapLatest { query -> managePatientsUseCase.getPatientsPaged(query) }
+                .cachedIn(viewModelScope)
 
-    val patientsPaged: Flow<PagingData<Patient>> = _searchQuery
-        .flatMapLatest { query -> managePatientsUseCase.getPatientsPaged(query) }
-        .cachedIn(viewModelScope)
-
-    init {
-        _uiState.update { it.copy(isLoading = false) }
-    }
-
-    fun updateSearchQuery(query: String) {
-        _searchQuery.value = query
-    }
-
-    fun savePatient(
-        name: String,
-        surname: String,
-        weightKg: String,
-        heightCm: String?,
-        ageYears: String,
-        hasRenalImpairment: Boolean = false,
-        hasHepaticImpairment: Boolean = false
-    ) {
-        val weight = weightKg.toFloatOrNull() ?: return
-        val height = heightCm?.toFloatOrNull()
-        val age = ageYears.toIntOrNull() ?: 0
-        
-        val newPatient = Patient(
-            id = "",
-            name = name,
-            surname = surname,
-            birthDate = LocalDateTime.now(), 
-            weightKg = weight,
-            heightCm = height,
-            ageYears = age,
-            hasRenalImpairment = hasRenalImpairment,
-            hasHepaticImpairment = hasHepaticImpairment
-        )
-
-        viewModelScope.launch {
-            managePatientsUseCase.savePatient(newPatient)
+        init {
+            _uiState.update { it.copy(isLoading = false) }
         }
-    }
 
-    fun updatePatient(
-        original: Patient,
-        name: String,
-        surname: String,
-        weightKg: String,
-        heightCm: String?,
-        ageYears: String,
-        hasRenalImpairment: Boolean,
-        hasHepaticImpairment: Boolean
-    ) {
-        val weight = weightKg.toFloatOrNull() ?: return
-        val height = heightCm?.toFloatOrNull()
-        val age = ageYears.toIntOrNull() ?: 0
-        val updated = original.copy(
-            name = name,
-            surname = surname,
-            weightKg = weight,
-            heightCm = height,
-            ageYears = age,
-            hasRenalImpairment = hasRenalImpairment,
-            hasHepaticImpairment = hasHepaticImpairment
-        )
-        viewModelScope.launch {
-            managePatientsUseCase.savePatient(updated)
+        fun updateSearchQuery(query: String) {
+            _searchQuery.value = query
         }
-    }
 
-    fun deletePatient(patientId: String) {
-        viewModelScope.launch {
-            managePatientsUseCase.deletePatient(patientId)
+        fun savePatient(
+            name: String,
+            surname: String,
+            weightKg: String,
+            heightCm: String?,
+            ageYears: String,
+            hasRenalImpairment: Boolean = false,
+            hasHepaticImpairment: Boolean = false,
+        ) {
+            val weight = weightKg.toFloatOrNull() ?: return
+            val height = heightCm?.toFloatOrNull()
+            val age = ageYears.toIntOrNull() ?: 0
+
+            val newPatient =
+                Patient(
+                    id = "",
+                    name = name,
+                    surname = surname,
+                    birthDate = LocalDateTime.now(),
+                    weightKg = weight,
+                    heightCm = height,
+                    ageYears = age,
+                    hasRenalImpairment = hasRenalImpairment,
+                    hasHepaticImpairment = hasHepaticImpairment,
+                )
+
+            viewModelScope.launch {
+                managePatientsUseCase.savePatient(newPatient)
+            }
         }
-    }
 
-    fun getAllPatients(onResult: (List<Patient>) -> Unit) {
-        viewModelScope.launch {
-            managePatientsUseCase.getPatients().collect { list ->
-                onResult(list)
+        fun updatePatient(
+            original: Patient,
+            name: String,
+            surname: String,
+            weightKg: String,
+            heightCm: String?,
+            ageYears: String,
+            hasRenalImpairment: Boolean,
+            hasHepaticImpairment: Boolean,
+        ) {
+            val weight = weightKg.toFloatOrNull() ?: return
+            val height = heightCm?.toFloatOrNull()
+            val age = ageYears.toIntOrNull() ?: 0
+            val updated =
+                original.copy(
+                    name = name,
+                    surname = surname,
+                    weightKg = weight,
+                    heightCm = height,
+                    ageYears = age,
+                    hasRenalImpairment = hasRenalImpairment,
+                    hasHepaticImpairment = hasHepaticImpairment,
+                )
+            viewModelScope.launch {
+                managePatientsUseCase.savePatient(updated)
+            }
+        }
+
+        fun deletePatient(patientId: String) {
+            viewModelScope.launch {
+                managePatientsUseCase.deletePatient(patientId)
+            }
+        }
+
+        fun getAllPatients(onResult: (List<Patient>) -> Unit) {
+            viewModelScope.launch {
+                managePatientsUseCase.getPatients().collect { list ->
+                    onResult(list)
+                }
             }
         }
     }
-}

@@ -16,8 +16,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
@@ -64,7 +64,7 @@ import com.example.dosagecalc.presentation.utils.ExportManager
 fun PatientsScreen(
     viewModel: PatientsViewModel,
     onNavigateBack: () -> Unit,
-    onNavigateToHistory: (String) -> Unit
+    onNavigateToHistory: (String) -> Unit,
 ) {
     val context = LocalContext.current
     val exportManager = remember { ExportManager(context) }
@@ -80,43 +80,45 @@ fun PatientsScreen(
     val fabExpanded by remember { derivedStateOf { gridState.firstVisibleItemIndex == 0 } }
 
     Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(MaterialTheme.colorScheme.background)
+        modifier =
+            Modifier
+                .fillMaxSize()
+                .background(MaterialTheme.colorScheme.background),
     ) {
         Column(modifier = Modifier.fillMaxSize()) {
-            
             GradientScreenHeader(
-                colors = listOf(
-                    MaterialTheme.colorScheme.secondary,
-                    MaterialTheme.colorScheme.secondaryContainer
-                ),
-                modifier = Modifier.padding(bottom = 0.dp)
+                colors =
+                    listOf(
+                        MaterialTheme.colorScheme.secondary,
+                        MaterialTheme.colorScheme.secondaryContainer,
+                    ),
+                modifier = Modifier.padding(bottom = 0.dp),
             ) {
                 Box(
-                    modifier = Modifier
-                        .size(100.dp)
-                        .align(Alignment.BottomStart)
-                        .offset(x = (-30).dp, y = 36.dp)
-                        .background(Color.White.copy(alpha = 0.05f), CircleShape)
+                    modifier =
+                        Modifier
+                            .size(100.dp)
+                            .align(Alignment.BottomStart)
+                            .offset(x = (-30).dp, y = 36.dp)
+                            .background(Color.White.copy(alpha = 0.05f), CircleShape),
                 )
 
                 Column {
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
-                        modifier = Modifier.padding(top = sp.sm)
+                        modifier = Modifier.padding(top = sp.sm),
                     ) {
                         IconButton(onClick = onNavigateBack) {
                             Icon(
-                                imageVector        = Icons.AutoMirrored.Filled.ArrowBack,
+                                imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                                 contentDescription = "Indietro",
-                                tint               = MaterialTheme.colorScheme.onSecondary
+                                tint = MaterialTheme.colorScheme.onSecondary,
                             )
                         }
                         Text(
-                            text  = "Archivio",
+                            text = "Archivio",
                             style = MaterialTheme.typography.titleMedium,
-                            color = MaterialTheme.colorScheme.onSecondary.copy(alpha = 0.8f)
+                            color = MaterialTheme.colorScheme.onSecondary.copy(alpha = 0.8f),
                         )
                         Spacer(modifier = Modifier.weight(1f))
                         IconButton(onClick = {
@@ -127,21 +129,21 @@ fun PatientsScreen(
                             Icon(
                                 imageVector = Icons.Filled.Share,
                                 contentDescription = "Esporta Backup",
-                                tint = MaterialTheme.colorScheme.onSecondary
+                                tint = MaterialTheme.colorScheme.onSecondary,
                             )
                         }
                     }
 
                     Column(modifier = Modifier.padding(start = sp.xl, end = sp.xl, top = sp.xs)) {
                         Text(
-                            text  = "Pazienti",
+                            text = "Pazienti",
                             style = MaterialTheme.typography.headlineMedium.copy(fontFamily = FontFamily.Serif),
-                            color = MaterialTheme.colorScheme.onSecondary
+                            color = MaterialTheme.colorScheme.onSecondary,
                         )
                         Text(
-                            text  = "Seleziona per vedere la cronologia",
+                            text = "Seleziona per vedere la cronologia",
                             style = MaterialTheme.typography.bodyLarge,
-                            color = MaterialTheme.colorScheme.onSecondary.copy(alpha = 0.9f)
+                            color = MaterialTheme.colorScheme.onSecondary.copy(alpha = 0.9f),
                         )
                         Spacer(modifier = Modifier.height(sp.base))
                         OutlinedTextField(
@@ -149,15 +151,16 @@ fun PatientsScreen(
                             onValueChange = viewModel::updateSearchQuery,
                             placeholder = { Text("Cerca paziente...") },
                             leadingIcon = { Icon(Icons.Filled.Search, contentDescription = "Cerca") },
-                            colors = OutlinedTextFieldDefaults.colors(
-                                focusedContainerColor = MaterialTheme.colorScheme.surface.copy(alpha = 0.9f),
-                                unfocusedContainerColor = MaterialTheme.colorScheme.surface.copy(alpha = 0.9f),
-                                focusedBorderColor = Color.Transparent,
-                                unfocusedBorderColor = Color.Transparent
-                            ),
+                            colors =
+                                OutlinedTextFieldDefaults.colors(
+                                    focusedContainerColor = MaterialTheme.colorScheme.surface.copy(alpha = 0.9f),
+                                    unfocusedContainerColor = MaterialTheme.colorScheme.surface.copy(alpha = 0.9f),
+                                    focusedBorderColor = Color.Transparent,
+                                    unfocusedBorderColor = Color.Transparent,
+                                ),
                             shape = shapes.card,
                             modifier = Modifier.fillMaxWidth().height(52.dp),
-                            singleLine = true
+                            singleLine = true,
                         )
                     }
                 }
@@ -173,13 +176,13 @@ fun PatientsScreen(
                         EmptyStateView(
                             icon = Icons.Default.PersonOff,
                             title = "Nessun paziente",
-                            subtitle = "Aggiungi una cartella paziente per velocizzare i futuri calcoli"
+                            subtitle = "Aggiungi una cartella paziente per velocizzare i futuri calcoli",
                         )
                     } else {
                         EmptyStateView(
                             icon = Icons.Default.SearchOff,
                             title = "Nessun risultato",
-                            subtitle = "Nessun paziente corrisponde a \"$searchQuery\""
+                            subtitle = "Nessun paziente corrisponde a \"$searchQuery\"",
                         )
                     }
                 }
@@ -190,7 +193,7 @@ fun PatientsScreen(
                     modifier = Modifier.fillMaxSize(),
                     contentPadding = PaddingValues(top = sp.base, bottom = sp.bottomBarClearance, start = sp.lg, end = sp.lg),
                     horizontalArrangement = Arrangement.spacedBy(sp.base),
-                    verticalArrangement = Arrangement.spacedBy(sp.base)
+                    verticalArrangement = Arrangement.spacedBy(sp.base),
                 ) {
                     items(count = pagedPatients.itemCount) { index ->
                         val patient = pagedPatients[index]
@@ -201,21 +204,25 @@ fun PatientsScreen(
                                 patient = patient,
                                 onClick = { onNavigateToHistory(patient.id) },
                                 onDeleteClick = { showDeleteDialog = true },
-                                onEditClick = { patientBeingEdited = patient }
+                                onEditClick = { patientBeingEdited = patient },
                             )
 
                             if (showDeleteDialog) {
                                 AlertDialog(
                                     onDismissRequest = { showDeleteDialog = false },
                                     title = { Text("Elimina Paziente") },
-                                    text = { Text("Sei sicuro di voler eliminare ${patient.name} ${patient.surname}? L'operazione non può essere annullata.") },
+                                    text = {
+                                        Text(
+                                            "Sei sicuro di voler eliminare ${patient.name} ${patient.surname}? L'operazione non può essere annullata.",
+                                        )
+                                    },
                                     confirmButton = {
                                         TextButton(
                                             onClick = {
                                                 viewModel.deletePatient(patient.id)
                                                 showDeleteDialog = false
                                             },
-                                            shape = shapes.pill
+                                            shape = shapes.pill,
                                         ) {
                                             Text("Elimina", color = MaterialTheme.colorScheme.error)
                                         }
@@ -223,11 +230,11 @@ fun PatientsScreen(
                                     dismissButton = {
                                         TextButton(
                                             onClick = { showDeleteDialog = false },
-                                            shape = shapes.pill
+                                            shape = shapes.pill,
                                         ) {
                                             Text("Annulla")
                                         }
-                                    }
+                                    },
                                 )
                             }
                         }
@@ -241,12 +248,13 @@ fun PatientsScreen(
             icon = { Icon(Icons.Filled.Add, "Aggiungi Paziente") },
             onClick = { showAddSheet = true },
             expanded = fabExpanded,
-            modifier = Modifier
-                .align(Alignment.BottomEnd)
-                .navigationBarsPadding()
-                .padding(sp.xl),
+            modifier =
+                Modifier
+                    .align(Alignment.BottomEnd)
+                    .navigationBarsPadding()
+                    .padding(sp.xl),
             containerColor = MaterialTheme.colorScheme.primary,
-            contentColor = MaterialTheme.colorScheme.onPrimary
+            contentColor = MaterialTheme.colorScheme.onPrimary,
         )
     }
 
@@ -256,7 +264,7 @@ fun PatientsScreen(
             onSave = { name, surname, weight, height, age, renalImpair, hepaticImpair ->
                 viewModel.savePatient(name, surname, weight, height, age, renalImpair, hepaticImpair)
                 showAddSheet = false
-            }
+            },
         )
     }
 
@@ -267,7 +275,7 @@ fun PatientsScreen(
             onSave = { name, surname, weight, height, age, renalImpair, hepaticImpair ->
                 viewModel.updatePatient(editing, name, surname, weight, height, age, renalImpair, hepaticImpair)
                 patientBeingEdited = null
-            }
+            },
         )
     }
 }

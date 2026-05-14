@@ -12,5 +12,5 @@ data class Patient(
     val ageYears: Int,
     val notes: String? = null,
     val hasRenalImpairment: Boolean = false,
-    val hasHepaticImpairment: Boolean = false
+    val hasHepaticImpairment: Boolean = false,
 )

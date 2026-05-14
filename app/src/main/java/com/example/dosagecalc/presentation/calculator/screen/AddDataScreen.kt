@@ -35,8 +35,6 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.example.dosagecalc.presentation.ui.util.responsiveContentWidth
-import com.example.dosagecalc.presentation.ui.util.isCompactHeight
 import com.example.dosagecalc.domain.model.FormulaType
 import com.example.dosagecalc.presentation.calculator.AddDataViewModel
 import com.example.dosagecalc.presentation.ui.components.ExpressiveCard
@@ -46,12 +44,14 @@ import com.example.dosagecalc.presentation.ui.components.PillButton
 import com.example.dosagecalc.presentation.ui.components.RoundedTextField
 import com.example.dosagecalc.presentation.ui.theme.LocalDosageShapes
 import com.example.dosagecalc.presentation.ui.theme.spacing
+import com.example.dosagecalc.presentation.ui.util.isCompactHeight
+import com.example.dosagecalc.presentation.ui.util.responsiveContentWidth
 
 @Composable
 fun AddDataScreen(
     drugId: String? = null,
     viewModel: AddDataViewModel = hiltViewModel(),
-    onNavigateBack: () -> Unit
+    onNavigateBack: () -> Unit,
 ) {
     var name by remember { mutableStateOf("") }
     var indication by remember { mutableStateOf("") }
@@ -80,12 +80,13 @@ fun AddDataScreen(
                 contraindications = drug.contraindications ?: ""
                 sideEffects = drug.sideEffects ?: ""
                 selectedCategory = drug.category
-                selectedFormula = when (drug.formulaType) {
-                    FormulaType.PER_KG -> formulaOptions[0]
-                    FormulaType.PER_M2 -> formulaOptions[1]
-                    FormulaType.FIXED -> formulaOptions[2]
-                    else -> formulaOptions[0]
-                }
+                selectedFormula =
+                    when (drug.formulaType) {
+                        FormulaType.PER_KG -> formulaOptions[0]
+                        FormulaType.PER_M2 -> formulaOptions[1]
+                        FormulaType.FIXED -> formulaOptions[2]
+                        else -> formulaOptions[0]
+                    }
             }
         }
     }
@@ -95,51 +96,53 @@ fun AddDataScreen(
     val shapes = LocalDosageShapes.current
 
     Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(MaterialTheme.colorScheme.background)
+        modifier =
+            Modifier
+                .fillMaxSize()
+                .background(MaterialTheme.colorScheme.background),
     ) {
         Column(
-            modifier = Modifier.fillMaxSize()
+            modifier = Modifier.fillMaxSize(),
         ) {
             GradientScreenHeader(
-                colors = listOf(
-                    MaterialTheme.colorScheme.error,
-                    MaterialTheme.colorScheme.errorContainer
-                ),
-                modifier = Modifier.padding(bottom = 0.dp)
+                colors =
+                    listOf(
+                        MaterialTheme.colorScheme.error,
+                        MaterialTheme.colorScheme.errorContainer,
+                    ),
+                modifier = Modifier.padding(bottom = 0.dp),
             ) {
                 Column {
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
-                        modifier = Modifier.padding(top = sp.sm)
+                        modifier = Modifier.padding(top = sp.sm),
                     ) {
                         IconButton(onClick = onNavigateBack) {
                             Icon(
-                                imageVector        = Icons.AutoMirrored.Filled.ArrowBack,
+                                imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                                 contentDescription = "Indietro",
-                                tint               = MaterialTheme.colorScheme.onError
+                                tint = MaterialTheme.colorScheme.onError,
                             )
                         }
                         Text(
-                            text  = "Dashboard",
+                            text = "Dashboard",
                             style = MaterialTheme.typography.titleMedium,
-                            color = MaterialTheme.colorScheme.onError.copy(alpha = 0.8f)
+                            color = MaterialTheme.colorScheme.onError.copy(alpha = 0.8f),
                         )
                     }
 
                     Column(modifier = Modifier.padding(start = sp.xl, end = sp.xl, top = sp.xs)) {
                         Text(
-                            text  = if (drugId != null) "Modifica Farmaco" else "Aggiungi Farmaco",
+                            text = if (drugId != null) "Modifica Farmaco" else "Aggiungi Farmaco",
                             style = MaterialTheme.typography.headlineMedium.copy(fontFamily = FontFamily.Serif),
-                            color = MaterialTheme.colorScheme.onError
+                            color = MaterialTheme.colorScheme.onError,
                         )
                         if (!isCompact) {
                             Spacer(modifier = Modifier.height(sp.sm))
                             Text(
-                                text  = if (drugId != null) "Modifica i dati del medicinale" else "Inserisci un nuovo medicinale",
+                                text = if (drugId != null) "Modifica i dati del medicinale" else "Inserisci un nuovo medicinale",
                                 style = MaterialTheme.typography.bodyMedium,
-                                color = MaterialTheme.colorScheme.onError.copy(alpha = 0.9f)
+                                color = MaterialTheme.colorScheme.onError.copy(alpha = 0.9f),
                             )
                         }
                         Spacer(modifier = Modifier.height(if (isCompact) sp.xs else sp.xl))
@@ -148,41 +151,42 @@ fun AddDataScreen(
             }
 
             Column(
-                modifier = Modifier
-                    .weight(1f)
-                    .fillMaxWidth()
-                    .verticalScroll(rememberScrollState())
-                    .padding(horizontal = sp.lg, vertical = sp.xl)
-                    .padding(bottom = sp.bottomBarClearance),
-                horizontalAlignment = Alignment.CenterHorizontally
+                modifier =
+                    Modifier
+                        .weight(1f)
+                        .fillMaxWidth()
+                        .verticalScroll(rememberScrollState())
+                        .padding(horizontal = sp.lg, vertical = sp.xl)
+                        .padding(bottom = sp.bottomBarClearance),
+                horizontalAlignment = Alignment.CenterHorizontally,
             ) {
                 Column(
                     modifier = Modifier.responsiveContentWidth(),
-                    verticalArrangement = Arrangement.spacedBy(sp.base)
+                    verticalArrangement = Arrangement.spacedBy(sp.base),
                 ) {
                     ExpressiveCard(modifier = Modifier.fillMaxWidth()) {
                         Column(
                             modifier = Modifier.padding(sp.base),
-                            verticalArrangement = Arrangement.spacedBy(sp.base)
+                            verticalArrangement = Arrangement.spacedBy(sp.base),
                         ) {
                             Text(
                                 text = "Dati Principali",
                                 style = MaterialTheme.typography.titleMedium,
-                                color = MaterialTheme.colorScheme.onSurfaceVariant
+                                color = MaterialTheme.colorScheme.onSurfaceVariant,
                             )
                             RoundedTextField(
                                 value = name,
                                 onValueChange = { name = it },
                                 label = { Text("Nome Farmaco (es. Paracetamolo)") },
                                 modifier = Modifier.fillMaxWidth(),
-                                shape = shapes.card
+                                shape = shapes.card,
                             )
                             RoundedTextField(
                                 value = indication,
                                 onValueChange = { indication = it },
                                 label = { Text("Indicazione Terapeutica") },
                                 modifier = Modifier.fillMaxWidth(),
-                                shape = shapes.card
+                                shape = shapes.card,
                             )
                             ExposedDropdownMenuBox(
                                 expanded = categoryExpanded,
@@ -195,11 +199,11 @@ fun AddDataScreen(
                                     label = { Text("Categoria Farmaco") },
                                     trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = categoryExpanded) },
                                     modifier = Modifier.fillMaxWidth().menuAnchor(),
-                                    shape = shapes.card
+                                    shape = shapes.card,
                                 )
                                 ExposedDropdownMenu(
                                     expanded = categoryExpanded,
-                                    onDismissRequest = { categoryExpanded = false }
+                                    onDismissRequest = { categoryExpanded = false },
                                 ) {
                                     com.example.dosagecalc.domain.model.DrugCategory.entries.forEach { category ->
                                         DropdownMenuItem(
@@ -207,7 +211,7 @@ fun AddDataScreen(
                                             onClick = {
                                                 selectedCategory = category
                                                 categoryExpanded = false
-                                            }
+                                            },
                                         )
                                     }
                                 }
@@ -218,12 +222,12 @@ fun AddDataScreen(
                     ExpressiveCard(modifier = Modifier.fillMaxWidth(), mirrored = true) {
                         Column(
                             modifier = Modifier.padding(sp.base),
-                            verticalArrangement = Arrangement.spacedBy(sp.base)
+                            verticalArrangement = Arrangement.spacedBy(sp.base),
                         ) {
                             Text(
                                 text = "Regole di Dosaggio",
                                 style = MaterialTheme.typography.titleMedium,
-                                color = MaterialTheme.colorScheme.onSurfaceVariant
+                                color = MaterialTheme.colorScheme.onSurfaceVariant,
                             )
                             ExposedDropdownMenuBox(
                                 expanded = expanded,
@@ -236,11 +240,11 @@ fun AddDataScreen(
                                     label = { Text("Formula di Calcolo") },
                                     trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
                                     modifier = Modifier.fillMaxWidth().menuAnchor(),
-                                    shape = shapes.card
+                                    shape = shapes.card,
                                 )
                                 ExposedDropdownMenu(
                                     expanded = expanded,
-                                    onDismissRequest = { expanded = false }
+                                    onDismissRequest = { expanded = false },
                                 ) {
                                     formulaOptions.forEach { option ->
                                         DropdownMenuItem(
@@ -248,7 +252,7 @@ fun AddDataScreen(
                                             onClick = {
                                                 selectedFormula = option
                                                 expanded = false
-                                            }
+                                            },
                                         )
                                     }
                                 }
@@ -260,14 +264,14 @@ fun AddDataScreen(
                                     label = { Text("Dose Base") },
                                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                                     modifier = Modifier.weight(1f),
-                                    shape = shapes.card
+                                    shape = shapes.card,
                                 )
                                 RoundedTextField(
                                     value = unit,
                                     onValueChange = { unit = it },
                                     label = { Text("Unità (es. mg, ml)") },
                                     modifier = Modifier.weight(1f),
-                                    shape = shapes.card
+                                    shape = shapes.card,
                                 )
                             }
                             RoundedTextField(
@@ -276,23 +280,23 @@ fun AddDataScreen(
                                 label = { Text("Dose Massima (Tetto Sicurezza) - Opzionale") },
                                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                                 modifier = Modifier.fillMaxWidth(),
-                                shape = shapes.card
+                                shape = shapes.card,
                             )
                         }
                     }
 
                     ExpressiveCard(
                         modifier = Modifier.fillMaxWidth(),
-                        asymmetric = false
+                        asymmetric = false,
                     ) {
                         Column(
                             modifier = Modifier.padding(sp.base),
-                            verticalArrangement = Arrangement.spacedBy(sp.base)
+                            verticalArrangement = Arrangement.spacedBy(sp.base),
                         ) {
                             Text(
                                 text = "Note Cliniche",
                                 style = MaterialTheme.typography.titleMedium,
-                                color = MaterialTheme.colorScheme.onSurfaceVariant
+                                color = MaterialTheme.colorScheme.onSurfaceVariant,
                             )
                             RoundedTextField(
                                 value = alert,
@@ -300,7 +304,7 @@ fun AddDataScreen(
                                 label = { Text("Note Cliniche / Avvertenze (Opzionale)") },
                                 modifier = Modifier.fillMaxWidth().height(100.dp),
                                 maxLines = 3,
-                                shape = shapes.card
+                                shape = shapes.card,
                             )
                             RoundedTextField(
                                 value = contraindications,
@@ -308,7 +312,7 @@ fun AddDataScreen(
                                 label = { Text("Controindicazioni (Opzionale)") },
                                 modifier = Modifier.fillMaxWidth().height(100.dp),
                                 maxLines = 3,
-                                shape = shapes.card
+                                shape = shapes.card,
                             )
                             RoundedTextField(
                                 value = sideEffects,
@@ -316,7 +320,7 @@ fun AddDataScreen(
                                 label = { Text("Effetti Collaterali (Opzionale)") },
                                 modifier = Modifier.fillMaxWidth().height(100.dp),
                                 maxLines = 3,
-                                shape = shapes.card
+                                shape = shapes.card,
                             )
                         }
                     }
@@ -339,11 +343,11 @@ fun AddDataScreen(
                         alert = alert,
                         contraindications = contraindications,
                         sideEffects = sideEffects,
-                        onSuccess = onNavigateBack
+                        onSuccess = onNavigateBack,
                     )
                 },
                 label = "Salva",
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier.fillMaxWidth(),
             )
         }
     }

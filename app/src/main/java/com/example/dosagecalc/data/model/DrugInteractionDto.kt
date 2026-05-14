@@ -9,12 +9,13 @@ data class DrugInteractionDto(
     val drugId1: String,
     val drugId2: String,
     val riskLevel: String,
-    val description: String
+    val description: String,
 ) {
-    fun toDomain(): DrugInteraction = DrugInteraction(
-        drugId1 = drugId1,
-        drugId2 = drugId2,
-        riskLevel = InteractionRiskLevel.valueOf(riskLevel.uppercase()),
-        description = description
-    )
+    fun toDomain(): DrugInteraction =
+        DrugInteraction(
+            drugId1 = drugId1,
+            drugId2 = drugId2,
+            riskLevel = InteractionRiskLevel.valueOf(riskLevel.uppercase()),
+            description = description,
+        )
 }

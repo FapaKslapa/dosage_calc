@@ -5,5 +5,9 @@ import kotlinx.coroutines.flow.Flow
 
 interface DrugInteractionRepository {
     fun getInteractions(): Flow<List<DrugInteraction>>
-    suspend fun checkInteraction(drugId1: String, drugId2: String): DrugInteraction?
+
+    suspend fun checkInteraction(
+        drugId1: String,
+        drugId2: String,
+    ): DrugInteraction?
 }

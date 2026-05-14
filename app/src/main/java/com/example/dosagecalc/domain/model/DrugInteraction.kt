@@ -4,11 +4,13 @@ data class DrugInteraction(
     val drugId1: String,
     val drugId2: String,
     val riskLevel: InteractionRiskLevel,
-    val description: String
+    val description: String,
 )
 
-enum class InteractionRiskLevel(val label: String) {
+enum class InteractionRiskLevel(
+    val label: String,
+) {
     LOW("Lieve"),
     MODERATE("Moderato"),
-    HIGH("Grave")
+    HIGH("Grave"),
 }

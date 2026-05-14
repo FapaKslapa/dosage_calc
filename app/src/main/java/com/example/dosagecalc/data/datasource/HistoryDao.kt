@@ -13,14 +13,19 @@ interface HistoryDao {
     @Query("SELECT * FROM history_records ORDER BY date DESC")
     fun getAllHistory(): Flow<List<HistoryEntity>>
 
-    @Query("SELECT * FROM history_records WHERE drugName LIKE '%' || :query || '%' OR patientId IN (SELECT id FROM patients WHERE name LIKE '%' || :query || '%' OR surname LIKE '%' || :query || '%') ORDER BY date DESC")
+    @Query(
+        "SELECT * FROM history_records WHERE drugName LIKE '%' || :query || '%' OR patientId IN (SELECT id FROM patients WHERE name LIKE '%' || :query || '%' OR surname LIKE '%' || :query || '%') ORDER BY date DESC",
+    )
     fun getAllHistoryPaged(query: String): PagingSource<Int, HistoryEntity>
 
     @Query("SELECT * FROM history_records WHERE patientId = :patientId ORDER BY date DESC")
     fun getHistoryForPatient(patientId: String): Flow<List<HistoryEntity>>
 
     @Query("SELECT * FROM history_records WHERE patientId = :patientId AND (drugName LIKE '%' || :query || '%') ORDER BY date DESC")
-    fun getHistoryForPatientPaged(patientId: String, query: String): PagingSource<Int, HistoryEntity>
+    fun getHistoryForPatientPaged(
+        patientId: String,
+        query: String,
+    ): PagingSource<Int, HistoryEntity>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertHistoryRecord(record: HistoryEntity)

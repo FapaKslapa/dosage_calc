@@ -22,35 +22,43 @@ data class Drug(
     val daysPerCycle: Int? = null,
     val numberOfCycles: Int? = null,
     val contraindications: String? = null,
-    val sideEffects: String? = null
+    val sideEffects: String? = null,
 )
 
 enum class FormulaType {
     PER_KG,
     PER_M2,
     FIXED,
-    BY_RANGE
+    BY_RANGE,
 }
 
-enum class RenalStage(val label: String, val gfrRange: String) {
-    NONE("Normale (G1)",               "GFR ≥ 90 ml/min"),
-    G2("Lieve riduzione (G2)",         "GFR 60–89 ml/min"),
-    G3("IRC Lieve-Mod. (G3)",          "GFR 30–59 ml/min"),
-    G4("IRC Moderata-Grave (G4)",      "GFR 15–29 ml/min"),
-    G5("IRC Grave/Terminale (G5)",     "GFR < 15 ml/min")
+enum class RenalStage(
+    val label: String,
+    val gfrRange: String,
+) {
+    NONE("Normale (G1)", "GFR ≥ 90 ml/min"),
+    G2("Lieve riduzione (G2)", "GFR 60–89 ml/min"),
+    G3("IRC Lieve-Mod. (G3)", "GFR 30–59 ml/min"),
+    G4("IRC Moderata-Grave (G4)", "GFR 15–29 ml/min"),
+    G5("IRC Grave/Terminale (G5)", "GFR < 15 ml/min"),
 }
 
-enum class HepaticStage(val label: String, val description: String) {
+enum class HepaticStage(
+    val label: String,
+    val description: String,
+) {
     NONE("Nessuna (Normale)", ""),
-    CHILD_A("Child-Pugh A",    "Lieve — 5–6 punti"),
-    CHILD_B("Child-Pugh B",    "Moderata — 7–9 punti"),
-    CHILD_C("Child-Pugh C",    "Grave — 10–15 punti")
+    CHILD_A("Child-Pugh A", "Lieve — 5–6 punti"),
+    CHILD_B("Child-Pugh B", "Moderata — 7–9 punti"),
+    CHILD_C("Child-Pugh C", "Grave — 10–15 punti"),
 }
 
-enum class DrugCategory(val label: String) {
+enum class DrugCategory(
+    val label: String,
+) {
     DERMATOLOGY("Dermatologia"),
     ONCOLOGY("Oncologia"),
     INFECTIOUS("Infettivologia"),
     PEDIATRICS("Pediatria"),
-    OTHER("Altro")
+    OTHER("Altro"),
 }

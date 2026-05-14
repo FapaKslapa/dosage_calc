@@ -21,7 +21,6 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-
 import com.example.dosagecalc.presentation.calculator.CalculatorViewModel
 import com.example.dosagecalc.presentation.calculator.RemindersViewModel
 import com.example.dosagecalc.presentation.calculator.screen.AddDataScreen
@@ -42,23 +41,34 @@ private fun NavHostController.safePop() {
     }
 }
 
-sealed class AppRoute(val route: String) {
-    object Onboarding    : AppRoute("onboarding")
+sealed class AppRoute(
+    val route: String,
+) {
+    object Onboarding : AppRoute("onboarding")
+
     object DrugSelection : AppRoute("drug_selection")
-    object PatientInput  : AppRoute("patient_input")
-    object DosageResult  : AppRoute("dosage_result")
-    object PatientsList  : AppRoute("patients_list")
+
+    object PatientInput : AppRoute("patient_input")
+
+    object DosageResult : AppRoute("dosage_result")
+
+    object PatientsList : AppRoute("patients_list")
+
     object GlobalHistory : AppRoute("global_history")
+
     object HistoryAnalytics : AppRoute("history_analytics")
-    object Reminders     : AppRoute("reminders")
-    object AddData       : AppRoute("add_data")
-    object DrugDetail    : AppRoute("drug_detail")
+
+    object Reminders : AppRoute("reminders")
+
+    object AddData : AppRoute("add_data")
+
+    object DrugDetail : AppRoute("drug_detail")
 }
 
 @Composable
 fun AppNavigation(
     navController: NavHostController = rememberNavController(),
-    onToggleTheme: () -> Unit = {}
+    onToggleTheme: () -> Unit = {},
 ) {
     val onboardingVm: OnboardingViewModel = hiltViewModel()
     val onboardingDone by onboardingVm.isCompleted.collectAsStateWithLifecycle()
@@ -71,20 +81,23 @@ fun AppNavigation(
         return
     }
 
-    val startDestination = if (onboardingDone == true) AppRoute.DrugSelection.route
-                           else AppRoute.Onboarding.route
+    val startDestination =
+        if (onboardingDone == true) {
+            AppRoute.DrugSelection.route
+        } else {
+            AppRoute.Onboarding.route
+        }
 
     val viewModel: CalculatorViewModel = hiltViewModel()
 
     NavHost(
-        navController    = navController,
+        navController = navController,
         startDestination = startDestination,
-        enterTransition  = { slideInHorizontally(initialOffsetX = { it }, animationSpec = tween(280)) + fadeIn(tween(280)) },
-        exitTransition   = { slideOutHorizontally(targetOffsetX = { -it / 4 }, animationSpec = tween(280)) + fadeOut(tween(280)) },
-        popEnterTransition  = { slideInHorizontally(initialOffsetX = { -it / 4 }, animationSpec = tween(280)) + fadeIn(tween(280)) },
-        popExitTransition   = { slideOutHorizontally(targetOffsetX = { it }, animationSpec = tween(280)) + fadeOut(tween(280)) }
+        enterTransition = { slideInHorizontally(initialOffsetX = { it }, animationSpec = tween(280)) + fadeIn(tween(280)) },
+        exitTransition = { slideOutHorizontally(targetOffsetX = { -it / 4 }, animationSpec = tween(280)) + fadeOut(tween(280)) },
+        popEnterTransition = { slideInHorizontally(initialOffsetX = { -it / 4 }, animationSpec = tween(280)) + fadeIn(tween(280)) },
+        popExitTransition = { slideOutHorizontally(targetOffsetX = { it }, animationSpec = tween(280)) + fadeOut(tween(280)) },
     ) {
-
         composable(route = AppRoute.Onboarding.route) {
             OnboardingScreen(
                 onFinish = {
@@ -92,60 +105,79 @@ fun AppNavigation(
                     navController.navigate(AppRoute.DrugSelection.route) {
                         popUpTo(AppRoute.Onboarding.route) { inclusive = true }
                     }
-                }
+                },
             )
         }
 
         composable(route = AppRoute.DrugSelection.route) {
             DrugSelectionScreen(
-                viewModel            = viewModel,
-                onNavigateToInput    = { navController.navigate(AppRoute.PatientInput.route) },
+                viewModel = viewModel,
+                onNavigateToInput = { navController.navigate(AppRoute.PatientInput.route) },
                 onNavigateToPatients = { navController.navigate(AppRoute.PatientsList.route) },
-                onNavigateToHistory  = { navController.navigate(AppRoute.GlobalHistory.route) },
+                onNavigateToHistory = { navController.navigate(AppRoute.GlobalHistory.route) },
                 onNavigateToReminders = { navController.navigate(AppRoute.Reminders.route) },
-                onNavigateToAddData  = { drugId ->
-                    if (drugId != null) navController.navigate(AppRoute.AddData.route + "?drugId=$drugId")
-                    else                navController.navigate(AppRoute.AddData.route)
+                onNavigateToAddData = { drugId ->
+                    if (drugId != null) {
+                        navController.navigate(AppRoute.AddData.route + "?drugId=$drugId")
+                    } else {
+                        navController.navigate(AppRoute.AddData.route)
+                    }
                 },
                 onNavigateToDetail = { drugId ->
                     navController.navigate(AppRoute.DrugDetail.route + "/$drugId")
                 },
-                onToggleTheme = onToggleTheme
+                onToggleTheme = onToggleTheme,
             )
         }
 
         composable(route = AppRoute.PatientsList.route) {
             val patientsViewModel: PatientsViewModel = hiltViewModel()
             PatientsScreen(
-                viewModel         = patientsViewModel,
-                onNavigateBack    = { navController.safePop() },
-                onNavigateToHistory = { patientId -> 
+                viewModel = patientsViewModel,
+                onNavigateBack = { navController.safePop() },
+                onNavigateToHistory = { patientId ->
                     navController.navigate(AppRoute.GlobalHistory.route + "?patientId=$patientId")
-                }
+                },
             )
         }
 
         composable(
             route = AppRoute.GlobalHistory.route + "?patientId={patientId}",
-            arguments = listOf(navArgument("patientId") { type = NavType.StringType; nullable = true })
+            arguments =
+                listOf(
+                    navArgument("patientId") {
+                        type = NavType.StringType
+                        nullable = true
+                    },
+                ),
         ) { backStackEntry ->
             val patientId = backStackEntry.arguments?.getString("patientId")
             val historyViewModel: HistoryViewModel = hiltViewModel()
             HistoryScreen(
-                viewModel      = historyViewModel,
-                patientId      = patientId,
+                viewModel = historyViewModel,
+                patientId = patientId,
                 onNavigateBack = { navController.safePop() },
                 onNavigateToAnalytics = {
-                    val route = if (patientId != null) AppRoute.HistoryAnalytics.route + "?patientId=$patientId"
-                                else AppRoute.HistoryAnalytics.route
+                    val route =
+                        if (patientId != null) {
+                            AppRoute.HistoryAnalytics.route + "?patientId=$patientId"
+                        } else {
+                            AppRoute.HistoryAnalytics.route
+                        }
                     navController.navigate(route)
-                }
+                },
             )
         }
 
         composable(
             route = AppRoute.HistoryAnalytics.route + "?patientId={patientId}",
-            arguments = listOf(navArgument("patientId") { type = NavType.StringType; nullable = true })
+            arguments =
+                listOf(
+                    navArgument("patientId") {
+                        type = NavType.StringType
+                        nullable = true
+                    },
+                ),
         ) { backStackEntry ->
             val patientId = backStackEntry.arguments?.getString("patientId")
             val historyViewModel: HistoryViewModel = hiltViewModel()
@@ -153,55 +185,61 @@ fun AppNavigation(
                 historyViewModel = historyViewModel,
                 calculatorViewModel = viewModel,
                 initialPatientId = patientId,
-                onNavigateBack = { navController.safePop() }
+                onNavigateBack = { navController.safePop() },
             )
         }
 
         composable(route = AppRoute.Reminders.route) {
             val remindersViewModel: RemindersViewModel = hiltViewModel()
             RemindersScreen(
-                viewModel      = remindersViewModel,
-                onNavigateBack = { navController.safePop() }
+                viewModel = remindersViewModel,
+                onNavigateBack = { navController.safePop() },
             )
         }
 
         composable(
-            route     = AppRoute.AddData.route + "?drugId={drugId}",
-            arguments = listOf(navArgument("drugId") { type = NavType.StringType; nullable = true })
+            route = AppRoute.AddData.route + "?drugId={drugId}",
+            arguments =
+                listOf(
+                    navArgument("drugId") {
+                        type = NavType.StringType
+                        nullable = true
+                    },
+                ),
         ) { backStackEntry ->
             AddDataScreen(
-                drugId         = backStackEntry.arguments?.getString("drugId"),
-                onNavigateBack = { navController.safePop() }
+                drugId = backStackEntry.arguments?.getString("drugId"),
+                onNavigateBack = { navController.safePop() },
             )
         }
 
         composable(
             route = AppRoute.DrugDetail.route + "/{drugId}",
-            arguments = listOf(navArgument("drugId") { type = NavType.StringType })
+            arguments = listOf(navArgument("drugId") { type = NavType.StringType }),
         ) { backStackEntry ->
             val drugId = backStackEntry.arguments?.getString("drugId") ?: return@composable
             com.example.dosagecalc.presentation.calculator.screen.DrugDetailScreen(
                 drugId = drugId,
-                onNavigateBack = { navController.safePop() }
+                onNavigateBack = { navController.safePop() },
             )
         }
 
         composable(route = AppRoute.PatientInput.route) {
             PatientInputScreen(
-                viewModel          = viewModel,
-                onNavigateBack     = { navController.safePop() },
-                onNavigateToResult = { navController.navigate(AppRoute.DosageResult.route) }
+                viewModel = viewModel,
+                onNavigateBack = { navController.safePop() },
+                onNavigateToResult = { navController.navigate(AppRoute.DosageResult.route) },
             )
         }
 
         composable(route = AppRoute.DosageResult.route) {
             DosageResultScreen(
-                viewModel             = viewModel,
-                onNewCalculation      = {
+                viewModel = viewModel,
+                onNewCalculation = {
                     navController.popBackStack(AppRoute.DrugSelection.route, inclusive = false)
                     viewModel.resetCalculation()
                 },
-                onNavigateBackToInput = { navController.safePop() }
+                onNavigateBackToInput = { navController.safePop() },
             )
         }
     }

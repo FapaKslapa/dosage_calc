@@ -38,81 +38,77 @@ private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(na
 @Module
 @InstallIn(SingletonComponent::class)
 abstract class DataModule {
+    @Binds @Singleton
+    abstract fun bindDrugRepository(impl: DrugRepositoryImpl): DrugRepository
 
-    @Binds @Singleton abstract fun bindDrugRepository(impl: DrugRepositoryImpl): DrugRepository
-    @Binds @Singleton abstract fun bindThemeRepository(impl: ThemeRepositoryImpl): ThemeRepository
-    @Binds @Singleton abstract fun bindOnboardingRepository(impl: OnboardingRepositoryImpl): OnboardingRepository
-    @Binds @Singleton abstract fun bindInteractionRepository(impl: DrugInteractionRepositoryImpl): DrugInteractionRepository
+    @Binds @Singleton
+    abstract fun bindThemeRepository(impl: ThemeRepositoryImpl): ThemeRepository
+
+    @Binds @Singleton
+    abstract fun bindOnboardingRepository(impl: OnboardingRepositoryImpl): OnboardingRepository
+
+    @Binds @Singleton
+    abstract fun bindInteractionRepository(impl: DrugInteractionRepositoryImpl): DrugInteractionRepository
 
     @Module
     @InstallIn(SingletonComponent::class)
     object ProviderModule {
         @Provides
         @Singleton
-        fun provideJson(): kotlinx.serialization.json.Json = kotlinx.serialization.json.Json {
-            ignoreUnknownKeys = true
-            isLenient = true
-            prettyPrint = true
-        }
+        fun provideJson(): kotlinx.serialization.json.Json =
+            kotlinx.serialization.json.Json {
+                ignoreUnknownKeys = true
+                isLenient = true
+                prettyPrint = true
+            }
 
         @Provides
         @Singleton
-        fun provideDataStore(@ApplicationContext context: Context): DataStore<Preferences> =
-            context.dataStore
+        fun provideDataStore(
+            @ApplicationContext context: Context,
+        ): DataStore<Preferences> = context.dataStore
 
         @Provides
         @Singleton
-        fun provideAppDatabase(@ApplicationContext context: Context): AppDatabase {
+        fun provideAppDatabase(
+            @ApplicationContext context: Context,
+        ): AppDatabase {
             System.loadLibrary("sqlcipher")
             val passphrase = "dosage-calc-secure-key".toByteArray()
             val factory = SupportOpenHelperFactory(passphrase)
 
-            return Room.databaseBuilder(
-                context,
-                AppDatabase::class.java,
-                "dosagecalc_secure_db"
-            )
-            .openHelperFactory(factory)
-            .fallbackToDestructiveMigration(true)
-            .build()
+            return Room
+                .databaseBuilder(
+                    context,
+                    AppDatabase::class.java,
+                    "dosagecalc_secure_db",
+                ).openHelperFactory(factory)
+                .fallbackToDestructiveMigration(true)
+                .build()
         }
 
         @Provides
-        fun providePatientDao(database: AppDatabase): PatientDao {
-            return database.patientDao()
-        }
+        fun providePatientDao(database: AppDatabase): PatientDao = database.patientDao()
 
         @Provides
-        fun provideHistoryDao(database: AppDatabase): HistoryDao {
-            return database.historyDao()
-        }
+        fun provideHistoryDao(database: AppDatabase): HistoryDao = database.historyDao()
 
         @Provides
         @Singleton
-        fun providePatientRepository(patientDao: PatientDao): PatientRepository {
-            return PatientRepositoryImpl(patientDao)
-        }
+        fun providePatientRepository(patientDao: PatientDao): PatientRepository = PatientRepositoryImpl(patientDao)
 
         @Provides
         @Singleton
-        fun provideHistoryRepository(historyDao: HistoryDao): HistoryRepository {
-            return HistoryRepositoryImpl(historyDao)
-        }
+        fun provideHistoryRepository(historyDao: HistoryDao): HistoryRepository = HistoryRepositoryImpl(historyDao)
 
         @Provides
-        fun provideReminderDao(database: AppDatabase): ReminderDao {
-            return database.reminderDao()
-        }
+        fun provideReminderDao(database: AppDatabase): ReminderDao = database.reminderDao()
 
         @Provides
-        fun provideCustomDrugDao(database: AppDatabase): CustomDrugDao {
-            return database.customDrugDao()
-        }
+        fun provideCustomDrugDao(database: AppDatabase): CustomDrugDao = database.customDrugDao()
 
         @Provides
         @Singleton
-        fun provideReminderRepository(reminderDao: ReminderDao): ReminderRepository {
-            return ReminderRepositoryImpl(reminderDao)
-        }
+        fun provideReminderRepository(reminderDao: ReminderDao): ReminderRepository = ReminderRepositoryImpl(reminderDao)
     }
 }

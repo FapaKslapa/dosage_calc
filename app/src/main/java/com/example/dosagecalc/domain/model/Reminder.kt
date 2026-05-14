@@ -1,9 +1,11 @@
 package com.example.dosagecalc.domain.model
 
-enum class ReminderInterval(val label: String) {
+enum class ReminderInterval(
+    val label: String,
+) {
     DAILY("Giornaliero"),
     WEEKLY("Settimanale"),
-    MONTHLY("Mensile")
+    MONTHLY("Mensile"),
 }
 
 data class Reminder(
@@ -14,6 +16,5 @@ data class Reminder(
     val hour: Int,
     val minute: Int,
     val durationDays: Int,
-    val timestamp: Long = System.currentTimeMillis()
+    val timestamp: Long = System.currentTimeMillis(),
 )
-

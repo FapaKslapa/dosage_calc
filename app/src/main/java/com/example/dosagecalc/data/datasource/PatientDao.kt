@@ -13,7 +13,9 @@ interface PatientDao {
     @Query("SELECT * FROM patients ORDER BY name ASC, surname ASC")
     fun getAllPatients(): Flow<List<PatientEntity>>
 
-    @Query("SELECT * FROM patients WHERE name LIKE '%' || :query || '%' OR surname LIKE '%' || :query || '%' ORDER BY name ASC, surname ASC")
+    @Query(
+        "SELECT * FROM patients WHERE name LIKE '%' || :query || '%' OR surname LIKE '%' || :query || '%' ORDER BY name ASC, surname ASC",
+    )
     fun getPatientsPaged(query: String): PagingSource<Int, PatientEntity>
 
     @Query("SELECT * FROM patients WHERE id = :id LIMIT 1")

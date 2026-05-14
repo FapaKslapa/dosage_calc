@@ -23,19 +23,19 @@ fun PillButton(
     label: String,
     modifier: Modifier = Modifier,
     leadingIcon: ImageVector? = null,
-    enabled: Boolean = true
+    enabled: Boolean = true,
 ) {
     Button(
-        onClick  = onClick,
+        onClick = onClick,
         modifier = modifier.height(56.dp),
-        shape    = LocalDosageShapes.current.pill,
-        enabled  = enabled
+        shape = LocalDosageShapes.current.pill,
+        enabled = enabled,
     ) {
         if (leadingIcon != null) {
             Icon(
-                imageVector        = leadingIcon,
+                imageVector = leadingIcon,
                 contentDescription = null,
-                modifier           = Modifier.size(20.dp)
+                modifier = Modifier.size(20.dp),
             )
             Spacer(modifier = Modifier.width(LocalSpacing.current.sm))
         }
@@ -49,20 +49,20 @@ fun OutlinedPillButton(
     label: String,
     modifier: Modifier = Modifier,
     leadingIcon: ImageVector? = null,
-    enabled: Boolean = true
+    enabled: Boolean = true,
 ) {
     OutlinedButton(
-        onClick  = onClick,
+        onClick = onClick,
         modifier = modifier.height(56.dp),
-        shape    = LocalDosageShapes.current.pill,
-        border   = BorderStroke(1.dp, MaterialTheme.colorScheme.primary.copy(alpha = 0.4f)),
-        enabled  = enabled
+        shape = LocalDosageShapes.current.pill,
+        border = BorderStroke(1.dp, MaterialTheme.colorScheme.primary.copy(alpha = 0.4f)),
+        enabled = enabled,
     ) {
         if (leadingIcon != null) {
             Icon(
-                imageVector        = leadingIcon,
+                imageVector = leadingIcon,
                 contentDescription = null,
-                modifier           = Modifier.size(20.dp)
+                modifier = Modifier.size(20.dp),
             )
             Spacer(modifier = Modifier.width(LocalSpacing.current.sm))
         }

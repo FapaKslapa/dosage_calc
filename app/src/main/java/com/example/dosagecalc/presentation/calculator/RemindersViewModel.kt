@@ -15,35 +15,38 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class RemindersViewModel @Inject constructor(
-    private val repository: ReminderRepository,
-    @ApplicationContext private val context: Context
-) : ViewModel() {
+class RemindersViewModel
+    @Inject
+    constructor(
+        private val repository: ReminderRepository,
+        @ApplicationContext private val context: Context,
+    ) : ViewModel() {
+        val reminders: StateFlow<List<Reminder>> =
+            repository
+                .getAllReminders()
+                .stateIn(
+                    scope = viewModelScope,
+                    started = SharingStarted.WhileSubscribed(5000),
+                    initialValue = emptyList(),
+                )
 
-    val reminders: StateFlow<List<Reminder>> = repository.getAllReminders()
-        .stateIn(
-            scope        = viewModelScope,
-            started      = SharingStarted.WhileSubscribed(5000),
-            initialValue = emptyList()
-        )
+        fun addReminder(reminder: Reminder) {
+            viewModelScope.launch {
+                repository.addReminder(reminder)
+                updateWidget()
+            }
+        }
 
-    fun addReminder(reminder: Reminder) {
-        viewModelScope.launch { 
-            repository.addReminder(reminder) 
-            updateWidget()
+        fun deleteReminder(id: String) {
+            viewModelScope.launch {
+                repository.removeReminder(id)
+                updateWidget()
+            }
+        }
+
+        private fun updateWidget() {
+            viewModelScope.launch {
+                WidgetUpdateHelper.updateAllWidgets(context)
+            }
         }
     }
-
-    fun deleteReminder(id: String) {
-        viewModelScope.launch { 
-            repository.removeReminder(id) 
-            updateWidget()
-        }
-    }
-
-    private fun updateWidget() {
-        viewModelScope.launch {
-            WidgetUpdateHelper.updateAllWidgets(context)
-        }
-    }
-}

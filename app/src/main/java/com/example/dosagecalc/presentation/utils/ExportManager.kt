@@ -10,23 +10,27 @@ import kotlinx.serialization.json.Json
 import java.io.File
 import java.time.format.DateTimeFormatter
 
-class ExportManager(private val context: Context) {
-
+class ExportManager(
+    private val context: Context,
+) {
     private val json = Json { prettyPrint = true }
 
     fun exportPatientsToJson(patients: List<Patient>) {
-        val jsonString = json.encodeToString(patients.map { p ->
-            mapOf(
-                "id" to p.id,
-                "nome" to p.name,
-                "cognome" to p.surname,
-                "peso_kg" to p.weightKg.toString(),
-                "altezza_cm" to p.heightCm.toString(),
-                "eta_anni" to p.ageYears.toString(),
-                "note" to (p.notes ?: "")
+        val jsonString =
+            json.encodeToString(
+                patients.map { p ->
+                    mapOf(
+                        "id" to p.id,
+                        "nome" to p.name,
+                        "cognome" to p.surname,
+                        "peso_kg" to p.weightKg.toString(),
+                        "altezza_cm" to p.heightCm.toString(),
+                        "eta_anni" to p.ageYears.toString(),
+                        "note" to (p.notes ?: ""),
+                    )
+                },
             )
-        })
-        
+
         shareFile(jsonString, "pazienti_backup.json", "application/json")
     }
 
@@ -38,7 +42,7 @@ class ExportManager(private val context: Context) {
         records.forEach { r ->
             csvString.append("${r.date.format(formatter)},")
             csvString.append("${r.drugName.replace(",", " ")},")
-            csvString.append("${if (r.patientId != null) "ID:"+r.patientId else "Anonimo"},")
+            csvString.append("${if (r.patientId != null) "ID:" + r.patientId else "Anonimo"},")
             csvString.append("${r.weightKg},")
             csvString.append("${r.calculatedDose},")
             csvString.append("${r.doseUnit},")
@@ -48,21 +52,27 @@ class ExportManager(private val context: Context) {
         shareFile(csvString.toString(), "storico_calcoli.csv", "text/csv")
     }
 
-    private fun shareFile(content: String, fileName: String, mimeType: String) {
+    private fun shareFile(
+        content: String,
+        fileName: String,
+        mimeType: String,
+    ) {
         val file = File(context.cacheDir, fileName)
         file.writeText(content)
 
-        val uri: Uri = FileProvider.getUriForFile(
-            context,
-            "${context.packageName}.fileprovider",
-            file
-        )
+        val uri: Uri =
+            FileProvider.getUriForFile(
+                context,
+                "${context.packageName}.fileprovider",
+                file,
+            )
 
-        val intent = Intent(Intent.ACTION_SEND).apply {
-            type = mimeType
-            putExtra(Intent.EXTRA_STREAM, uri)
-            addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
-        }
+        val intent =
+            Intent(Intent.ACTION_SEND).apply {
+                type = mimeType
+                putExtra(Intent.EXTRA_STREAM, uri)
+                addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+            }
 
         context.startActivity(Intent.createChooser(intent, "Esporta file"))
     }

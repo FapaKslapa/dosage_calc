@@ -25,62 +25,64 @@ fun InteractionsCard(interactions: List<DrugInteraction>) {
     Card(
         modifier = Modifier.fillMaxWidth(),
         shape = shapes.card,
-        colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.errorContainer.copy(alpha = 0.7f)
-        ),
-        elevation = CardDefaults.cardElevation(defaultElevation = LocalElevation.current.level1)
+        colors =
+            CardDefaults.cardColors(
+                containerColor = MaterialTheme.colorScheme.errorContainer.copy(alpha = 0.7f),
+            ),
+        elevation = CardDefaults.cardElevation(defaultElevation = LocalElevation.current.level1),
     ) {
         Column(modifier = Modifier.padding(sp.lg)) {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Icon(
                     imageVector = Icons.Default.Warning,
                     contentDescription = null,
-                    tint = MaterialTheme.colorScheme.error
+                    tint = MaterialTheme.colorScheme.error,
                 )
                 Spacer(modifier = Modifier.width(sp.md))
                 Text(
                     text = "Interazioni Rilevate (${interactions.size})",
                     style = MaterialTheme.typography.titleMedium,
                     color = MaterialTheme.colorScheme.error,
-                    fontWeight = FontWeight.Bold
+                    fontWeight = FontWeight.Bold,
                 )
             }
 
             Spacer(modifier = Modifier.height(sp.md))
 
             interactions.forEach { interaction ->
-                val riskColor = when (interaction.riskLevel) {
-                    InteractionRiskLevel.HIGH     -> MaterialTheme.colorScheme.error
-                    InteractionRiskLevel.MODERATE -> MaterialTheme.colorScheme.tertiary
-                    InteractionRiskLevel.LOW      -> MaterialTheme.colorScheme.secondary
-                }
+                val riskColor =
+                    when (interaction.riskLevel) {
+                        InteractionRiskLevel.HIGH -> MaterialTheme.colorScheme.error
+                        InteractionRiskLevel.MODERATE -> MaterialTheme.colorScheme.tertiary
+                        InteractionRiskLevel.LOW -> MaterialTheme.colorScheme.secondary
+                    }
 
                 Column(modifier = Modifier.padding(vertical = sp.sm)) {
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         Surface(
                             color = riskColor,
                             shape = shapes.chip,
-                            modifier = Modifier.size(8.dp)
+                            modifier = Modifier.size(8.dp),
                         ) {}
                         Spacer(modifier = Modifier.width(sp.sm))
                         Text(
                             text = "Rischio ${interaction.riskLevel.label}",
                             style = MaterialTheme.typography.labelLarge,
                             color = riskColor,
-                            fontWeight = FontWeight.Bold
+                            fontWeight = FontWeight.Bold,
                         )
                     }
                     Text(
                         text = interaction.description,
                         style = MaterialTheme.typography.bodyMedium,
                         color = MaterialTheme.colorScheme.onErrorContainer,
-                        modifier = Modifier.padding(top = sp.xs)
+                        modifier = Modifier.padding(top = sp.xs),
                     )
                 }
                 if (interaction != interactions.last()) {
                     HorizontalDivider(
                         modifier = Modifier.padding(vertical = sp.sm),
-                        color = MaterialTheme.colorScheme.error.copy(alpha = 0.1f)
+                        color = MaterialTheme.colorScheme.error.copy(alpha = 0.1f),
                     )
                 }
             }

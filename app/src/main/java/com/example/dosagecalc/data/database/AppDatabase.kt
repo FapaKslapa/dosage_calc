@@ -17,34 +17,37 @@ import net.zetetic.database.sqlcipher.SupportOpenHelperFactory
 @Database(
     entities = [PatientEntity::class, HistoryEntity::class, ReminderEntity::class, CustomDrugEntity::class],
     version = 8,
-    exportSchema = true
+    exportSchema = true,
 )
 abstract class AppDatabase : RoomDatabase() {
     abstract fun patientDao(): PatientDao
+
     abstract fun historyDao(): HistoryDao
+
     abstract fun reminderDao(): ReminderDao
+
     abstract fun customDrugDao(): CustomDrugDao
 
     companion object {
         @Volatile
         private var INSTANCE: AppDatabase? = null
 
-        fun getInstance(context: Context): AppDatabase {
-            return INSTANCE ?: synchronized(this) {
+        fun getInstance(context: Context): AppDatabase =
+            INSTANCE ?: synchronized(this) {
                 val passphrase = "dosage-calc-secure-key".toByteArray()
                 val factory = SupportOpenHelperFactory(passphrase)
-                
-                val instance = Room.databaseBuilder(
-                    context.applicationContext,
-                    AppDatabase::class.java,
-                    "dosagecalc_secure_db"
-                )
-                .openHelperFactory(factory)
-                .fallbackToDestructiveMigration(true)
-                .build()
+
+                val instance =
+                    Room
+                        .databaseBuilder(
+                            context.applicationContext,
+                            AppDatabase::class.java,
+                            "dosagecalc_secure_db",
+                        ).openHelperFactory(factory)
+                        .fallbackToDestructiveMigration(true)
+                        .build()
                 INSTANCE = instance
                 instance
             }
-        }
     }
 }

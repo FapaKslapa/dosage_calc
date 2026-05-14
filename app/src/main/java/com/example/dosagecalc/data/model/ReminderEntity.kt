@@ -14,27 +14,29 @@ data class ReminderEntity(
     val hour: Int,
     val minute: Int,
     val durationDays: Int,
-    val timestamp: Long
+    val timestamp: Long,
 )
 
-fun ReminderEntity.toDomain() = Reminder(
-    id           = id,
-    drugName     = drugName,
-    interval     = ReminderInterval.valueOf(interval),
-    daySelection = daySelection,
-    hour         = hour,
-    minute       = minute,
-    durationDays = durationDays,
-    timestamp    = timestamp
-)
+fun ReminderEntity.toDomain() =
+    Reminder(
+        id = id,
+        drugName = drugName,
+        interval = ReminderInterval.valueOf(interval),
+        daySelection = daySelection,
+        hour = hour,
+        minute = minute,
+        durationDays = durationDays,
+        timestamp = timestamp,
+    )
 
-fun Reminder.toEntity() = ReminderEntity(
-    id           = id,
-    drugName     = drugName,
-    interval     = interval.name,
-    daySelection = daySelection,
-    hour         = hour,
-    minute       = minute,
-    durationDays = durationDays,
-    timestamp    = timestamp
-)
+fun Reminder.toEntity() =
+    ReminderEntity(
+        id = id,
+        drugName = drugName,
+        interval = interval.name,
+        daySelection = daySelection,
+        hour = hour,
+        minute = minute,
+        durationDays = durationDays,
+        timestamp = timestamp,
+    )

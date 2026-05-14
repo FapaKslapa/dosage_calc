@@ -11,7 +11,6 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 
 class CheckDrugInteractionsUseCaseTest {
-
     private lateinit var repository: DrugInteractionRepository
     private lateinit var checkInteractions: CheckDrugInteractionsUseCase
 
@@ -22,31 +21,33 @@ class CheckDrugInteractionsUseCaseTest {
     }
 
     @Test
-    fun `ritorna lista interazioni se presenti`() = runBlocking {
-        val target = "drugA"
-        val others = listOf("drugB", "drugC")
-        
-        val interactionAB = DrugInteraction(target, "drugB", InteractionRiskLevel.HIGH, "Pericolo")
-        
-        coEvery { repository.checkInteraction(target, "drugB") } returns interactionAB
-        coEvery { repository.checkInteraction(target, "drugC") } returns null
+    fun `ritorna lista interazioni se presenti`() =
+        runBlocking {
+            val target = "drugA"
+            val others = listOf("drugB", "drugC")
 
-        val result = checkInteractions(target, others)
+            val interactionAB = DrugInteraction(target, "drugB", InteractionRiskLevel.HIGH, "Pericolo")
 
-        assertEquals(1, result.size)
-        assertEquals("drugB", result[0].drugId2)
-        assertEquals(InteractionRiskLevel.HIGH, result[0].riskLevel)
-    }
+            coEvery { repository.checkInteraction(target, "drugB") } returns interactionAB
+            coEvery { repository.checkInteraction(target, "drugC") } returns null
+
+            val result = checkInteractions(target, others)
+
+            assertEquals(1, result.size)
+            assertEquals("drugB", result[0].drugId2)
+            assertEquals(InteractionRiskLevel.HIGH, result[0].riskLevel)
+        }
 
     @Test
-    fun `ritorna lista vuota se nessuna interazione`() = runBlocking {
-        val target = "drugA"
-        val others = listOf("drugB")
-        
-        coEvery { repository.checkInteraction(any(), any()) } returns null
+    fun `ritorna lista vuota se nessuna interazione`() =
+        runBlocking {
+            val target = "drugA"
+            val others = listOf("drugB")
 
-        val result = checkInteractions(target, others)
+            coEvery { repository.checkInteraction(any(), any()) } returns null
 
-        assertEquals(0, result.size)
-    }
+            val result = checkInteractions(target, others)
+
+            assertEquals(0, result.size)
+        }
 }
